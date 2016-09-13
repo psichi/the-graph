@@ -1,1 +1,1 @@
-export {createGroup as createPortGroup} from '../'
+export default from '../createGroup'

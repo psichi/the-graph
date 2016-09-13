@@ -25,19 +25,22 @@
     "grunt-contrib-jshint": "~1.0.0",
     "grunt-contrib-watch": "~1.0.0",
     "grunt-exec": "~1.0.0",
+    "react-scripts": "^0.4.1",
     "stylus": "~0.54.5"
   },
   "scripts": {
-    "start": "grunt dev",
-    "test": "grunt test",
-    "build": "grunt build",
-    "postinstall": "bower install",
-    "preversion": "grunt test",
-    "postversion": "git push && git push --tags"
+    "postversion": "git push && git push --tags",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/the-grid/the-graph.git"
+  },
+  "eslintConfig": {
+    "extends": "./node_modules/react-scripts/config/eslint.js"
   },
   "keywords": [
     "graph"

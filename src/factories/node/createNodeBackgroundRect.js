@@ -1,1 +1,1 @@
-export {createRect as createNodeBackgroundRect} from '../'
+export default from '../createRect'

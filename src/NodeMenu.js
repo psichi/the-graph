@@ -44,7 +44,7 @@ export default class TheGraphNodeMenu extends Component {
     };
 
     inportsOptions = merge(Config.nodeMenu.inports, inportsOptions);
-    var inports = createNodeMenuInports.call(this, inportsOptions);
+    var inports = createNodeMenuInports(inportsOptions);
 
     var outportsOptions = {
       ports: ports.outports,
@@ -59,7 +59,7 @@ export default class TheGraphNodeMenu extends Component {
     };
 
     outportsOptions = merge(Config.nodeMenu.outports, outportsOptions);
-    var outports = createNodeMenuOutports.call(this, outportsOptions);
+    var outports = createNodeMenuOutports(outportsOptions);
 
     var menuOptions = {
       menu: this.props.menu,
@@ -70,7 +70,7 @@ export default class TheGraphNodeMenu extends Component {
     };
 
     menuOptions = merge(Config.nodeMenu.menu, menuOptions);
-    var menu = createNodeMenuMenu.call(this, menuOptions);
+    var menu = createNodeMenuMenu(menuOptions);
 
     var children = [
       inports, outports, menu
@@ -81,7 +81,7 @@ export default class TheGraphNodeMenu extends Component {
       children: children
     };
     containerOptions = merge(Config.nodeMenu.container, containerOptions);
-    return createNodeMenuGroup.call(this, containerOptions);
+    return createNodeMenuGroup(containerOptions);
 
   }
 }

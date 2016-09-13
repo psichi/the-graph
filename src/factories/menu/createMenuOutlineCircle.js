@@ -1,1 +1,1 @@
-export {createCircle as createMenuOutlineCircle} from '../'
+export default from '../createCircle'

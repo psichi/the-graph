@@ -138,10 +138,10 @@ export default class TheGraphPort extends Component {
     }
 
     var backgroundCircleOptions = merge(Config.port.backgroundCircle, { r: r + 1 });
-    var backgroundCircle = createPortBackgroundCircle.call(this, backgroundCircleOptions);
+    var backgroundCircle = createPortBackgroundCircle(backgroundCircleOptions);
 
     var arcOptions = merge(Config.port.arc, { d: (this.props.isIn ? inArc : outArc) });
-    var arc = createPortArc.call(this, arcOptions);
+    var arc = createPortArc(arcOptions);
 
     var innerCircleOptions = {
       className: 'port-circle-small fill route'+this.props.route,
@@ -149,7 +149,7 @@ export default class TheGraphPort extends Component {
     };
 
     innerCircleOptions = merge(Config.port.innerCircle, innerCircleOptions);
-    var innerCircle = createPortInnerCircle.call(this, innerCircleOptions);
+    var innerCircle = createPortInnerCircle(innerCircleOptions);
 
     var labelTextOptions = {
       x: (this.props.isIn ? 5 : -5),
@@ -157,7 +157,7 @@ export default class TheGraphPort extends Component {
       children: this.props.label
     };
     labelTextOptions = merge(Config.port.text, labelTextOptions);
-    var labelText = createPortLabelText.call(this, labelTextOptions);
+    var labelText = createPortLabelText(labelTextOptions);
 
     var portContents = [
       backgroundCircle,
@@ -167,6 +167,6 @@ export default class TheGraphPort extends Component {
     ];
 
     var containerOptions = merge(Config.port.container, { title: this.props.label, transform: 'translate('+this.props.x+','+this.props.y+')' });
-    return createPortGroup.call(this, containerOptions, portContents);
+    return createPortGroup(containerOptions, portContents);
   }
 }

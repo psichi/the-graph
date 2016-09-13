@@ -1,1 +1,1 @@
-export {createCanvas as createAppCanvas} from '../'
+export default from '../createCanvas'

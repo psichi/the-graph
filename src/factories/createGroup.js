@@ -1,11 +1,5 @@
-import {g} from 'react-dom'
+import React from 'react'
 
 export default function createGroup (options, content) {
-  var args = [options];
-
-  if (Array.isArray(content)) {
-    args = args.concat(content);
-  }
-
-  return g.apply(g, args);
+  return React.DOM.g(options, content);
 };

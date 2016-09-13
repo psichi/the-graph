@@ -1,1 +1,1 @@
-export {createGroup as createAppSvgGroup} from '../'
+export default from '../createGroup'

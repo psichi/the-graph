@@ -1,1 +1,1 @@
-export {createPath as createNodeMenuPortsPortPath} from '../'
+export default from '../createPath'

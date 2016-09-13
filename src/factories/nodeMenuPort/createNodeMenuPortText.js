@@ -1,1 +1,1 @@
-export {createText as createNodeMenuPortText} from '../'
+export default from '../createText'

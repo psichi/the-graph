@@ -1,5 +1,5 @@
-import {path} from 'react-dom'
+import React from 'react'
 
 export default function createPath (options) {
-  return path(options);
+  return React.DOM.path(options);
 };

@@ -1,1 +1,1 @@
-export {createCircle as createPortInnerCircle} from '../'
+export default from '../createCircle'

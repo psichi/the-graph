@@ -1,1 +1,1 @@
-export {createRect as createGroupBoxRect} from '../'
+export default from '../createRect'

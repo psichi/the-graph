@@ -1,1 +1,1 @@
-export {createText as createPortLabelText} from '../'
+export default from '../createText'

@@ -1,1 +1,1 @@
-export {createText as createTooltipText} from '../'
+export default from '../createText'

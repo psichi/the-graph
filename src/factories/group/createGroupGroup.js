@@ -1,1 +1,1 @@
-export {createGroup as createGroupGroup} from '../'
+export default from '../createGroup'

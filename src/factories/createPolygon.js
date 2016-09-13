@@ -1,5 +1,5 @@
-import {polygon} from 'react-dom'
+import React from 'react'
 
 export default function createPolygon (options) {
-  return polygon(options);
+  return React.DOM.polygon(options);
 };

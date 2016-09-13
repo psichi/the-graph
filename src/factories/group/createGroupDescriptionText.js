@@ -1,1 +1,1 @@
-export {createText as createGroupDescriptionText} from '../'
+export default from '../createText'

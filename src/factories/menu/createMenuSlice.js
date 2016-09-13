@@ -24,7 +24,7 @@ export default function createMenuSlice(options) {
         children: Config.FONT_AWESOME[ slice.icon ]
       };
       sliceIconTextOptions = merge(Config.menu.sliceIconText, sliceIconTextOptions);
-      children.push(createMenuSliceIconText.call(this, sliceIconTextOptions));
+      children.push(createMenuSliceIconText(sliceIconTextOptions));
     }
     if (slice.label) {
       var sliceLabelTextOptions = {
@@ -33,7 +33,7 @@ export default function createMenuSlice(options) {
         children: slice.label
       };
       sliceLabelTextOptions = merge(Config.menu.sliceLabelText, sliceLabelTextOptions);
-      children.push(createMenuSliceLabelText.call(this, sliceLabelTextOptions));
+      children.push(createMenuSliceLabelText(sliceLabelTextOptions));
     }
     if (slice.iconLabel) {
       var sliceIconLabelTextOptions = {
@@ -42,7 +42,7 @@ export default function createMenuSlice(options) {
         children: slice.iconLabel
       };
       sliceIconLabelTextOptions = merge(Config.menu.sliceIconLabelText, sliceIconLabelTextOptions);
-      children.push(createMenuSliceIconLabelText.call(this, sliceIconLabelTextOptions));
+      children.push(createMenuSliceIconLabelText(sliceIconLabelTextOptions));
     }
   }
 
@@ -52,5 +52,5 @@ export default function createMenuSlice(options) {
     children: children
   };
   containerOptions = merge(Config.menu.container, containerOptions);
-  return createMenuGroup.call(this, containerOptions);
+  return createMenuGroup(containerOptions);
 }

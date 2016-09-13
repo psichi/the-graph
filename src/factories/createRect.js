@@ -1,5 +1,5 @@
-import {rect} from 'react-dom'
+import React from 'react'
 
 export default function createRect (options) {
-  return rect(options);
+  return React.DOM.rect(options);
 };

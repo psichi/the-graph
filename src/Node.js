@@ -401,49 +401,49 @@ export default class TheGraphNode extends Component {
         width: this.props.width - 10,
         height: this.props.height - 10
       });
-      iconContent = createNodeIconSVG.call(this, iconSVGOptions);
+      iconContent = createNodeIconSVG(iconSVGOptions);
     } else {
       var iconOptions = merge(Config.node.icon, {
         x: this.props.width / 2,
         y: this.props.height / 2,
         children: icon });
-      iconContent = createNodeIconText.call(this, iconOptions);
+      iconContent = createNodeIconText(iconOptions);
     }
 
     var backgroundRectOptions = merge(Config.node.background, { width: this.props.width, height: this.props.height + 25 });
-    var backgroundRect = createNodeBackgroundRect.call(this, backgroundRectOptions);
+    var backgroundRect = createNodeBackgroundRect(backgroundRectOptions);
 
     var borderRectOptions = merge(Config.node.border, { width: this.props.width, height: this.props.height });
-    var borderRect = createNodeBorderRect.call(this, borderRectOptions);
+    var borderRect = createNodeBorderRect(borderRectOptions);
 
     var innerRectOptions = merge(Config.node.innerRect, { width: this.props.width - 6, height: this.props.height - 6 });
-    var innerRect = createNodeInnerRect.call(this, innerRectOptions);
+    var innerRect = createNodeInnerRect(innerRectOptions);
 
     var inportsOptions = merge(Config.node.inports, { children: inportViews });
-    var inportsGroup = createNodeInportsGroup.call(this, inportsOptions);
+    var inportsGroup = createNodeInportsGroup(inportsOptions);
 
     var outportsOptions = merge(Config.node.outports, { children: outportViews });
-    var outportsGroup = createNodeOutportsGroup.call(this, outportsOptions);
+    var outportsGroup = createNodeOutportsGroup(outportsOptions);
 
     var labelTextOptions = merge(Config.node.labelText, { x: this.props.width / 2, y: this.props.height + 15, children: label });
-    var labelText = createNodeLabelText.call(this, labelTextOptions);
+    var labelText = createNodeLabelText(labelTextOptions);
 
     var labelRectX = this.props.width / 2;
     var labelRectY = this.props.height + 15;
     var labelRectOptions = buildLabelRectOptions(14, labelRectX, labelRectY, label.length, Config.node.labelRect.className);
     labelRectOptions = merge(Config.node.labelRect, labelRectOptions);
-    var labelRect = createNodeLabelRect.call(this, labelRectOptions);
-    var labelGroup = createNodeLabelGroup.call(this, Config.node.labelBackground, [labelRect, labelText]);
+    var labelRect = createNodeLabelRect(labelRectOptions);
+    var labelGroup = createNodeLabelGroup(Config.node.labelBackground, [labelRect, labelText]);
 
     var sublabelTextOptions = merge(Config.node.sublabelText, { x: this.props.width / 2, y: this.props.height + 30, children: sublabel });
-    var sublabelText = createNodeSublabelText.call(this, sublabelTextOptions);
+    var sublabelText = createNodeSublabelText(sublabelTextOptions);
 
     var sublabelRectX = this.props.width / 2;
     var sublabelRectY = this.props.height + 30;
     var sublabelRectOptions = buildLabelRectOptions(9, sublabelRectX, sublabelRectY, sublabel.length, Config.node.sublabelRect.className);
     sublabelRectOptions = merge(Config.node.sublabelRect, sublabelRectOptions);
-    var sublabelRect = createNodeSublabelRect.call(this, sublabelRectOptions);
-    var sublabelGroup = createNodeSublabelGroup.call(this, Config.node.sublabelBackground, [sublabelRect, sublabelText]);
+    var sublabelRect = createNodeSublabelRect(sublabelRectOptions);
+    var sublabelGroup = createNodeSublabelGroup(Config.node.sublabelBackground, [sublabelRect, sublabelText]);
 
     var nodeContents = [
       backgroundRect,
@@ -467,6 +467,6 @@ export default class TheGraphNode extends Component {
     };
     nodeOptions = merge(Config.node.container, nodeOptions);
 
-    return createNodeGroup.call(this, nodeOptions, nodeContents);
+    return createNodeGroup(nodeOptions, nodeContents);
   }
 }

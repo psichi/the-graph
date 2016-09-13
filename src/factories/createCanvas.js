@@ -1,5 +1,5 @@
-import {canvas} from 'react-dom'
+import React from 'react'
 
 export default function createCanvas (options) {
-  return canvas(options);
+  return React.DOM.canvas(options);
 };

@@ -32,10 +32,10 @@ export default class TheGraphModalBG extends Component {
     };
 
     rectOptions = merge(Config.modalBG.rect, rectOptions);
-    var rect = createModalBackgroundRect.call(this, rectOptions);
+    var rect = createModalBackgroundRect(rectOptions);
 
     var containerContents = [rect, this.props.children];
     var containerOptions = merge(Config.modalBG.container, {});
-    return createModalBackgroundGroup.call(this, containerOptions, containerContents);
+    return createModalBackgroundGroup(containerOptions, containerContents);
   }
 };

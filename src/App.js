@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {findDomNode} from 'react-dom'
+import {findDOMNode} from 'react-dom'
 import {findAreaFit, findFit, findNodeFit, merge} from './utils'
 import Config from './Config'
 import Menu from './Menu'
@@ -25,11 +25,12 @@ export default class TheGraphApp extends Component {
   lastY = 0
   pinching = false
 
-  componentDidMount () {
+  constructor (props, context) {
+    super (props, context)
     // Autofit
     var fit = findFit(this.props.graph, this.props.width, this.props.height);
 
-    this.setState({
+    this.state ={
       x: fit.x,
       y: fit.y,
       scale: fit.scale,
@@ -45,7 +46,7 @@ export default class TheGraphApp extends Component {
       contextType: null,
       offsetY: this.props.offsetY,
       offsetX: this.props.offsetX
-    });
+    };
   }
 
   onWheel (event) {
@@ -330,8 +331,13 @@ export default class TheGraphApp extends Component {
     document.addEventListener('keyup', this.keyUp);
 
     // Canvas background
+    /*
     this.bgCanvas = unwrap(findDOMNode(this.refs.canvas));
     this.bgContext = unwrap(this.bgCanvas.getContext('2d'));
+    seems to be from polymer custom elements
+    */
+    this.bgCanvas = findDOMNode(this.refs.canvas);
+    this.bgContext = this.bgCanvas.getContext('2d');
     this.componentDidUpdate();
 
 
@@ -555,10 +561,10 @@ export default class TheGraphApp extends Component {
       showContext: this.showContext
     };
     graphElementOptions = merge(Config.app.graph, graphElementOptions);
-    var graphElement = createAppGraph.call(this, graphElementOptions);
+    var graphElement = createAppGraph(graphElementOptions);
 
     var svgGroupOptions = merge(Config.app.svgGroup, { transform: transform });
-    var svgGroup = createAppSvgGroup.call(this, svgGroupOptions, [graphElement]);
+    var svgGroup = createAppSvgGroup(svgGroupOptions, [graphElement]);
 
     var tooltipOptions = {
       x: this.state.tooltipX,
@@ -568,22 +574,25 @@ export default class TheGraphApp extends Component {
     };
 
     tooltipOptions = merge(Config.app.tooltip, tooltipOptions);
-    var tooltip = createAppTooltip.call(this, tooltipOptions);
+    var tooltip = createAppTooltip(tooltipOptions);
 
     var modalGroupOptions = merge(Config.app.modal, { children: contextModal });
-    var modalGroup = createAppModalGroup.call(this, modalGroupOptions);
+    var modalGroup = createAppModalGroup(modalGroupOptions);
 
     var svgContents = [
       svgGroup,
-      tooltip,
+     // tooltip,
       modalGroup
     ];
 
+    // somethign is going wrong
+    // svgContents = []
+
     var svgOptions = merge(Config.app.svg, { width: this.state.width, height: this.state.height });
-    var svg = createAppSvg.call(this, svgOptions, svgContents);
+    var svg = createAppSvg(svgOptions, svgContents);
 
     var canvasOptions = merge(Config.app.canvas, { width: this.state.width, height: this.state.height });
-    var canvas = createAppCanvas.call(this, canvasOptions);
+    var canvas = createAppCanvas(canvasOptions);
 
     var appContents = [
       canvas,
@@ -591,6 +600,6 @@ export default class TheGraphApp extends Component {
     ];
     var containerOptions = merge(Config.app.container, { style: { width: this.state.width, height: this.state.height } });
     containerOptions.className += " " + scaleClass;
-    return createAppContainer.call(this, containerOptions, appContents);
+    return createAppContainer(containerOptions, appContents);
   }
 }

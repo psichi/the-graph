@@ -1,1 +1,1 @@
-export {createPath as createEdgeForegroundPath} from '../'
+export default from '../createPath'

@@ -1,1 +1,1 @@
-export {createGroup as createGraphOutportsGroup} from '../'
+export default from '../createGroup'

@@ -89,13 +89,13 @@ export default class TheGraphMenu extends Component {
 
     var children = [
       // Directional slices
-      createMenuSlice.call(this, { direction: "n4" }),
-      createMenuSlice.call(this, { direction: "s4" }),
-      createMenuSlice.call(this, { direction: "e4" }),
-      createMenuSlice.call(this, { direction: "w4" }),
+      createMenuSlice({ direction: "n4" }),
+      createMenuSlice({ direction: "s4" }),
+      createMenuSlice({ direction: "e4" }),
+      createMenuSlice({ direction: "w4" }),
       // Outline and X
-      createMenuCircleXPath.call(this, circleXOptions),
-      createMenuOutlineCircle.call(this, outlineCircleOptions)
+      createMenuCircleXPath(circleXOptions),
+      createMenuOutlineCircle(outlineCircleOptions)
     ];
     // Menu label
     if (this.props.label || menu.icon) {
@@ -107,7 +107,7 @@ export default class TheGraphMenu extends Component {
       };
 
       labelTextOptions = merge(Config.menu.labelText, labelTextOptions);
-      children.push(createMenuLabelText.call(this, labelTextOptions));
+      children.push(createMenuLabelText(labelTextOptions));
     }
     // Middle icon
     if (this.props.icon || menu.icon) {
@@ -118,14 +118,14 @@ export default class TheGraphMenu extends Component {
       }
 
       var middleIconRectOptions = merge(Config.menu.iconRect, {});
-      var middleIcon = createMenuMiddleIconRect.call(this, middleIconRectOptions);
+      var middleIcon = createMenuMiddleIconRect(middleIconRectOptions);
 
       var middleIconTextOptions = {
         className: "icon context-node-icon"+iconStyle,
         children: Config.FONT_AWESOME[ (this.props.icon ? this.props.icon : menu.icon) ]
       };
       middleIconTextOptions = merge(Config.menu.iconText, middleIconTextOptions);
-      var iconText = createMenuMiddleIconText.call(this, middleIconTextOptions);
+      var iconText = createMenuMiddleIconText(middleIconTextOptions);
 
       children.push(middleIcon, iconText);
     }
@@ -137,6 +137,6 @@ export default class TheGraphMenu extends Component {
 
     containerOptions = merge(Config.menu.container, containerOptions);
 
-    return createMenuGroup.call(this, containerOptions);
+    return createMenuGroup(containerOptions);
   }
 }

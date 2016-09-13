@@ -1,1 +1,1 @@
-export {createText as createNodeLabelText} from '../'
+export default from '../createText'

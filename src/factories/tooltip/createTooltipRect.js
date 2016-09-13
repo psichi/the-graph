@@ -1,1 +1,1 @@
-export {createRect as createTooltipRect} from '../'
+export default from '../createRect'

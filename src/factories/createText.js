@@ -1,5 +1,5 @@
-import {text} from 'react-dom'
+import React from 'react'
 
 export default function createText (options) {
-  return text(options);
+  return React.DOM.text(options);
 };

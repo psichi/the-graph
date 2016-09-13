@@ -1,1 +1,1 @@
-export {createSvg as createAppSvg} from '../'
+export default from '../createSvg'

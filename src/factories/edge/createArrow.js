@@ -1,1 +1,1 @@
-export {createPolygon as createArrow} from '../'
+export default from '../createPolygon'

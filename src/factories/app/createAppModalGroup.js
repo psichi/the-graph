@@ -1,1 +1,1 @@
-export {createGroup as createAppModalGroup} from '../'
+export default from '../createGroup'

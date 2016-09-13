@@ -1,1 +1,1 @@
-export {createRect as createMenuMiddleIconRect} from '../'
+export default from '../createRect'

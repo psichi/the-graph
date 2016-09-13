@@ -36,14 +36,14 @@ export default class TheGraphIIP extends Component {
     }
 
     var pathOptions = merge(Config.iip.path, {d: path});
-    var iipPath = createIIPPath.call(this, pathOptions);
+    var iipPath = createIIPPath(pathOptions);
 
     var textOptions = merge(Config.iip.text, {x: x - 10, y: y, text: label});
-    var text = createIIPText.call(this, textOptions);
+    var text = createIIPText(textOptions);
 
     var containerContents = [iipPath, text];
 
     var containerOptions = merge(Config.iip.container, {title: this.props.label});
-    return createIIPContainer.call(this, containerOptions, containerContents);
+    return createIIPContainer(containerOptions, containerContents);
   }
 }

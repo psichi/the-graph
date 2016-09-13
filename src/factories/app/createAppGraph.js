@@ -1,5 +1,5 @@
 import Graph from '../../Graph'
 
-function createAppGraph(options) {
-  return Graph(options);
+export default function createAppGraph(options) {
+  return new Graph(options);
 }

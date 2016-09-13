@@ -50,7 +50,7 @@ export default class TheGraphNodeMenuPort extends Component {
     };
 
     rectOptions = merge(Config.nodeMenuPort.backgroundRect, rectOptions);
-    var rect = createNodeMenuBackgroundRect.call(this, rectOptions);
+    var rect = createNodeMenuBackgroundRect(rectOptions);
 
     var circleOptions = {
       className: "context-port-hole stroke route"+this.props.route,
@@ -58,7 +58,7 @@ export default class TheGraphNodeMenuPort extends Component {
       cy: this.props.y,
     };
     circleOptions = merge(Config.nodeMenuPort.circle, circleOptions);
-    var circle = createNodeMenuPortCircle.call(this, circleOptions);
+    var circle = createNodeMenuPortCircle(circleOptions);
 
     var textOptions = {
       className: "context-port-label fill route"+this.props.route,
@@ -68,12 +68,12 @@ export default class TheGraphNodeMenuPort extends Component {
     };
 
     textOptions = merge(Config.nodeMenuPort.text, textOptions);
-    var text = createNodeMenuPortText.call(this, textOptions);
+    var text = createNodeMenuPortText(textOptions);
 
     var containerContents = [rect, circle, text];
 
     var containerOptions = merge(Config.nodeMenuPort.container, { className: "context-port click context-port-"+(this.props.isIn ? "in" : "out") });
-    return createNodeMenuPortGroup.call(this, containerOptions, containerContents);
+    return createNodeMenuPortGroup(containerOptions, containerContents);
 
   }
 }

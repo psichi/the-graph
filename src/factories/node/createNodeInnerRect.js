@@ -1,1 +1,1 @@
-export {createRect as createNodeInnerRect} from '../'
+export default from '../createRect'

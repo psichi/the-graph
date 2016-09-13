@@ -1,1 +1,1 @@
-export {createGroup as createGraphIIPGroup} from '../'
+export default from '../createGroup'

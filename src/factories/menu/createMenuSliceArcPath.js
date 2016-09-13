@@ -1,1 +1,1 @@
-export {createPath as createMenuSliceArcPath} from '../'
+export default from '../createPath'

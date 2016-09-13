@@ -1,1 +1,1 @@
-export {createText as createMenuMiddleIconText} from '../'
+export default from '../createText'

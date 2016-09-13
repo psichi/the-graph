@@ -1,1 +1,1 @@
-export {createGroup as createNodeSublabelGroup} from '../'
+export default from '../createGroup'

@@ -1,1 +1,1 @@
-export {createCircle as createNodeMenuPortCircle} from '../'
+export default from '../createCircle'

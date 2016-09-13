@@ -1,1 +1,1 @@
-export {createRect as createNodeBorderRect} from '../'
+export default from '../createRect'

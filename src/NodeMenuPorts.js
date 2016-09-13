@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import {findDOMNode} from 'react-dom'
 import {merge} from './utils'
 import Config from './Config'
 import {
@@ -33,7 +32,7 @@ export default class TheGraphNodeMenuPorts extends Component {
 
       // Make path from graph port to menu port
       var lineOptions = merge(Config.nodeMenuPorts.portPath, { d: [ "M", ox, oy, "L", x, y ].join(" ") });
-      var line = createNodeMenuPortsPortPath.call(this, lineOptions);
+      var line = createNodeMenuPortsPortPath(lineOptions);
 
       var portViewOptions = {
         label: key,
@@ -46,7 +45,7 @@ export default class TheGraphNodeMenuPorts extends Component {
         highlightPort: this.props.highlightPort
       };
       portViewOptions = merge(Config.nodeMenuPorts.nodeMenuPort, portViewOptions);
-      var portView = createNodeMenuPortsNodeMenuPort.call(this, portViewOptions);
+      var portView = createNodeMenuPortsNodeMenuPort(portViewOptions);
 
       lines.push(line);
       portViews.push(portView);
@@ -58,10 +57,10 @@ export default class TheGraphNodeMenuPorts extends Component {
     }
 
     var linesGroupOptions = merge(Config.nodeMenuPorts.linesGroup, { children: lines });
-    var linesGroup = createNodeMenuPortsLinesGroup.call(this, linesGroupOptions);
+    var linesGroup = createNodeMenuPortsLinesGroup(linesGroupOptions);
 
     var portsGroupOptions = merge(Config.nodeMenuPorts.portsGroup, { children: portViews });
-    var portsGroup = createNodeMenuPortsGroup.call(this, portsGroupOptions);
+    var portsGroup = createNodeMenuPortsGroup(portsGroupOptions);
 
     var containerContents = [linesGroup, portsGroup];
     var containerOptions = {
@@ -69,6 +68,6 @@ export default class TheGraphNodeMenuPorts extends Component {
       transform: transform
     };
     containerOptions = merge(Config.nodeMenuPorts.container, containerOptions);
-    return createNodeMenuPortsGroup.call(this, containerOptions, containerContents);
+    return createNodeMenuPortsGroup(containerOptions, containerContents);
   }
 }

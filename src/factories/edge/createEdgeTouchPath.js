@@ -1,1 +1,1 @@
-export {createPath as createEdgeTouchPath} from '../'
+export default from '../createPath'

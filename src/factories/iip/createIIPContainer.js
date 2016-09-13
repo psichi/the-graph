@@ -1,1 +1,1 @@
-export {createGroup as createIIPContainer} from '../'
+export default from '../createGroup'

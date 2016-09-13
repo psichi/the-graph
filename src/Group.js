@@ -129,7 +129,7 @@ export default class TheGraphGroup extends Component {
       className: "group-box color"+color + selection
     };
     boxRectOptions = merge(Config.group.boxRect, boxRectOptions);
-    var boxRect =  createGroupBoxRect.call(this, boxRectOptions);
+    var boxRect =  createGroupBoxRect(boxRectOptions);
 
     var labelTextOptions = {
       x: x + Config.base.config.nodeRadius,
@@ -137,7 +137,7 @@ export default class TheGraphGroup extends Component {
       children: this.props.label
     };
     labelTextOptions = merge(Config.group.labelText, labelTextOptions);
-    var labelText = createGroupLabelText.call(this, labelTextOptions);
+    var labelText = createGroupLabelText(labelTextOptions);
 
     var descriptionTextOptions = {
       x: x + Config.base.nodeRadius,
@@ -145,7 +145,7 @@ export default class TheGraphGroup extends Component {
       children: this.props.description
     };
     descriptionTextOptions = merge(Config.group.descriptionText, descriptionTextOptions);
-    var descriptionText = createGroupDescriptionText.call(this, descriptionTextOptions);
+    var descriptionText = createGroupDescriptionText(descriptionTextOptions);
 
     var groupContents = [
       boxRect,
@@ -155,6 +155,6 @@ export default class TheGraphGroup extends Component {
 
     var containerOptions = merge(Config.group.container, {});
 
-    return createGroupGroup.call(this, containerOptions, groupContents);
+    return createGroupGroup(containerOptions, groupContents);
   }
 }

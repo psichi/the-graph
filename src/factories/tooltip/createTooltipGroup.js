@@ -1,1 +1,1 @@
-export {createGroup as createTooltipGroup} from '../'
+export default from '../createGroup'

@@ -1,3 +1,5 @@
+import Config from '../Config'
+
 export default function findAreaFit (point1, point2, width, height) {
   var limits = {
     minX: point1.x < point2.x ? point1.x : point2.x,
@@ -6,10 +8,10 @@ export default function findAreaFit (point1, point2, width, height) {
     maxY: point1.y > point2.y ? point1.y : point2.y
   };
 
-  limits.minX -= TheGraph.config.nodeSize;
-  limits.minY -= TheGraph.config.nodeSize;
-  limits.maxX += TheGraph.config.nodeSize * 2;
-  limits.maxY += TheGraph.config.nodeSize * 2;
+  limits.minX -= Config.base.nodeSize;
+  limits.minY -= Config.base.nodeSize;
+  limits.maxX += Config.base.nodeSize * 2;
+  limits.maxY += Config.base.nodeSize * 2;
 
   var gWidth = limits.maxX - limits.minX;
   var gHeight = limits.maxY - limits.minY;

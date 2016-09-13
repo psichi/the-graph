@@ -1,1 +1,1 @@
-export {createRect as createModalBackgroundRect} from '../'
+export default from '../createRect'

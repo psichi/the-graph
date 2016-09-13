@@ -1,1 +1,1 @@
-export {createPath as createIIPPath} from '../'
+export default from '../createPath'

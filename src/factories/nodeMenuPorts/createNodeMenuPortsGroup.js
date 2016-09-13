@@ -1,1 +1,1 @@
-export {createGroup as createNodeMenuPortsGroup} from '../'
+export default from '../createGroup'

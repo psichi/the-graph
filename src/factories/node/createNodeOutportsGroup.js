@@ -1,1 +1,1 @@
-export {createGroup as createNodeOutportsGroup} from '../'
+export default from '../createGroup'

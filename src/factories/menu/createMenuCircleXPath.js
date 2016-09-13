@@ -1,1 +1,1 @@
-export {createPath as createMenuCircleXPath} from '../'
+export default from '../createPath'

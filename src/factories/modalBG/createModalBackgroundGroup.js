@@ -1,1 +1,1 @@
-export {createGroup as createModalBackgroundGroup} from '../'
+export default from '../createGroup'

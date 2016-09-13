@@ -1,1 +1,1 @@
-export {createPath as createPortArc} from '../'
+export default from '../createPath'

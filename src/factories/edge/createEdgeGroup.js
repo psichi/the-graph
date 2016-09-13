@@ -1,1 +1,1 @@
-export {createGroup as createEdgeGroup} from '../'
+export default from '../createGroup'

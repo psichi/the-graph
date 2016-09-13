@@ -1,5 +1,5 @@
-import {circle} from 'react-dom'
+import React from 'react'
 
 export default function createCircle (options) {
-  return circle(options);
+  return React.DOM.circle(options);
 };

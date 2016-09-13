@@ -1,1 +1,1 @@
-export {createRect as createNodeIconRect} from '../'
+export default from '../createRect'

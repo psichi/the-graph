@@ -435,7 +435,7 @@ export default class TheGraphGraph extends Component {
       };
 
       nodeOptions = merge(Config.node, nodeOptions);
-      return createGraphNode.call(this, nodeOptions);
+      return createGraphNode(nodeOptions);
     });
 
     // Edges
@@ -487,7 +487,7 @@ export default class TheGraphGraph extends Component {
       };
 
       edgeOptions = merge(Config.graph.edge, edgeOptions);
-      return createGraphEdge.call(this, edgeOptions);
+      return createGraphEdge(edgeOptions);
     });
 
     // IIPs
@@ -511,7 +511,7 @@ export default class TheGraphGraph extends Component {
       };
 
       iipOptions = merge(Config.graph.iip, iipOptions);
-      return createGraphIIP.call(this, iipOptions);
+      return createGraphIIP(iipOptions);
 
     });
 
@@ -586,8 +586,8 @@ export default class TheGraphGraph extends Component {
         showContext: self.props.showContext
       };
       expEdge = merge(Config.graph.inportEdge, expEdge);
-      edges.unshift(createGraphEdge.call(this, expEdge));
-      return createGraphNode.call(this, expNode);
+      edges.unshift(createGraphEdge(expEdge));
+      return createGraphNode(expNode);
     });
 
 
@@ -661,8 +661,8 @@ export default class TheGraphGraph extends Component {
         showContext: self.props.showContext
       };
       expEdge = merge(Config.graph.outportEdge, expEdge);
-      edges.unshift(createGraphEdge.call(this, expEdge));
-      return createGraphNode.call(this, expNode);
+      edges.unshift(createGraphEdge(expEdge));
+      return createGraphNode(expNode);
     });
 
     // Groups
@@ -692,7 +692,7 @@ export default class TheGraphGraph extends Component {
         showContext: self.props.showContext
       };
       groupOptions = merge(Config.graph.nodeGroup, groupOptions);
-      return createGraphGroup.call(this, groupOptions);
+      return createGraphGroup(groupOptions);
     });
 
     // Selection pseudo-group
@@ -719,7 +719,7 @@ export default class TheGraphGraph extends Component {
           showContext: self.props.showContext
         };
         selectionGroupOptions = merge(Config.graph.selectionGroup, selectionGroupOptions);
-        var selectionGroup = createGraphGroup.call(this, selectionGroupOptions);
+        var selectionGroup = createGraphGroup(selectionGroupOptions);
         groups.push(selectionGroup);
       }
     }
@@ -751,27 +751,27 @@ export default class TheGraphGraph extends Component {
         };
       }
       edgePreviewOptions = merge(Config.graph.edgePreview, edgePreviewOptions);
-      var edgePreviewView = createGraphEdgePreview.call(this, edgePreviewOptions);
+      var edgePreviewView = createGraphEdgePreview(edgePreviewOptions);
       edges.push(edgePreviewView);
     }
 
     var groupsOptions = merge(Config.graph.groupsGroup, { children: groups });
-    var groupsGroup = createGraphGroupsGroup.call(this, groupsOptions);
+    var groupsGroup = createGraphGroupsGroup(groupsOptions);
 
     var edgesOptions = merge(Config.graph.edgesGroup, { children: edges });
-    var edgesGroup = createGraphEdgesGroup.call(this, edgesOptions);
+    var edgesGroup = createGraphEdgesGroup(edgesOptions);
 
     var iipsOptions = merge(Config.graph.iipsGroup, { children: iips });
-    var iipsGroup = createGraphIIPGroup.call(this, iipsOptions);
+    var iipsGroup = createGraphIIPGroup(iipsOptions);
 
     var nodesOptions = merge(Config.graph.nodesGroup, { children: nodes });
-    var nodesGroup = createGraphNodesGroup.call(this, nodesOptions);
+    var nodesGroup = createGraphNodesGroup(nodesOptions);
 
     var inportsOptions = merge(Config.graph.inportsGroup, { children: inports });
-    var inportsGroup = createGraphInportsGroup.call(this, inportsOptions);
+    var inportsGroup = createGraphInportsGroup(inportsOptions);
 
     var outportsOptions = merge(Config.graph.outportsGroup, { children: outports });
-    var outportsGroup = createGraphGroupsGroup.call(this, outportsOptions);
+    var outportsGroup = createGraphGroupsGroup(outportsOptions);
 
     var containerContents = [
       groupsGroup,
@@ -785,7 +785,7 @@ export default class TheGraphGraph extends Component {
     var selectedClass = (this.state.forceSelection || selectedIds.length > 0) ? ' selection' : '';
 
     var containerOptions = merge(Config.graph.container, { className: 'graph' + selectedClass });
-    return createGraphContainerGroup.call(this, containerOptions, containerContents);
+    return createGraphContainerGroup(containerOptions, containerContents);
 
   }
 }

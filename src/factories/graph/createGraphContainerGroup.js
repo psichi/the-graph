@@ -1,1 +1,1 @@
-export {createGroup as createGraphContainerGroup} from '../'
+export default from '../createGroup'

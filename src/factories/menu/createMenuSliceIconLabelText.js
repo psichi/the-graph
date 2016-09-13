@@ -1,1 +1,1 @@
-export {createText as createMenuSliceIconLabelText} from '../'
+export default from '../createText'

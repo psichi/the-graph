@@ -1,14 +1,15 @@
-import {findMinMax} from './findMinMax'
+import findMinMax from './findMinMax'
+import Config from '../Config'
 
 export default function findFit (graph, width, height) {
   var limits = findMinMax(graph);
   if (!limits) {
     return {x:0, y:0, scale:1};
   }
-  limits.minX -= TheGraph.config.nodeSize;
-  limits.minY -= TheGraph.config.nodeSize;
-  limits.maxX += TheGraph.config.nodeSize * 2;
-  limits.maxY += TheGraph.config.nodeSize * 2;
+  limits.minX -= Config.base.nodeSize;
+  limits.minY -= Config.base.nodeSize;
+  limits.maxX += Config.base.nodeSize * 2;
+  limits.maxY += Config.base.nodeSize * 2;
 
   var gWidth = limits.maxX - limits.minX;
   var gHeight = limits.maxY - limits.minY;

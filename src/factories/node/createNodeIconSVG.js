@@ -1,1 +1,1 @@
-export {createImg as createNodeIconSVG} from '../'
+export default from '../createImg'
