@@ -11,7 +11,8 @@ import {
   createAppModalGroup,
   createAppSvg,
   createAppCanvas,
-  createAppContainer
+  createAppContainer,
+  createAppTooltip
 } from './factories/app'
 
 export default class TheGraphApp extends Component {
