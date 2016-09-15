@@ -143,7 +143,7 @@ export default class TheGraphPort extends Component {
 
   render () {
     var style
-    console.log('dus', this.props)
+    console.log('PORT PROPS!!', this.props)
     if (this.props.label.length > 7) {
       var fontSize = 6 * (30 / (4 * this.props.label.length))
       style = { 'fontSize': fontSize + 'px' }
@@ -170,13 +170,6 @@ export default class TheGraphPort extends Component {
       r: r - 1.5
     }
 
-    // Could just convert this to a pure component.
-    // it's really just a <circle /> with props nothing more.
-    // thus <PortInnerCircle {...innerCircleOptions} />
-    // Where PortInnerCircle just return a circle.
-    // let's put them within components with the same factory structure.
-    // or else within factories without the create prefix.
-    // Most merges can be done using ...
     innerCircleOptions = merge(Config.port.innerCircle, innerCircleOptions)
     // var innerCircle = createPortInnerCircle(innerCircleOptions);
 

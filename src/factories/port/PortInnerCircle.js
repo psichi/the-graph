@@ -1,5 +1,7 @@
-import React from 'react'
+import React, {Component} from 'react'
 
-export default (props) => {
-  return <circle {...props} />
+export default class PortInnerCircle extends Component {
+  render () {
+    return <circle {...this.props} />
+  }
 }

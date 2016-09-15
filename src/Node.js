@@ -366,7 +366,7 @@ export default class TheGraphNode extends Component {
         showContext
       }
 
-      console.log('Props for Node', props)
+      console.log('Props for Node Port', props)
 
       return <NodePort {...props} />
     })

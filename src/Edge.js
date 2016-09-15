@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {Component, PropTypes} from 'react'
 import {findDOMNode} from 'react-dom'
 import {
   findLinePoint,
@@ -27,6 +27,26 @@ export default class TheGraphEdge extends Component {
     Tooltip
   ]
 
+  static propTypes = {
+    onEdgeSelection: PropTypes.func,
+    showContext: PropTypes.func,
+    app: PropTypes.object,
+    edgeID: PropTypes.string,
+    edge: PropTypes.object,
+    'export': PropTypes.bool,
+    isIn: PropTypes.bool,
+    graph: PropTypes.object,
+    exportKey: PropTypes.string,
+    label: PropTypes.string,
+    route: PropTypes.number,
+    sX: PropTypes.number,
+    sY: PropTypes.number,
+    tX: PropTypes.number,
+    tY: PropTypes.number,
+    selected: PropTypes.bool,
+    animated: PropTypes.bool
+  }
+
   constructor (props, context) {
     super(props, context)
 
@@ -36,7 +56,7 @@ export default class TheGraphEdge extends Component {
   }
 
   componentDidMount () {
-    var domNode = findDOMNode(this)
+    const domNode = findDOMNode(this)
 
     // Dragging
     domNode.addEventListener('trackstart', this.dontPan)
@@ -125,13 +145,13 @@ export default class TheGraphEdge extends Component {
   }
 
   render () {
-    var sourceX = this.props.sX
-    var sourceY = this.props.sY
-    var targetX = this.props.tX
-    var targetY = this.props.tY
+    let sourceX = this.props.sX
+    let sourceY = this.props.sY
+    let targetX = this.props.tX
+    let targetY = this.props.tY
 
     // Organic / curved edge
-    var c1X, c1Y, c2X, c2Y
+    let c1X, c1Y, c2X, c2Y
     if (targetX - 5 < sourceX) {
       var curveFactor = (sourceX - targetX) * CURVE / 200
       if (Math.abs(targetY - sourceY) < Config.base.nodeSize / 2) {

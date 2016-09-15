@@ -1,5 +1,7 @@
-import React from 'react'
+import React, {Component} from 'react'
 
-export default (props) => {
-  return <text {...props} />
+export default class PortLabelText extends Component {
+  render () {
+    return <text {...this.props} />
+  }
 }

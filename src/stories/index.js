@@ -19,6 +19,10 @@ import fromJSON from '../utils/fromJSON'
 
 console.log(nofloGraph)
 
+document
+  .getElementById('root')
+  .classList.add('the-graph-dark')
+
 const {svg} = React.DOM
 
 const node = {
@@ -101,11 +105,10 @@ let graphJson = {
     'name': 'Count lines in a file'
   },
   'processes': {
-    'basic': {
-      'component': 'basic',
-      'metadata': {
-      }
-    },
+    'basic': { 'component': 'basic' },
+    'basic2': { 'component': 'basic' },
+    'basic3': { 'component': 'basic' },
+    'basic4': { 'component': 'basic' },
     'tall': {
       'component': 'tall'
     }
@@ -115,19 +118,13 @@ let graphJson = {
       'data': 'package.json',
       'tgt': {
         'process': 'basic',
-        'port': 'source'
-      }
-    },
-    {
-      'src': {
-        'process': 'basic',
-        'port': 'out'
-      },
-      'tgt': {
-        'process': 'tall',
         'port': 'in1'
       }
-    }
+    },
+    { 'src': { 'process': 'basic', 'port': 'out' }, 'tgt': { 'process': 'tall', 'port': 'in1' } },
+    { 'src': { 'process': 'basic2', 'port': 'out' }, 'tgt': { 'process': 'tall', 'port': 'in2' } },
+    { 'src': { 'process': 'basic3', 'port': 'out' }, 'tgt': { 'process': 'tall', 'port': 'in3' } },
+    { 'src': { 'process': 'basic4', 'port': 'out' }, 'tgt': { 'process': 'tall', 'port': 'in4' } }
   ]
 }
 

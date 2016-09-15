@@ -1,5 +1,7 @@
-import React from 'react'
+import React, {Component} from 'react'
 
-export default (props) => {
-  return <arc {...props} />
+export default class PortArc extends Component {
+  render () {
+    return <arc {...this.props} />
+  }
 }

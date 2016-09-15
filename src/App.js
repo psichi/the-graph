@@ -781,15 +781,17 @@ export default class TheGraphApp extends Component {
 
     // return createAppContainer(containerOptions, appContents);
     return (
-      <div {...containerOptions}>
-        <canvas {...canvasOptions} />
-        <svg {...svgOptions}>
-          <g {...svgGroupOptions}>
-            <AppGraph {...graphElementOptions} />
-          </g>
-          <AppTooltip {...tooltipOptions} />
-          <AppModalGroup {...modalGroupOptions} />
-        </svg>
+      <div id="svgcontainer" className="the-graph-dark">
+        <div {...containerOptions}>
+          <canvas {...canvasOptions} />
+          <svg {...svgOptions}>
+            <g {...svgGroupOptions}>
+              <AppGraph {...graphElementOptions} />
+            </g>
+            <AppTooltip {...tooltipOptions} />
+            <AppModalGroup {...modalGroupOptions} />
+          </svg>
+        </div>
       </div>
     )
     /*

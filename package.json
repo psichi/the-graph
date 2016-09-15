@@ -33,6 +33,7 @@
     "grunt-contrib-jshint": "~1.0.0",
     "grunt-contrib-watch": "~1.0.0",
     "grunt-exec": "~1.0.0",
+    "jest": "^15.1.1",
     "less": "^2.7.1",
     "react-scripts": "^0.4.1",
     "snazzy": "^5.0.0",

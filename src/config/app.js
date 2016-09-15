@@ -8,7 +8,7 @@ export default {
     className: 'app-canvas'
   },
   svg: {
-    className: 'app-svg the-graph-dark'
+    className: 'app-svg'
   },
   svgGroup: {
     className: 'view'
