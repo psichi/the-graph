@@ -1,5 +1,5 @@
-const defaultNodeSize = 72;
-const defaultNodeRadius = 8;
+const defaultNodeSize = 72
+const defaultNodeRadius = 8
 
 // Dumb module setup
 export default {
@@ -24,4 +24,4 @@ export default {
     focusAnimationDuration: 1500
   },
   factories: {}
-};
+}

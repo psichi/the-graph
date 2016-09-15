@@ -1,6 +1,6 @@
-'create index';
+'create index'
 
-export createIIPContainer from './createIIPContainer.js';
-export createIIPPath from './createIIPPath.js';
-export createIIPText from './createIIPText.js';
+export IIPContainer from './IIPContainer.js'
+export IIPPath from './IIPPath.js'
+export IIPText from './IIPText.js'
 

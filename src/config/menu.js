@@ -54,4 +54,4 @@ export default {
     rx: base.nodeRadius,
     ry: base.nodeRadius
   }
-};
+}

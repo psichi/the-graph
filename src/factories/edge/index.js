@@ -1,9 +1,9 @@
-'create index';
+'create index'
 
-export createArrow from './createArrow.js';
-export createEdgeBackgroundPath from './createEdgeBackgroundPath.js';
-export createEdgeForegroundPath from './createEdgeForegroundPath.js';
-export createEdgeGroup from './createEdgeGroup.js';
-export createEdgePathArray from './createEdgePathArray.js';
-export createEdgeTouchPath from './createEdgeTouchPath.js';
+export Arrow from './Arrow.js'
+export EdgeBackgroundPath from './EdgeBackgroundPath.js'
+export EdgeForegroundPath from './EdgeForegroundPath.js'
+export EdgeGroup from './EdgeGroup.js'
+export EdgePathArray from './EdgePathArray.js'
+export EdgeTouchPath from './EdgeTouchPath.js'
 

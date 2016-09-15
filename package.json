@@ -6,17 +6,25 @@
   "license": "MIT",
   "main": "src/graph/App.js",
   "dependencies": {
+    "fbp": "^1.5.0",
+    "font-awesome": "^4.6.3",
     "hammerjs": "^2.0.8",
+    "klayjs": "^0.2.1",
+    "lodash.clone": "^4.5.0",
     "noflo": "^0.7.9",
     "react": "^15.3.1",
-    "react-dom": "^15.3.1"
+    "react-dom": "^15.3.1",
+    "webworkify": "^1.4.0"
   },
   "devDependencies": {
+    "@kadira/storybook": "^2.5.2",
     "babel-cli": "^6.14.0",
+    "babel-eslint": "^6.1.2",
     "babel-preset-es2015": "^6.14.0",
     "babel-preset-react": "^6.11.1",
     "babel-preset-stage-0": "^6.5.0",
     "coffeeify": "^2.0.1",
+    "font-awesome-webpack": "0.0.4",
     "glob": "^7.0.6",
     "grunt": "~1.0.1",
     "grunt-bower-install-simple": "^1.2.3",
@@ -25,15 +33,22 @@
     "grunt-contrib-jshint": "~1.0.0",
     "grunt-contrib-watch": "~1.0.0",
     "grunt-exec": "~1.0.0",
+    "less": "^2.7.1",
     "react-scripts": "^0.4.1",
-    "stylus": "~0.54.5"
+    "snazzy": "^5.0.0",
+    "standard": "^8.0.0",
+    "stylus": "~0.54.5",
+    "worker-loader": "^0.7.1"
   },
   "scripts": {
+    "lint": "standard 'src/**/*.js' | snazzy",
     "postversion": "git push && git push --tags",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "storybook": "start-storybook -p 9009 -s ./node_modules/",
+    "build-storybook": "build-storybook"
   },
   "repository": {
     "type": "git",
@@ -41,6 +56,9 @@
   },
   "eslintConfig": {
     "extends": "./node_modules/react-scripts/config/eslint.js"
+  },
+  "standard": {
+    "parser": "babel-eslint"
   },
   "keywords": [
     "graph"

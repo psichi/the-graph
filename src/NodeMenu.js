@@ -14,22 +14,22 @@ export default class TheGraphNodeMenu extends Component {
 
   stopPropagation (event) {
     // Don't drag graph
-    event.stopPropagation();
+    event.stopPropagation()
   }
 
   componentDidMount () {
     // Prevent context menu
-    findDOMNode(this).addEventListener("contextmenu", function (event) {
-      event.stopPropagation();
-      event.preventDefault();
-    }, false);
+    findDOMNode(this).addEventListener('contextmenu', function (event) {
+      event.stopPropagation()
+      event.preventDefault()
+    }, false)
   }
 
   render () {
-    var scale = this.props.node.props.app.state.scale;
-    var ports = this.props.ports;
-    var deltaX = this.props.deltaX;
-    var deltaY = this.props.deltaY;
+    var scale = this.props.node.props.app.state.scale
+    var ports = this.props.ports
+    var deltaX = this.props.deltaX
+    var deltaY = this.props.deltaY
 
     var inportsOptions = {
       ports: ports.inports,
@@ -41,10 +41,10 @@ export default class TheGraphNodeMenu extends Component {
       nodeWidth: this.props.nodeWidth,
       nodeHeight: this.props.nodeHeight,
       highlightPort: this.props.highlightPort
-    };
+    }
 
-    inportsOptions = merge(Config.nodeMenu.inports, inportsOptions);
-    var inports = createNodeMenuInports(inportsOptions);
+    inportsOptions = merge(Config.nodeMenu.inports, inportsOptions)
+    var inports = createNodeMenuInports(inportsOptions)
 
     var outportsOptions = {
       ports: ports.outports,
@@ -56,10 +56,10 @@ export default class TheGraphNodeMenu extends Component {
       nodeWidth: this.props.nodeWidth,
       nodeHeight: this.props.nodeHeight,
       highlightPort: this.props.highlightPort
-    };
+    }
 
-    outportsOptions = merge(Config.nodeMenu.outports, outportsOptions);
-    var outports = createNodeMenuOutports(outportsOptions);
+    outportsOptions = merge(Config.nodeMenu.outports, outportsOptions)
+    var outports = createNodeMenuOutports(outportsOptions)
 
     var menuOptions = {
       menu: this.props.menu,
@@ -67,21 +67,20 @@ export default class TheGraphNodeMenu extends Component {
       triggerHideContext: this.props.triggerHideContext,
       icon: this.props.icon,
       label: this.props.label
-    };
+    }
 
-    menuOptions = merge(Config.nodeMenu.menu, menuOptions);
-    var menu = createNodeMenuMenu(menuOptions);
+    menuOptions = merge(Config.nodeMenu.menu, menuOptions)
+    var menu = createNodeMenuMenu(menuOptions)
 
     var children = [
       inports, outports, menu
-    ];
+    ]
 
     var containerOptions = {
-      transform: "translate("+this.props.x+","+this.props.y+")",
+      transform: 'translate(' + this.props.x + ',' + this.props.y + ')',
       children: children
-    };
-    containerOptions = merge(Config.nodeMenu.container, containerOptions);
-    return createNodeMenuGroup(containerOptions);
-
+    }
+    containerOptions = merge(Config.nodeMenu.container, containerOptions)
+    return createNodeMenuGroup(containerOptions)
   }
 }

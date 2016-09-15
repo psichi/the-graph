@@ -10,20 +10,19 @@ import {
 // Port view
 export default class TheGraphTooltip extends Component {
   render () {
-    var rectOptions = merge(Config.tooltip.rect, {width: this.props.label.length * 6});
-    var rect = createTooltipRect(rectOptions);
+    var rectOptions = merge(Config.tooltip.rect, {width: this.props.label.length * 6})
+    var rect = createTooltipRect(rectOptions)
 
-    var textOptions = merge(Config.tooltip.text, { children: this.props.label });
-    var text = createTooltipText(textOptions);
+    var textOptions = merge(Config.tooltip.text, { children: this.props.label })
+    var text = createTooltipText(textOptions)
 
-    var containerContents = [rect, text];
+    var containerContents = [rect, text]
 
     var containerOptions = {
       className: 'tooltip' + (this.props.visible ? '' : ' hidden'),
-      transform: 'translate('+this.props.x+','+this.props.y+')',
-    };
-    containerOptions = merge(Config.tooltip.container, containerOptions);
-    return createTooltipGroup(containerOptions, containerContents);
-
+      transform: 'translate(' + this.props.x + ',' + this.props.y + ')'
+    }
+    containerOptions = merge(Config.tooltip.container, containerOptions)
+    return createTooltipGroup(containerOptions, containerContents)
   }
 }

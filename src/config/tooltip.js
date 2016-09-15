@@ -12,4 +12,4 @@ export default {
     className: 'tooltip-label',
     ref: 'label'
   }
-};
+}

@@ -1,7 +1,7 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
-import '../themes/the-graph-dark.css';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import App from './App'
+import '../themes/the-graph-dark.css'
 
 const graph = {
   nodes: []
@@ -29,5 +29,5 @@ const props = {
 ReactDOM.render(
   <App {...props} />,
   document.getElementById('root')
-);
+)
 

@@ -15,4 +15,4 @@ export default {
     ref: 'label',
     className: 'port-label drag'
   }
-};
+}

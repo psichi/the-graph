@@ -10,4 +10,4 @@ export default {
     height: 5,
     halign: 'right'
   }
-};
+}

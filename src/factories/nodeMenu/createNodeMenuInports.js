@@ -1,5 +1,5 @@
 import NodeMenuPorts from '../../NodeMenuPorts'
 
-export default function createNodeMenuInports(options) {
-  return new NodeMenuPorts(options);
+export default function createNodeMenuInports (options) {
+  return new NodeMenuPorts(options)
 }

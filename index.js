@@ -1,2 +1,2 @@
 // Build required libs
-noflo = require('noflo');
+module.exports = require('noflo/lib/Graph');

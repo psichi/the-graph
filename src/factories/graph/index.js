@@ -1,15 +1,15 @@
-'create index';
+'create index'
 
-export createGraphContainerGroup from './createGraphContainerGroup.js';
-export createGraphEdge from './createGraphEdge.js';
-export createGraphEdgePreview from './createGraphEdgePreview.js';
-export createGraphEdgesGroup from './createGraphEdgesGroup.js';
-export createGraphGroup from './createGraphGroup.js';
-export createGraphGroupsGroup from './createGraphGroupsGroup.js';
-export createGraphIIP from './createGraphIIP.js';
-export createGraphIIPGroup from './createGraphIIPGroup.js';
-export createGraphInportsGroup from './createGraphInportsGroup.js';
-export createGraphNode from './createGraphNode.js';
-export createGraphNodesGroup from './createGraphNodesGroup.js';
-export createGraphOutportsGroup from './createGraphOutportsGroup.js';
+export GraphContainerGroup from './GraphContainerGroup.js'
+export GraphEdge from './GraphEdge.js'
+export GraphEdgePreview from './GraphEdgePreview.js'
+export GraphEdgesGroup from './GraphEdgesGroup.js'
+export GraphGroup from './GraphGroup.js'
+export GraphGroupsGroup from './GraphGroupsGroup.js'
+export GraphIIP from './GraphIIP.js'
+export GraphIIPGroup from './GraphIIPGroup.js'
+export GraphInportsGroup from './GraphInportsGroup.js'
+export GraphNode from './GraphNode.js'
+export GraphNodesGroup from './GraphNodesGroup.js'
+export GraphOutportsGroup from './GraphOutportsGroup.js'
 

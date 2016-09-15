@@ -22,9 +22,7 @@ export default {
     ref: 'icon',
     className: 'icon node-icon drag'
   },
-  iconsvg: {
-    className: 'icon node-icon drag'
-  },
+  iconsvg: '',
   inports: {
     className: 'inports'
   },
@@ -49,4 +47,4 @@ export default {
   sublabelText: {
     className: 'node-sublabel'
   }
-};
+}

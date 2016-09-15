@@ -9,33 +9,33 @@ import {
 
 export default class TheGraphModalBG extends Component {
   componentDidMount () {
-    var domNode = findDOMNode(this);
-    var rectNode = this.refs.rect;
+    var domNode = findDOMNode(this)
+    var rectNode = this.refs.rect
 
     // Right-click on another item will show its menu
-    domNode.addEventListener("down", function (event) {
+    domNode.addEventListener('down', function (event) {
       // Only if outside of menu
-      if (event && event.target===rectNode) {
-        this.hideModal();
+      if (event && event.target === rectNode) {
+        this.hideModal()
       }
-    }.bind(this));
+    }.bind(this))
   }
 
   hideModal (/* event */) {
-    this.props.triggerHideContext();
+    this.props.triggerHideContext()
   }
 
   render () {
     var rectOptions = {
       width: this.props.width,
       height: this.props.height
-    };
+    }
 
-    rectOptions = merge(Config.modalBG.rect, rectOptions);
-    var rect = createModalBackgroundRect(rectOptions);
+    rectOptions = merge(Config.modalBG.rect, rectOptions)
+    var rect = createModalBackgroundRect(rectOptions)
 
-    var containerContents = [rect, this.props.children];
-    var containerOptions = merge(Config.modalBG.container, {});
-    return createModalBackgroundGroup(containerOptions, containerContents);
+    var containerContents = [rect, this.props.children]
+    var containerOptions = merge(Config.modalBG.container, {})
+    return createModalBackgroundGroup(containerOptions, containerContents)
   }
 };

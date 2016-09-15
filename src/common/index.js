@@ -1,5 +1,5 @@
-'create index';
+'create index'
 
-export SVGImage from './SVGImage.js';
-export TextBG from './TextBG.js';
+export SVGImage from './SVGImage.js'
+export TextBG from './TextBG.js'
 

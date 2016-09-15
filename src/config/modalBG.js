@@ -4,4 +4,4 @@ export default {
     ref: 'rect',
     className: 'context-modal-bg'
   }
-};
+}

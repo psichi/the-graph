@@ -12,4 +12,4 @@ export default {
     r: 10
   },
   text: {}
-};
+}

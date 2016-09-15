@@ -1,11 +1,11 @@
-'create index';
+'create index'
 
-export createAppCanvas from './createAppCanvas.js';
-export createAppContainer from './createAppContainer.js';
-export createAppGraph from './createAppGraph.js';
-export createAppModalBackground from './createAppModalBackground.js';
-export createAppModalGroup from './createAppModalGroup.js';
-export createAppSvg from './createAppSvg.js';
-export createAppSvgGroup from './createAppSvgGroup.js';
-export createAppTooltip from './createAppTooltip.js';
+export AppCanvas from './AppCanvas.js'
+export AppContainer from './AppContainer.js'
+export AppGraph from './AppGraph.js'
+export AppModalBackground from './AppModalBackground.js'
+export AppModalGroup from './AppModalGroup.js'
+export AppSvg from './AppSvg.js'
+export AppSvgGroup from './AppSvgGroup.js'
+export AppTooltip from './AppTooltip.js'
 

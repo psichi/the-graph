@@ -35,4 +35,4 @@ export default {
     key: 'edge-preview',
     label: ''
   }
-};
+}

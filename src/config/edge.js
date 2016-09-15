@@ -16,4 +16,4 @@ export default {
     className: 'edge-touch',
     ref: 'touch'
   }
-};
+}

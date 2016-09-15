@@ -8,7 +8,7 @@ export default {
     className: 'app-canvas'
   },
   svg: {
-    className: 'app-svg'
+    className: 'app-svg the-graph-dark'
   },
   svgGroup: {
     className: 'view'
@@ -22,4 +22,4 @@ export default {
   modal: {
     className: 'context'
   }
-};
+}

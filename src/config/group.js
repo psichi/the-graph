@@ -16,4 +16,4 @@ export default {
   descriptionText: {
     className: 'group-description'
   }
-};
+}
