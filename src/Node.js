@@ -370,24 +370,13 @@ export default class TheGraphNode extends Component {
       y
     } = this.props
 
-    console.log('Create PortViews Prop', type, ports)
-
     const isExport = (this.props.export !== undefined)
 
     const keys = Object.keys(ports)
 
-    // there is no position information yet.
-    // what should calculate it ?
-    // it must be calculate somewhere, so maybe draw that logic into here.
-    // or perhaps klay js is doing it.
-    // wordt inderdaad door klay js bepaald.
-    // zou dus deels bepaald kunnen worden.
-
     return keys.map((key) => {
       const info = ports[key]
 
-      //
-      console.log('PortViews port %s info:', key, info)
       const props = {
         app,
         graph,
@@ -397,10 +386,6 @@ export default class TheGraphNode extends Component {
         processKey: nodeID,
         isIn: type === 'in',
         isExport,
-        nodeX: x,
-        nodeY: y,
-        nodeWidth: width,
-        nodeHeight: height,
         x: info.x,
         y: info.y,
         port: {
@@ -412,8 +397,6 @@ export default class TheGraphNode extends Component {
         route: info.route,
         showContext
       }
-
-      console.log('Props for Node Port', props)
 
       return <NodePort {...props} />
     })
