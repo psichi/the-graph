@@ -9,23 +9,22 @@ import {
   createGroupChildren
 } from './klayNoflo/index'
 
-export default class KlayNoflo {
-  // var worker
-  defaultOptions = {
-    'intCoordinates': true,
-    'algorithm': 'de.cau.cs.kieler.klay.layered',
-    'layoutHierarchy': true,
-    'spacing': 20,
-    'borderSpacing': 20,
-    'edgeSpacingFactor': 0.2,
-    'inLayerSpacingFactor': 2.0,
-    'nodePlace': 'BRANDES_KOEPF',
-    'nodeLayering': 'NETWORK_SIMPLEX',
-    'edgeRouting': 'POLYLINE',
-    'crossMin': 'LAYER_SWEEP',
-    'direction': 'RIGHT'
-  }
+const defaultOptions = {
+  'intCoordinates': true,
+  'algorithm': 'de.cau.cs.kieler.klay.layered',
+  'layoutHierarchy': true,
+  'spacing': 20,
+  'borderSpacing': 20,
+  'edgeSpacingFactor': 0.2,
+  'inLayerSpacingFactor': 2.0,
+  'nodePlace': 'BRANDES_KOEPF',
+  'nodeLayering': 'NETWORK_SIMPLEX',
+  'edgeRouting': 'POLYLINE',
+  'crossMin': 'LAYER_SWEEP',
+  'direction': 'RIGHT'
+}
 
+export default class KlayNoflo {
   worker = null
 
   constructor (params) {
@@ -84,42 +83,36 @@ export default class KlayNoflo {
   // when done and will be made accessible by the callback defined
   // in init
   layout (params) {
-    var graph, options, portInfo, direction, encodedGraph
+    const {portInfo} = params
+    let {graph, options, direction} = params
 
-    if ('graph' in params) {
-      graph = params.graph
-    } else {
+    if (!graph) {
       return
     }
+
     if ('options' in params) {
       options = params.options
     } else {
       options = defaultOptions
     }
-    if ('direction' in params) {
-      direction = params.direction
-    } else {
+
+    if (!direction) {
       direction = 'RIGHT'
     }
     // If portInfo is a parameter, encode the graph as KGraph first
-    if ('portInfo' in params) {
-      portInfo = params.portInfo
-      encodedGraph = this.nofloToKieler(graph, portInfo, direction)
-    } else {
-      encodedGraph = graph
+    if (portInfo) {
+      graph = this.nofloToKieler(graph, portInfo, direction)
     }
 
     this.worker.postMessage({
-      'graph': encodedGraph,
-      'options': options
+      graph,
+      options
     })
   }
 
   nofloToKieler (graph, portInfo, direction) {
     // Default direction is left to right
     direction = direction || 'RIGHT'
-
-    const portConstraints = 'FIXED_POS'
 
     // Default port and node properties
     const portProperties = {
@@ -134,26 +127,11 @@ export default class KlayNoflo {
       portProperties.outportSide = 'SOUTH'
     }
 
-    const nodeProperties = {
-      width: 72,
-      height: 72
-    }
-
     // Start KGraph building
     const kGraph = {
       id: graph.name,
       children: [],
       edges: []
-    }
-
-    // Encode nodes
-    const idx = {}
-
-    const options = {
-      portInfo,
-      portProperties,
-      nodeProperties,
-      portConstraints
     }
 
     kGraph.edges = [
@@ -163,6 +141,19 @@ export default class KlayNoflo {
     ].reduce((edges, func) => {
       return edges.concat(func(graph, edges.length))
     }, [])
+
+    // Encode nodes
+    const idx = {}
+
+    const options = {
+      portInfo,
+      portProperties,
+      nodeProperties: {
+        width: 72,
+        height: 72
+      },
+      portConstraints: 'FIXED_POS'
+    }
 
     kGraph.children = [
       createNodeChildren,
