@@ -40,4 +40,4 @@ export default function findFit (graph, width, height) {
     y,
     scale
   }
-};
+}

@@ -8,15 +8,16 @@ const Tooltip = {
   showTooltip: function (event) {
     if (!this.shouldShowTooltip()) { return }
 
-    var tooltipEvent = new CustomEvent('the-graph-tooltip', {
-      detail: {
-        tooltip: this.props.label,
-        x: event.clientX,
-        y: event.clientY
-      },
+    const {dispatchEvent} = findDOMNode(this)
+    const {label: tooltip} = this.props
+    const {clientX: x, clientY: y} = event
+
+    const tooltipEvent = new CustomEvent('the-graph-tooltip', {
+      detail: { tooltip, x, y },
       bubbles: true
     })
-    findDOMNode(this).dispatchEvent(tooltipEvent)
+
+    dispatchEvent(tooltipEvent)
   },
   hideTooltip: function (/* event */) {
     if (!this.shouldShowTooltip()) { return }
@@ -38,10 +39,11 @@ const Tooltip = {
     const showTooltip = this.showTooltip.bind(this)
     const hideTooltip = this.hideTooltip.bind(this)
 
-    var tooltipper = this.getTooltipTrigger()
-    tooltipper.addEventListener('tap', showTooltip)
-    tooltipper.addEventListener('mouseenter', showTooltip)
-    tooltipper.addEventListener('mouseleave', hideTooltip)
+    const {addEventListener} = this.getTooltipTrigger()
+
+    addEventListener('tap', showTooltip)
+    addEventListener('mouseenter', showTooltip)
+    addEventListener('mouseleave', hideTooltip)
   }
 }
 

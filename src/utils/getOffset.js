@@ -6,4 +6,4 @@ export default function getOffset (domNode) {
   } catch (e) {
     return getElementOffset()
   }
-};
+}

@@ -84,12 +84,18 @@ export default class TheGraphApp extends Component {
     this.triggerAutolayout = this.triggerAutolayout.bind(this)
     this.keyDown = this.keyDown.bind(this)
     this.keyUp = this.keyUp.bind(this)
+  }
 
+  componentWillMount () {
     // Initializes the autolayouter
-    this.autolayouter = klayNoflo.init({
+    this.autolayouter = klayNoflo.create({
       onSuccess: this.applyAutolayout.bind(this),
       workerScript: 'klayjs/klay.js'
     })
+  }
+
+  componentWillUnmount () {
+    this.autolayouter.destroy()
   }
 
   // TODO
