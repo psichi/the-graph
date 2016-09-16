@@ -84,9 +84,7 @@ export default class KlayNoflo {
       return
     }
 
-    if ('options' in params) {
-      options = params.options
-    } else {
+    if (!options) {
       options = defaultOptions
     }
 
