@@ -2,19 +2,11 @@
  * Created by mpricope on 05.09.14.
  */
 
+import cloneObject from './cloneObject'
+import makeNewId from './makeNewId'
+
 const Clipboard = {}
 var clipboardContent = {}
-
-var cloneObject = function (obj) {
-  return JSON.parse(JSON.stringify(obj))
-}
-
-var makeNewId = function (label) {
-  var num = 60466176 // 36^5
-  num = Math.floor(Math.random() * num)
-  var id = label + '_' + num.toString(36)
-  return id
-}
 
 Clipboard.copy = function (graph, keys) {
   // Duplicate all the nodes before putting them in clipboard

@@ -1,17 +1,18 @@
 export default function buildLabelRectOptions (height, x, y, len, className) {
-  var width = len * height * 2 / 3
-  var radius = height / 2
+  const width = len * height * 2 / 3
+  const radius = height / 2
+
   x -= width / 2
   y -= height / 2
 
-  var result = {
-    className: className,
+  const result = {
+    className,
     height: height * 1.1,
-    width: width,
+    width,
     rx: radius,
     ry: radius,
-    x: x,
-    y: y
+    x,
+    y
   }
 
   return result

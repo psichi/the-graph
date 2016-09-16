@@ -1,5 +1,7 @@
 export default function findMinMax (graph, nodes) {
-  var inports, outports
+  let inports
+  let outports
+
   if (nodes === undefined) {
     nodes = graph.nodes.map(function (node) {
       return node.id
@@ -8,34 +10,42 @@ export default function findMinMax (graph, nodes) {
     inports = graph.inports
     outports = graph.outports
   }
+
   if (nodes.length < 1) {
     return undefined
   }
-  var minX = Infinity
-  var minY = Infinity
-  var maxX = -Infinity
-  var maxY = -Infinity
+
+  let minX = Infinity
+  let minY = Infinity
+  let maxX = -Infinity
+  let maxY = -Infinity
 
   // Loop through nodes
-  var len = nodes.length
-  for (var i = 0; i < len; i++) {
-    var key = nodes[i]
-    var node = graph.getNode(key)
+  let len = nodes.length
+
+  let i
+  for (i = 0; i < len; i++) {
+    const key = nodes[i]
+    const node = graph.getNode(key)
+
     if (!node || !node.metadata) {
       continue
     }
+
     if (node.metadata.x < minX) { minX = node.metadata.x }
     if (node.metadata.y < minY) { minY = node.metadata.y }
-    var x = node.metadata.x + node.metadata.width
-    var y = node.metadata.y + node.metadata.height
+
+    const x = node.metadata.x + node.metadata.width
+    const y = node.metadata.y + node.metadata.height
+
     if (x > maxX) { maxX = x }
     if (y > maxY) { maxY = y }
   }
   // Loop through exports
-  var keys, exp
+  let exp
   if (inports) {
-    keys = Object.keys(inports)
-    len = keys.length
+    const keys = Object.keys(inports)
+    const len = keys.length
     for (i = 0; i < len; i++) {
       exp = inports[keys[i]]
       if (!exp.metadata) { continue }
@@ -46,8 +56,8 @@ export default function findMinMax (graph, nodes) {
     }
   }
   if (outports) {
-    keys = Object.keys(outports)
-    len = keys.length
+    const keys = Object.keys(outports)
+    const len = keys.length
     for (i = 0; i < len; i++) {
       exp = outports[keys[i]]
       if (!exp.metadata) { continue }
@@ -62,9 +72,9 @@ export default function findMinMax (graph, nodes) {
     return null
   }
   return {
-    minX: minX,
-    minY: minY,
-    maxX: maxX,
-    maxY: maxY
+    minX,
+    minY,
+    maxX,
+    maxY
   }
-};
+}

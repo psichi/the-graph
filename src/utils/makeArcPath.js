@@ -6,4 +6,4 @@ export default function makeArcPath (startPercent, endPercent, radius) {
     'M', angleToX(startPercent, radius), angleToY(startPercent, radius),
     'A', radius, radius, 0, 0, 0, angleToX(endPercent, radius), angleToY(endPercent, radius)
   ].join(' ')
-};
+}

@@ -8,13 +8,16 @@ export default function findNodeFit (node, width, height) {
     maxY: node.metadata.y + Config.base.config.nodeSize * 2
   }
 
-  var gWidth = limits.maxX - limits.minX
-  var gHeight = limits.maxY - limits.minY
+  const gWidth = limits.maxX - limits.minX
+  const gHeight = limits.maxY - limits.minY
 
-  var scaleX = width / gWidth
-  var scaleY = height / gHeight
+  const scaleX = width / gWidth
+  const scaleY = height / gHeight
 
-  var scale, x, y
+  let scale
+  let x
+  let y
+
   if (scaleX < scaleY) {
     scale = scaleX
     x = 0 - limits.minX * scale
@@ -26,8 +29,8 @@ export default function findNodeFit (node, width, height) {
   }
 
   return {
-    x: x,
-    y: y,
-    scale: scale
+    x,
+    y,
+    scale
   }
-};
+}

@@ -1,25 +1,30 @@
 import Config from '../Config'
 
+const {base: {nodeSize}} = Config
+
 export default function findAreaFit (point1, point2, width, height) {
-  var limits = {
+  const limits = {
     minX: point1.x < point2.x ? point1.x : point2.x,
     minY: point1.y < point2.y ? point1.y : point2.y,
     maxX: point1.x > point2.x ? point1.x : point2.x,
     maxY: point1.y > point2.y ? point1.y : point2.y
   }
 
-  limits.minX -= Config.base.nodeSize
-  limits.minY -= Config.base.nodeSize
-  limits.maxX += Config.base.nodeSize * 2
-  limits.maxY += Config.base.nodeSize * 2
+  limits.minX -= nodeSize
+  limits.minY -= nodeSize
+  limits.maxX += nodeSize * 2
+  limits.maxY += nodeSize * 2
 
-  var gWidth = limits.maxX - limits.minX
-  var gHeight = limits.maxY - limits.minY
+  const gWidth = limits.maxX - limits.minX
+  const gHeight = limits.maxY - limits.minY
 
-  var scaleX = width / gWidth
-  var scaleY = height / gHeight
+  const scaleX = width / gWidth
+  const scaleY = height / gHeight
 
-  var scale, x, y
+  let scale
+  let x
+  let y
+
   if (scaleX < scaleY) {
     scale = scaleX
     x = 0 - limits.minX * scale
@@ -31,8 +36,8 @@ export default function findAreaFit (point1, point2, width, height) {
   }
 
   return {
-    x: x,
-    y: y,
-    scale: scale
+    x,
+    y,
+    scale
   }
-};
+}

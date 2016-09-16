@@ -1,23 +1,30 @@
 import findMinMax from './findMinMax'
 import Config from '../Config'
 
+const {base: {nodeSize}} = Config
+
 export default function findFit (graph, width, height) {
-  var limits = findMinMax(graph)
+  const limits = findMinMax(graph)
+
   if (!limits) {
     return {x: 0, y: 0, scale: 1}
   }
-  limits.minX -= Config.base.nodeSize
-  limits.minY -= Config.base.nodeSize
-  limits.maxX += Config.base.nodeSize * 2
-  limits.maxY += Config.base.nodeSize * 2
 
-  var gWidth = limits.maxX - limits.minX
-  var gHeight = limits.maxY - limits.minY
+  limits.minX -= nodeSize
+  limits.minY -= nodeSize
+  limits.maxX += nodeSize * 2
+  limits.maxY += nodeSize * 2
 
-  var scaleX = width / gWidth
-  var scaleY = height / gHeight
+  const gWidth = limits.maxX - limits.minX
+  const gHeight = limits.maxY - limits.minY
 
-  var scale, x, y
+  const scaleX = width / gWidth
+  const scaleY = height / gHeight
+
+  let scale
+  let x
+  let y
+
   if (scaleX < scaleY) {
     scale = scaleX
     x = 0 - limits.minX * scale
@@ -29,8 +36,8 @@ export default function findFit (graph, width, height) {
   }
 
   return {
-    x: x,
-    y: y,
-    scale: scale
+    x,
+    y,
+    scale
   }
 };
