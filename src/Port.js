@@ -28,7 +28,8 @@ export default class TheGraphPort extends Component {
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,
     showContext: PropTypes.func,
-    isExport: PropTypes.bool
+    isExport: PropTypes.bool,
+    highlightPort: PropTypes.bool
   }
 
   constructor (props, context) {
