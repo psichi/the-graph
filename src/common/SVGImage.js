@@ -2,20 +2,23 @@ import React, {Component} from 'react'
 
 export default class TheGraphSVGImage extends Component {
   render () {
-    var html = '<image '
-    html = html + 'xlink:href="' + this.props.src + '"'
-    html = html + 'x="' + this.props.x + '"'
-    html = html + 'y="' + this.props.y + '"'
-    html = html + 'width="' + this.props.width + '"'
-    html = html + 'height="' + this.props.height + '"'
+    const {className, src, x, y, width, height} = this.props
+
+    let html
+
+    html = '<image '
+    html = html + 'xlink:href="' + src + '"'
+    html = html + 'x="' + x + '"'
+    html = html + 'y="' + y + '"'
+    html = html + 'width="' + width + '"'
+    html = html + 'height="' + height + '"'
     html = html + '/>'
 
     const groupOptions = {
-      className: this.props.className,
+      className,
       dangerouslySetInnerHTML: {__html: html}
     }
 
-    console.log('SVG Image', this.props, groupOptions)
     return (
       <g {...groupOptions} />
     )

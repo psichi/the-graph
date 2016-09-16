@@ -8,43 +8,54 @@
 // or perhaps fallback on something
 // you should be able to require a node and the ports should be setup correctly.
 // simple require could probably be enough.
+import cleanArray from './cleanArray'
 
-var worker
-var defaultOptions = {
-  'intCoordinates': true,
-  'algorithm': 'de.cau.cs.kieler.klay.layered',
-  'layoutHierarchy': true,
-  'spacing': 20,
-  'borderSpacing': 20,
-  'edgeSpacingFactor': 0.2,
-  'inLayerSpacingFactor': 2.0,
-  'nodePlace': 'BRANDES_KOEPF',
-  'nodeLayering': 'NETWORK_SIMPLEX',
-  'edgeRouting': 'POLYLINE',
-  'crossMin': 'LAYER_SWEEP',
-  'direction': 'RIGHT'
-}
-var cleanArray = function (array) {
-  for (var i = 0; i < array.length; i++) {
-    if (array[i] === null || array[i] === undefined) {
-      array.splice(i, 1)
-      i--
-    }
+export default class KlayNoflo {
+  // var worker
+  defaultOptions = {
+    'intCoordinates': true,
+    'algorithm': 'de.cau.cs.kieler.klay.layered',
+    'layoutHierarchy': true,
+    'spacing': 20,
+    'borderSpacing': 20,
+    'edgeSpacingFactor': 0.2,
+    'inLayerSpacingFactor': 2.0,
+    'nodePlace': 'BRANDES_KOEPF',
+    'nodeLayering': 'NETWORK_SIMPLEX',
+    'edgeRouting': 'POLYLINE',
+    'crossMin': 'LAYER_SWEEP',
+    'direction': 'RIGHT'
   }
-  return array
-}
 
-module.exports = {
+  worker = null
+
+  constructor (params) {
+    this.init(params)
+  }
+
+  create (params) {
+    return new KlayNoflo(params)
+  }
+
   // Initialize the layouter as a WebWorker
-  init: function (params) {
+  init (params) {
     // Set up some properties
-    var callback, workerScript
+    let onSuccess
+    let onError
+    let workerScript
 
     if ('onSuccess' in params) {
-      callback = params.onSuccess
+      onSuccess = params.onSuccess
     } else {
-      callback = console.log
+      onSuccess = console.log
     }
+
+    if ('onError' in params) {
+      onError = params.onError
+    } else {
+      onError = console.error
+    }
+
     if ('KLAY_CONFIG' in window && 'workerScript' in window.KLAY_CONFIG) {
       workerScript = window.KLAY_CONFIG.workerScript
     } else if ('workerScript' in params) {
@@ -53,22 +64,27 @@ module.exports = {
       workerScript = '../../node_modules/klayjs/klay.js'
     }
     // Start the WebWorker
-    worker = new Worker(workerScript)
+    this.worker = new Worker(workerScript)
     // Register a listener to default WebWorker event, calling
     // 'callback' when layout succeeds
-    worker.addEventListener('message', function (e) {
-      callback(e.data)
+    this.worker.addEventListener('message', function (e) {
+      // test for error
+      if (e.data) {
+        return onSuccess(e.data)
+      }
+
+      onError(e)
     }, false)
+  }
 
-    console.log('DONE INITIALIZING WORKER')
-
-    return this
-  },
+  destroy () {
+    this.worker.destroy()
+  }
 
   // Layout a given graph, the result will be sent by the WebWorker
   // when done and will be made accessible by the callback defined
   // in init
-  layout: function (params) {
+  layout (params) {
     var graph, options, portInfo, direction, encodedGraph
 
     if ('graph' in params) {
@@ -94,45 +110,54 @@ module.exports = {
       encodedGraph = graph
     }
 
-    worker.postMessage({
+    this.worker.postMessage({
       'graph': encodedGraph,
       'options': options
     })
-  },
+  }
 
-  nofloToKieler: function (graph, portInfo, direction) {
+  nofloToKieler (graph, portInfo, direction) {
     // Default direction is left to right
     direction = direction || 'RIGHT'
-    var portConstraints = 'FIXED_POS'
+
+    const portConstraints = 'FIXED_POS'
+
     // Default port and node properties
-    var portProperties = {
+    const portProperties = {
       inportSide: 'WEST',
       outportSide: 'EAST',
       width: 10,
       height: 10
     }
+
     if (direction === 'DOWN') {
       portProperties.inportSide = 'NORTH'
       portProperties.outportSide = 'SOUTH'
     }
-    var nodeProperties = {
+
+    const nodeProperties = {
       width: 72,
       height: 72
     }
+
     // Start KGraph building
     var kGraph = {
       id: graph.name,
       children: [],
       edges: []
     }
+
     // Encode nodes
-    var nodes = graph.nodes
-    var idx = {}
-    var countIdx = 0
-    var nodeChildren = nodes.map(function (node) {
-      var inPorts = portInfo[node.id].inports
-      var inPortsKeys = Object.keys(inPorts)
-      var inPortsTemp = inPortsKeys.map(function (key) {
+    let countIdx
+    const {nodes} = graph
+    const idx = {}
+
+    countIdx = 0
+
+    const nodeChildren = nodes.map((node) => {
+      const {inPorts} = portInfo[node.id]
+      const inPortsKeys = Object.keys(inPorts)
+      const inPortsTemp = inPortsKeys.map((key) => {
         return {
           id: node.id + '_' + key,
           width: portProperties.width,
@@ -141,9 +166,9 @@ module.exports = {
           y: portInfo[node.id].inports[key].y
         }
       })
-      var outPorts = portInfo[node.id].outports
-      var outPortsKeys = Object.keys(outPorts)
-      var outPortsTemp = outPortsKeys.map(function (key) {
+      const {outPorts} = portInfo[node.id]
+      const outPortsKeys = Object.keys(outPorts)
+      const outPortsTemp = outPortsKeys.map((key) => {
         return {
           id: node.id + '_' + key,
           width: portProperties.width,
@@ -153,7 +178,7 @@ module.exports = {
         }
       })
 
-      var kChild = {
+      const kChild = {
         id: node.id,
         labels: [{text: node.metadata.label || 'kChild no label'}],
         width: nodeProperties.width,
@@ -164,6 +189,7 @@ module.exports = {
         }
       }
       idx[node.id] = countIdx++
+
       return kChild
     })
 
@@ -339,3 +365,4 @@ module.exports = {
     return kGraph
   }
 }
+

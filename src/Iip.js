@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {Component, PropTypes} from 'react'
 import Config from './Config'
 import {
   IIPPath,
@@ -8,7 +8,7 @@ import {
 
 // Edge view
 export default class TheGraphIIP extends Component {
-  static propTypes: {
+  static propTypes = {
     x: PropTypes.number,
     y: PropTypes.number,
     label: PropTypes.string

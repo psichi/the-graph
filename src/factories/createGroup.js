@@ -6,4 +6,4 @@ export default function createGroup (options, content) {
   console.log('Created Group', options, content)
 
   return group
-};
+}

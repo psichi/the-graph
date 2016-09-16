@@ -2,46 +2,45 @@ import React, {Component} from 'react'
 
 export default class TheGraphTextBG extends Component {
   render () {
-    var text = this.props.text
+    const {height, x: propX, y: propY, halign, className, textClassName} = this.props
+    let {text} = this.props
+
     if (!text) {
       text = ''
     }
-    var height = this.props.height
-    var width = text.length * this.props.height * 2 / 3
-    var radius = this.props.height / 2
 
-    var textAnchor = 'start'
-    var dominantBaseline = 'central'
-    var x = this.props.x
-    var y = this.props.y - height / 2
+    const width = text.length * height * 2 / 3
+    const radius = height / 2
 
-    if (this.props.halign === 'center') {
+    const y = propY - height / 2
+    let x = propX
+
+    if (halign === 'center') {
       x -= width / 2
-      textAnchor = 'middle'
     }
-    if (this.props.halign === 'right') {
+
+    if (halign === 'right') {
       x -= width
-      textAnchor = 'end'
     }
 
     const bgOptions = {
-      className: (this.props.className ? this.props.className : 'text-bg')
+      className: (className ? className : 'text-bg')
     }
 
     const bgRectOptions = {
       className: 'text-bg-rect',
-      x: x,
-      y: y,
+      x,
+      y,
       rx: radius,
       ry: radius,
       height: height * 1.1,
-      width: width
+      width
     }
 
     const bgTextOptions = {
-      className: (this.props.textClassName ? this.props.textClassName : 'text-bg-text'),
-      x: this.props.x,
-      y: this.props.y,
+      className: (textClassName ? textClassName : 'text-bg-text'),
+      x: propX,
+      y: propY,
       children: text
     }
 
