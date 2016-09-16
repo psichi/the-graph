@@ -395,7 +395,7 @@ export default class TheGraphNode extends Component {
         key: `${nodeID}.${type}.${info.label}`,
         label: info.label,
         processKey: nodeID,
-        isIn: true,
+        isIn: type === 'in',
         isExport,
         nodeX: x,
         nodeY: y,
