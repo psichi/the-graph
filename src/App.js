@@ -5,7 +5,6 @@ import {
   findFit,
   findNodeFit,
   klayNoflo,
-  merge
 } from './utils'
 import Config from './Config'
 import Menu from './Menu'
@@ -49,24 +48,26 @@ export default class TheGraphApp extends Component {
   constructor (props, context) {
     super(props, context)
 
+    const {width, height, minZoom, maxZoom, offsetY, offsetX} = this.props
+
     this.state = {
       /*
        x: fit.x,
        y: fit.y,
        scale: fit.scale,
        */
-      width: this.props.width,
-      height: this.props.height,
-      minZoom: this.props.minZoom,
-      maxZoom: this.props.maxZoom,
+      width,
+      height,
+      minZoom,
+      maxZoom,
+      offsetY,
+      offsetX,
       tooltip: '',
       tooltipX: 0,
       tooltipY: 0,
       tooltipVisible: false,
       contextElement: null,
-      contextType: null,
-      offsetY: this.props.offsetY,
-      offsetX: this.props.offsetX
+      contextType: null
     }
 
     this.onTrack = this.onTrack.bind(this)
@@ -148,6 +149,7 @@ export default class TheGraphApp extends Component {
   }
 
   // (moved from polymer to here)
+  // Note: klay upgrade will cause NaN bug on x & y metadata
   applyAutolayout (layoutedKGraph) {
     const {graph, snap} = this.props
 
@@ -155,26 +157,26 @@ export default class TheGraphApp extends Component {
       return
     }
 
-    // DO NOT UPDATE weird NaN bug
-    console.log('APPLY AUTOLAYOUT', graph, snap)
-    console.log('LAYOUTED K GRAPH', layoutedKGraph)
     if (layoutedKGraph.stacktrace) {
       throw Error(layoutedKGraph.text)
     }
 
     graph.startTransaction('autolayout')
     // Update original graph nodes with the new coordinates from KIELER graph
-    var children = layoutedKGraph.children.slice()
-    var i, len
+    const children = layoutedKGraph.children.slice()
+    let i
+    let len
     for (i = 0, len = children.length; i < len; i++) {
-      var klayNode = children[i]
-      var nofloNode = graph.getNode(klayNode.id)
+      const klayNode = children[i]
+      const nofloNode = graph.getNode(klayNode.id)
+
       // Encode nodes inside groups
       if (klayNode.children) {
-        var klayChildren = klayNode.children
-        var idx
+        let idx
+        const klayChildren = klayNode.children
+
         for (idx in klayChildren) {
-          var klayChild = klayChildren[idx]
+          const klayChild = klayChildren[idx]
           if (klayChild.id) {
             graph.setNodeMetadata(klayChild.id, {
               x: Math.round((klayNode.x + klayChild.x) / snap) * snap,
@@ -183,18 +185,18 @@ export default class TheGraphApp extends Component {
           }
         }
       }
+
       // Encode nodes outside groups
       if (nofloNode) {
-        console.log('GOING TO SET NODE METADATA', klayNode, snap)
         graph.setNodeMetadata(klayNode.id, {
           x: Math.round(klayNode.x / snap) * snap,
           y: Math.round(klayNode.y / snap) * snap
         })
       } else {
         // Find inport or outport
-        var idSplit = klayNode.id.split(':::')
-        var expDirection = idSplit[0]
-        var expKey = idSplit[1]
+        const idSplit = klayNode.id.split(':::')
+        const expDirection = idSplit[0]
+        const expKey = idSplit[1]
         if (expDirection === 'inport' && graph.inports[expKey]) {
           graph.setInportMetadata(expKey, {
             x: Math.round(klayNode.x / snap) * snap,
@@ -208,7 +210,9 @@ export default class TheGraphApp extends Component {
         }
       }
     }
+
     graph.endTransaction('autolayout')
+
     // Fit to window
     this.triggerFit()
   }
@@ -225,39 +229,46 @@ export default class TheGraphApp extends Component {
     this.zoomFactor += event.deltaY ? event.deltaY : 0 - event.wheelDeltaY
     this.zoomX = event.clientX
     this.zoomY = event.clientY
+
     requestAnimationFrame(this.scheduleWheelZoom)
   }
 
   scheduleWheelZoom () {
     if (isNaN(this.zoomFactor)) { return }
 
+    const {minZoom, maxZoom, scale: scaleState, x: currentX, y: currentY} = this.state
+
     // Speed limit
-    var zoomFactor = this.zoomFactor / -500
+    let zoomFactor
+
+    zoomFactor = this.zoomFactor / -500
     zoomFactor = Math.min(0.5, Math.max(-0.5, zoomFactor))
-    var scale = this.state.scale + (this.state.scale * zoomFactor)
+
+    let scale
+
+    scale = this.state.scale + (this.state.scale * zoomFactor)
+
     this.zoomFactor = 0
 
-    if (scale < this.state.minZoom) {
-      scale = this.state.minZoom
+    if (scale < minZoom) {
+      scale = minZoom
+    } else if (scale > maxZoom) {
+      scale = maxZoom
     }
-    else if (scale > this.state.maxZoom) {
-      scale = this.state.maxZoom
-    }
-    if (scale === this.state.scale) { return }
+
+    if (scale === scaleState) { return }
 
     // Zoom and pan transform-origin equivalent
-    var scaleD = scale / this.state.scale
-    var currentX = this.state.x
-    var currentY = this.state.y
-    var oX = this.zoomX
-    var oY = this.zoomY
-    var x = scaleD * (currentX - oX) + oX
-    var y = scaleD * (currentY - oY) + oY
+    const scaleD = scale / scaleState
+    const oX = this.zoomX
+    const oY = this.zoomY
+    const x = scaleD * (currentX - oX) + oX
+    const y = scaleD * (currentY - oY) + oY
 
     this.setState({
-      scale: scale,
-      x: x,
-      y: y,
+      scale,
+      x,
+      y,
       tooltipVisible: false
     })
   }
@@ -279,32 +290,33 @@ export default class TheGraphApp extends Component {
     event.srcEvent.stopPropagation()
     event.srcEvent.stopImmediatePropagation()
 
-    // Hammer.js
-    var currentScale = this.state.scale
-    var currentX = this.state.x
-    var currentY = this.state.y
+    const {minZoom} = this.props
 
-    var scaleEvent = event.scale
-    var scaleDelta = 1 + (scaleEvent - this.lastScale)
+    // Hammer.js
+    const {scale: currentScale, x: currentX, y: currentY} = this.state
+    const {scale: scaleEvent, center: {x: oX, y: oY}} = event
+    const scaleDelta = 1 + (scaleEvent - this.lastScale)
+
     this.lastScale = scaleEvent
-    var scale = scaleDelta * currentScale
-    scale = Math.max(scale, this.props.minZoom)
+
+    let scale
+
+    scale = scaleDelta * currentScale
+    scale = Math.max(scale, minZoom)
 
     // Zoom and pan transform-origin equivalent
-    var oX = event.center.x
-    var oY = event.center.y
-    var deltaX = oX - this.lastX
-    var deltaY = oY - this.lastY
-    var x = scaleDelta * (currentX - oX) + oX + deltaX
-    var y = scaleDelta * (currentY - oY) + oY + deltaY
+    const deltaX = oX - this.lastX
+    const deltaY = oY - this.lastY
+    const x = scaleDelta * (currentX - oX) + oX + deltaX
+    const y = scaleDelta * (currentY - oY) + oY + deltaY
 
     this.lastX = oX
     this.lastY = oY
 
     this.setState({
-      scale: scale,
-      x: x,
-      y: y,
+      scale,
+      x,
+      y,
       tooltipVisible: false
     })
   }
@@ -320,16 +332,22 @@ export default class TheGraphApp extends Component {
 
   onTrackStart (event) {
     event.preventTap()
-    var domNode = findDOMNode(this)
+
+    const domNode = findDOMNode(this)
+
     domNode.addEventListener('track', this.onTrack)
     domNode.addEventListener('trackend', this.onTrackEnd)
   }
 
   onTrack (event) {
     if (this.pinching) { return }
+
+    const {x, y} = this.state
+    const {ddx, ddy} = event
+
     this.setState({
-      x: this.state.x + event.ddx,
-      y: this.state.y + event.ddy
+      x: x + ddx,
+      y: y + ddy
     })
   }
 
@@ -337,46 +355,55 @@ export default class TheGraphApp extends Component {
     // Don't click app (unselect)
     event.stopPropagation()
 
-    var domNode = findDOMNode(this)
+    const domNode = findDOMNode(this)
+
     domNode.removeEventListener('track', this.onTrack)
     domNode.removeEventListener('trackend', this.onTrackEnd)
   }
 
   onPanScale () {
+    const {x, y, scale} = this.state
+    const {onPanScale} = this.props
+
     // Pass pan/scale out to the-graph
-    if (this.props.onPanScale) {
-      this.props.onPanScale(this.state.x, this.state.y, this.state.scale)
+    if (onPanScale) {
+      onPanScale(x, y, scale)
     }
   }
 
-  showContext (options) {
+  showContext (contextMenu) {
     this.setState({
-      contextMenu: options,
+      contextMenu,
       tooltipVisible: false
     })
   }
 
-  hideContext (event) {
+  hideContext (/* event */) {
     this.setState({
       contextMenu: null
     })
   }
 
   changeTooltip (event) {
-    var tooltip = event.detail.tooltip
+    const {width: widthProp} = this.props
+    const {detail: {x: xDetail, y: yDetail, tooltip}} = event
 
     // Don't go over right edge
-    var x = event.detail.x + 10
-    var width = tooltip.length * 6
-    if (x + width > this.props.width) {
-      x = event.detail.x - width - 10
+    let tooltipX
+
+    tooltipX = xDetail + 10
+
+    const width = tooltip.length * 6
+
+    if (tooltipX + width > widthProp) {
+      tooltipX = xDetail - width - 10
     }
 
     this.setState({
-      tooltip: tooltip,
+      tooltip,
       tooltipVisible: true,
-      tooltipX: x,
-      tooltipY: event.detail.y + 20
+      tooltipX,
+      tooltipY: yDetail + 20
     })
   }
 
@@ -388,28 +415,39 @@ export default class TheGraphApp extends Component {
   }
 
   triggerFit (event) {
-    var fit = findFit(this.props.graph, this.props.width, this.props.height)
+    const {graph, width, height} = this.props
+
+    const {x, y, scale} = findFit(graph, width, height)
+
     this.setState({
-      x: fit.x,
-      y: fit.y,
-      scale: fit.scale
+      x,
+      y,
+      scale
     })
   }
 
   focusNode (node) {
-    var duration = Config.focusAnimationDuration
-    var fit = findNodeFit(node, this.state.width, this.state.height)
-    var start_point = {
-        x: -(this.state.x - this.state.width / 2) / this.state.scale,
-        y: -(this.state.y - this.state.height / 2) / this.state.scale
-      }, end_point = {
-        x: node.metadata.x,
-        y: node.metadata.y
-      }
-    var graphfit = findAreaFit(start_point, end_point, this.state.width, this.state.height)
-    var scale_ratio_1 = Math.abs(graphfit.scale - this.state.scale)
-    var scale_ratio_2 = Math.abs(fit.scale - graphfit.scale)
-    var scale_ratio_diff = scale_ratio_1 + scale_ratio_2
+    const {width, height, scale, x: currentX , y: currentY}  = this.state
+
+    const duration = Config.focusAnimationDuration
+
+    const fit = findNodeFit(node, width, height)
+
+    const start_point = {
+      x: -(currentX - width / 2) / scale,
+      y: -(currentY - height / 2) / scale
+    }
+
+    const end_point = {
+      x: node.metadata.x,
+      y: node.metadata.y
+    }
+
+    const graphfit = findAreaFit(start_point, end_point, width, height)
+
+    const scale_ratio_1 = Math.abs(graphfit.scale - scale)
+    const scale_ratio_2 = Math.abs(fit.scale - graphfit.scale)
+    const scale_ratio_diff = scale_ratio_1 + scale_ratio_2
 
     // Animate zoom-out then zoom-in
     this.animate({
@@ -426,21 +464,27 @@ export default class TheGraphApp extends Component {
   }
 
   edgeStart (event) {
+    const {graph} = this.refs
+
     // Listened from PortMenu.edgeStart() and Port.edgeStart()
-    this.refs.graph.edgeStart(event)
+    graph.edgeStart(event)
+
     this.hideContext()
   }
 
   componentDidMount () {
+    const {graph, width, height, onNodeSelection} = this.props
+
     // Autofit (not sure whether this is the correct location to do it
-    var fit = findFit(this.props.graph, this.props.width, this.props.height)
+    var {x, y, scale} = findFit(graph, width, height)
+
     this.setState({
-      x: fit.x,
-      y: fit.y,
-      scale: fit.scale
+      x,
+      y,
+      scale
     })
 
-    var domNode = findDOMNode(this)
+    const domNode = findDOMNode(this)
 
     // Set up PolymerGestures for app and all children
     /* Do not use polymer
@@ -455,12 +499,13 @@ export default class TheGraphApp extends Component {
      */
 
     // Unselect edges and nodes
-    if (this.props.onNodeSelection) {
+    if (onNodeSelection) {
       domNode.addEventListener('tap', this.unselectAll)
     }
 
     // Don't let Hammer.js collide with polymer-gestures
-    var hammertime
+    let hammertime
+
     if (Hammer) {
       hammertime = new Hammer(domNode, {})
       hammertime.get('pinch').set({ enable: true })
@@ -469,7 +514,8 @@ export default class TheGraphApp extends Component {
     // Pointer gesture event for pan
     domNode.addEventListener('trackstart', this.onTrackStart)
 
-    var isTouchDevice = 'ontouchstart' in document.documentElement
+    const isTouchDevice = 'ontouchstart' in document.documentElement
+
     if (isTouchDevice && hammertime) {
       hammertime.on('pinchstart', this.onTransformStart)
       hammertime.on('pinch', this.onTransform)
@@ -495,8 +541,8 @@ export default class TheGraphApp extends Component {
     domNode.addEventListener('contextmenu', this.onShowContext)
 
     // Start zoom from middle if zoom before mouse move
-    this.mouseX = Math.floor(this.props.width / 2)
-    this.mouseY = Math.floor(this.props.height / 2)
+    this.mouseX = Math.floor(width / 2)
+    this.mouseY = Math.floor(height / 2)
 
     // HACK metaKey global for taps https://github.com/Polymer/PointerGestures/issues/29
     document.addEventListener('keydown', this.keyDown)
@@ -512,6 +558,7 @@ export default class TheGraphApp extends Component {
 
     this.bgCanvas = this.refs.canvas
     this.bgContext = this.bgCanvas.getContext('2d')
+
     this.componentDidUpdate()
 
     // Rerender graph once to fix edges
@@ -525,76 +572,82 @@ export default class TheGraphApp extends Component {
     event.stopPropagation()
     if (event.preventTap) { event.preventTap() }
 
+    const {graph} = this.props
+
     // Get mouse position
-    var x = event.x || event.clientX || 0
-    var y = event.y || event.clientY || 0
+    const x = event.x || event.clientX || 0
+    const y = event.y || event.clientY || 0
 
     // App.showContext
     this.showContext({
       element: this,
       type: 'main',
-      x: x,
-      y: y,
-      graph: this.props.graph,
+      x,
+      y,
+      graph,
       itemKey: 'graph',
-      item: this.props.graph
+      item: graph
     })
   }
 
   keyDown (event) {
+    const {metaKey, ctrlKey, keyCode} = event
+
     // HACK metaKey global for taps https://github.com/Polymer/PointerGestures/issues/29
-    if (event.metaKey || event.ctrlKey) {
+    if (metaKey || ctrlKey) {
       throw Error('Fix ME')
       // TheGraph.metaKeyPressed = true;
     }
 
-    var key = event.keyCode,
-      hotKeys = {
-        // Delete
-        46: function () {
-          var graph = this.refs.graph.state.graph,
-            selectedNodes = this.refs.graph.state.selectedNodes,
-            selectedEdges = this.refs.graph.state.selectedEdges,
-            menus = this.props.menus,
-            menuOption = null,
-            menuAction = null,
-            nodeKey = null,
-            node = null,
-            edge = null
-
-          for (nodeKey in selectedNodes) {
-            if (selectedNodes.hasOwnProperty(nodeKey)) {
-              node = graph.getNode(nodeKey)
-              menus.node.actions.delete(graph, nodeKey, node)
-            }
-          }
-          selectedEdges.map(function (edge) {
-            menus.edge.actions.delete(graph, null, edge)
-          })
-        }.bind(this),
-        // f for fit
-        70: function () {
-          this.triggerFit()
-        }.bind(this),
-        // s for selected
-        83: function () {
-          var graph = this.refs.graph.state.graph,
-            selectedNodes = this.refs.graph.state.selectedNodes,
-            nodeKey = null,
-            node = null
-
-          for (nodeKey in selectedNodes) {
-            if (selectedNodes.hasOwnProperty(nodeKey)) {
-              node = graph.getNode(nodeKey)
-              this.focusNode(node)
-              break
-            }
-          }
-        }.bind(this)
+    const {
+      graph: {
+        state: {
+          graph,
+          selectedNodes,
+          selectedEdges,
+        }
       }
 
-    if (hotKeys[key]) {
-      hotKeys[key]()
+    } = this.refs
+
+    const {menus} = this.props
+
+    const hotKeys = {
+      // Delete
+      46: () => {
+        let nodeKey
+        for (nodeKey in selectedNodes) {
+          if (selectedNodes.hasOwnProperty(nodeKey)) {
+            const node = graph.getNode(nodeKey)
+
+            menus.node.actions.delete(graph, nodeKey, node)
+          }
+        }
+        selectedEdges.map((edge) => {
+          menus.edge.actions.delete(graph, null, edge)
+        })
+      },
+      // f for fit
+      70: () => {
+        this.triggerFit()
+      },
+      // s for selected
+      83: () => {
+        let  nodeKey
+
+        for (nodeKey in selectedNodes) {
+          if (selectedNodes.hasOwnProperty(nodeKey)) {
+            const node = graph.getNode(nodeKey)
+
+            this.focusNode(node)
+            break
+          }
+        }
+      }
+    }
+
+    if (hotKeys[keyCode]) {
+      hotKeys[keyCode]()
     }
   }
 
@@ -615,7 +668,7 @@ export default class TheGraphApp extends Component {
      */
   }
 
-  unselectAll (event) {
+  unselectAll (/* event */) {
     // No arguments = clear selection
     this.props.onNodeSelection()
     this.props.onEdgeSelection()
@@ -635,31 +688,31 @@ export default class TheGraphApp extends Component {
     }
   }
 
-  // any reason this can not just be rendered in AppCanvas?
-  // let's hope not.
-  // not that easy to send all these props to it though.
-  // would need many more adjustments
   renderCanvas (c) {
+    const {width, height, scale, x: currentX, y: currentY} = this.state
+
     // Comment this line to go plaid
-    c.clearRect(0, 0, this.state.width, this.state.height)
+    c.clearRect(0, 0, width, height)
 
     // Background grid pattern
-    var scale = this.state.scale
-    var g = Config.nodeSize * scale
+    const g = Config.nodeSize * scale
 
-    var dx = this.state.x % g
-    var dy = this.state.y % g
-    var cols = Math.floor(this.state.width / g) + 1
-    var row = Math.floor(this.state.height / g) + 1
+    const dx = currentX % g
+    const dy = currentY % g
+
+    const cols = Math.floor(width / g) + 1
+    let row = Math.floor(height / g) + 1
+
     // Origin row/col index
-    var oc = Math.floor(this.state.x / g) + (this.state.x < 0 ? 1 : 0)
-    var or = Math.floor(this.state.y / g) + (this.state.y < 0 ? 1 : 0)
+    const oc = Math.floor(currentX / g) + (currentX < 0 ? 1 : 0)
+    const or = Math.floor(currentY / g) + (currentY < 0 ? 1 : 0)
 
     while (row--) {
-      var col = cols
+      let col = cols
       while (col--) {
-        var x = Math.round(col * g + dx)
-        var y = Math.round(row * g + dy)
+        const x = Math.round(col * g + dx)
+        const y = Math.round(row * g + dy)
+
         if ((oc - col) % 3 === 0 && (or - row) % 3 === 0) {
           // 3x grid
           c.fillStyle = 'white'
@@ -673,21 +726,24 @@ export default class TheGraphApp extends Component {
     }
   }
 
-  getContext (menu, options, hide) {
+  getContext (menu, options, triggerHideContext) {
+    const {graph, width: nodeWidth, height: nodeHeight} = this.props
+    const {x, y} = options
+
     return Menu({
-      menu: menu,
-      options: options,
-      triggerHideContext: hide,
+      menu,
+      options,
+      graph,
+      x,
+      y,
+      nodeWidth,
+      nodeHeight,
+      triggerHideContext,
       label: 'Hello',
-      graph: this.props.graph,
       node: this,
       ports: [],
       process: [],
       processKey: null,
-      x: options.x,
-      y: options.y,
-      nodeWidth: this.props.width,
-      nodeHeight: this.props.height,
       deltaX: 0,
       deltaY: 0,
       highlightPort: false
@@ -699,19 +755,20 @@ export default class TheGraphApp extends Component {
     // console.time('App.render');
 
     // pan and zoom
-    var sc = this.state.scale
-    var x = this.state.x
-    var y = this.state.y
-    var transform = 'matrix(' + sc + ',0,0,' + sc + ',' + x + ',' + y + ')'
+    const {contextMenu: currentContextMenu, scale, x, y, tooltip, tooltipX, tooltipY, tooltipVisible, width, height} = this.state
+    const {graph, library, onNodeSelection, onEdgeSelection} = this.props
 
-    var scaleClass = sc > Config.base.zbpBig ? 'big' : (sc > Config.base.zbpNormal ? 'normal' : 'small')
+    const transform = 'matrix(' + scale + ',0,0,' + scale + ',' + x + ',' + y + ')'
 
-    var contextMenu, contextModal
-    if (this.state.contextMenu) {
-      var options = this.state.contextMenu
-      var menu = this.props.getMenuDef(options)
+    const scaleClass = scale > Config.base.zbpBig ? 'big' : (scale > Config.base.zbpNormal ? 'normal' : 'small')
+
+    let contextMenu
+    let contextModal
+
+    if (currentContextMenu) {
+      var menu = this.props.getMenuDef(currentContextMenu)
       if (menu) {
-        contextMenu = options.element.getContext(menu, options, this.hideContext)
+        contextMenu = currentContextMenu.element.getContext(menu, currentContextMenu, this.hideContext)
       }
     }
 
@@ -727,38 +784,46 @@ export default class TheGraphApp extends Component {
       contextModal = [
         AppModalBackground(modalBGOptions)
       ]
+
       this.menuShown = true
     } else {
       this.menuShown = false
     }
 
-    var graphElementOptions = {
-      graph: this.props.graph,
-      scale: this.state.scale,
+    const graphElementOptions = {
+      ...Config.app.graph,
+      graph,
+      scale,
       app: this,
-      library: this.props.library,
-      onNodeSelection: this.props.onNodeSelection,
-      onEdgeSelection: this.props.onEdgeSelection,
+      library,
+      onNodeSelection,
+      onEdgeSelection,
       showContext: this.showContext
     }
 
-    graphElementOptions = merge(Config.app.graph, graphElementOptions)
     // var graphElement = createAppGraph(graphElementOptions);
 
-    var svgGroupOptions = merge(Config.app.svgGroup, { transform: transform })
-    // var svgGroup = createAppSvgGroup(svgGroupOptions, [graphElement]);
-
-    var tooltipOptions = {
-      x: this.state.tooltipX,
-      y: this.state.tooltipY,
-      visible: this.state.tooltipVisible,
-      label: this.state.tooltip
+    const svgGroupOptions = {
+      ...Config.app.svgGroup,
+      transform
     }
 
-    tooltipOptions = merge(Config.app.tooltip, tooltipOptions)
-    // var tooltip = createAppTooltip(tooltipOptions);
+    // var svgGroup = createAppSvgGroup(svgGroupOptions, [graphElement]);
 
-    var modalGroupOptions = merge(Config.app.modal, { children: contextModal })
+    const tooltipOptions = {
+      ...Config.app.tooltip,
+      x: tooltipX,
+      y: tooltipY,
+      visible: tooltipVisible,
+      label: tooltip
+    }
+
+    // var tooltip = createAppTooltip(tooltipOptions);
+    const modalGroupOptions = {
+      ...Config.app.modal,
+      children: contextModal
+    }
+
     // var modalGroupOptions = Config.app.modal;
     // var modalGroup = createAppModalGroup(modalGroupOptions);
 
@@ -770,13 +835,28 @@ export default class TheGraphApp extends Component {
      ];
      */
 
-    var svgOptions = merge(Config.app.svg, { width: this.state.width, height: this.state.height })
-    // var svg = createAppSvg(svgOptions, svgContents);
+    const svgOptions = {
+      ...Config.app.svg,
+      width,
+      height
+    }
 
-    var canvasOptions = merge(Config.app.canvas, { width: this.state.width, height: this.state.height })
+    // var svg = createAppSvg(svgOptions, svgContents);
+    const canvasOptions = {
+      ...Config.app.canvas,
+      width,
+      height
+    }
     // var canvas = createAppCanvas(canvasOptions);
 
-    var containerOptions = merge(Config.app.container, { style: { width: this.state.width, height: this.state.height } })
+    const containerOptions = {
+      ...Config.app.container,
+      style: {
+        width,
+        height
+      }
+    }
+
     containerOptions.className += ' ' + scaleClass
 
     // return createAppContainer(containerOptions, appContents);
@@ -795,18 +875,20 @@ export default class TheGraphApp extends Component {
       </div>
     )
     /*
-     return (
-     <AppContainer {...containerOptions}>
-     <AppCanvas {...canvasOptions} />
-     <AppSvg {...svgOptions}>
-     <AppSvgGroup {...svgGroupOptions}>
-     <AppGraph {...graphElementOptions} />
-     </AppSvgGroup>
-     <AppTooltip {...tooltipOptions} />
-     <AppModalGroup {...modalGroupOptions} />
-     </AppSvg>
-     </AppContainer>
-     )
-     */
+    return (
+      <div id="svgcontainer" className="the-graph-dark">
+        <AppContainer {...containerOptions}>
+          <AppCanvas {...canvasOptions} />
+          <AppSvg {...svgOptions}>
+            <AppSvgGroup {...svgGroupOptions}>
+              <AppGraph {...graphElementOptions} />
+            </AppSvgGroup>
+            <AppTooltip {...tooltipOptions} />
+            <AppModalGroup {...modalGroupOptions} />
+          </AppSvg>
+        </AppContainer>
+      </div>
+    )
+    */
   }
 }

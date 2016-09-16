@@ -1,7 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import {findDOMNode} from 'react-dom'
 import Config from './Config'
-import {merge} from './utils'
 import {
   createMenuSlice,
   createMenuCircleXPath,
@@ -40,40 +39,46 @@ export default class TheGraphMenu extends Component {
     this.onTapS4 = this.onTapS4.bind(this)
     this.onTapE4 = this.onTapE4.bind(this)
     this.onTapW4 = this.onTapW4.bind(this)
+    this.onContextMenu = this.onContextMenu.bind(this)
   }
 
   onTapN4 () {
-    var options = this.props.options
-    this.props.menu.n4.action(options.graph, options.itemKey, options.item)
-    this.props.triggerHideContext()
+    const {options, menu: {n4: action}, triggerHideContext} = this.props
+
+    action(options.graph, options.itemKey, options.item)
+
+    triggerHideContext()
   }
 
   onTapS4 () {
-    var options = this.props.options
-    this.props.menu.s4.action(options.graph, options.itemKey, options.item)
-    this.props.triggerHideContext()
+    const {options, menu: {s4: action}, triggerHideContext} = this.props
+
+    action(options.graph, options.itemKey, options.item)
+
+    triggerHideContext()
   }
 
   onTapE4 () {
-    var options = this.props.options
-    this.props.menu.e4.action(options.graph, options.itemKey, options.item)
-    this.props.triggerHideContext()
+    const {options, menu: {e4: action}, triggerHideContext} = this.props
+
+    action(options.graph, options.itemKey, options.item)
+
+    triggerHideContext()
   }
 
   onTapW4 () {
-    var options = this.props.options
-    this.props.menu.w4.action(options.graph, options.itemKey, options.item)
-    this.props.triggerHideContext()
+    const {options, menu: {w4: action}, triggerHideContext} = this.props
+
+    action(options.graph, options.itemKey, options.item)
+
+    triggerHideContext()
   }
 
   componentDidMount () {
     if (this.state.n4tappable) {
       this.refs.n4.addEventListener('up', this.onTapN4)
     }
-    alert('did mount')
-    console.log('REFS', this.refs)
 
-    /*
     // refs are not available yet.
     if (this.state.s4tappable) {
       alert('2')
@@ -88,36 +93,49 @@ export default class TheGraphMenu extends Component {
     if (this.state.w4tappable) {
       this.refs.w4.addEventListener('up', this.onTapW4);
     }
-    */
 
     // Prevent context menu
-    const domNode = findDOMNode(this)
-    alert(domNode)
-    domNode.addEventListener('contextmenu', function (event) {
-      if (event) {
-        event.stopPropagation()
-        event.preventDefault()
-      }
-    }, false)
+    const {addEventListener} = findDOMNode(this)
+
+    addEventListener('contextmenu', this.onContextMenu, false)
+  }
+
+  componentWillUnmount () {
+    const {removeEventListener} = findDOMNode(this)
+
+    removeEventListener('contextmenu', this.onContextMenu)
+  }
+
+  onContextMenu (event) {
+    if (event) {
+      event.stopPropagation()
+      event.preventDefault()
+    }
   }
 
   getPosition () {
+    const {x, y, options: {x: optionX, y: optionY}} = this.props
+
     return {
-      x: this.props.x !== undefined ? this.props.x : this.props.options.x || 0,
-      y: this.props.y !== undefined ? this.props.y : this.props.options.y || 0
+      x: isNaN(x) ? optionX || 0 : x,
+      y: isNaN(y) ? optionY || 0 : y
     }
   }
 
   render () {
-    alert('render', this.refs)
-    var menu = this.props.menu
-    var options = this.props.options
-    var position = this.getPosition()
+    const {icon, iconColor: iconColorProp, label, menu} = this.props
+    const position = this.getPosition()
 
-    var circleXOptions = merge(Config.menu.circleXPath, {})
-    var outlineCircleOptions = merge(Config.menu.outlineCircle, {r: this.radius })
+    const circleXOptions = {
+      ...Config.menu.circleXPath
+    }
 
-    var children = [
+    const outlineCircleOptions = {
+      ...Config.menu.outlineCircle,
+      r: this.radius
+    }
+
+    const children = [
       // Directional slices
       createMenuSlice(this, { direction: 'n4' }),
       createMenuSlice(this, { direction: 's4' }),
@@ -127,44 +145,52 @@ export default class TheGraphMenu extends Component {
       createMenuCircleXPath(circleXOptions),
       createMenuOutlineCircle(outlineCircleOptions)
     ]
+
     // Menu label
-    if (this.props.label || menu.icon) {
-      var labelTextOptions = {
+    if (label || menu.icon) {
+      const labelTextOptions = {
+        ...Config.menu.labelText,
         x: 0,
         y: 0 - this.radius - 15,
-        children: (this.props.label ? this.props.label : menu.label)
+        children: (label ? label : menu.label)
       }
 
-      labelTextOptions = merge(Config.menu.labelText, labelTextOptions)
       children.push(createMenuLabelText(labelTextOptions))
     }
+
     // Middle icon
-    if (this.props.icon || menu.icon) {
-      var iconColor = (this.props.iconColor !== undefined ? this.props.iconColor : menu.iconColor)
-      var iconStyle = ''
+    if (icon || menu.icon) {
+      const iconColor = (iconColorProp !== undefined ? iconColorProp : menu.iconColor)
+      let iconStyle
+
+      iconStyle = ''
+
       if (iconColor) {
         iconStyle = ' fill route' + iconColor
       }
 
-      var middleIconRectOptions = merge(Config.menu.iconRect, {})
-      var middleIcon = createMenuMiddleIconRect(middleIconRectOptions)
-
-      var middleIconTextOptions = {
-        className: 'icon context-node-icon' + iconStyle,
-        children: Config.FONT_AWESOME[ (this.props.icon ? this.props.icon : menu.icon) ]
+      const middleIconRectOptions = {
+        ...Config.menu.iconRect
       }
-      middleIconTextOptions = merge(Config.menu.iconText, middleIconTextOptions)
-      var iconText = createMenuMiddleIconText(middleIconTextOptions)
+
+      const middleIcon = createMenuMiddleIconRect(middleIconRectOptions)
+
+      const middleIconTextOptions = {
+        ...Config.menu.iconText,
+        className: 'icon context-node-icon' + iconStyle,
+        children: Config.FONT_AWESOME[ (icon ? icon : menu.icon) ]
+      }
+
+      const iconText = createMenuMiddleIconText(middleIconTextOptions)
 
       children.push(middleIcon, iconText)
     }
 
-    var containerOptions = {
+    const containerOptions = {
+      ...Config.menu.container,
       transform: 'translate(' + position.x + ',' + position.y + ')',
       children: children
     }
-
-    containerOptions = merge(Config.menu.container, containerOptions)
 
     return createMenuGroup(containerOptions)
   }

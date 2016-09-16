@@ -1,5 +1,7 @@
-import React from 'react'
+import React, {Component} from 'react'
 
-export default function NodeInportsGroup (props) {
-  return <rect {...props} />
+export default class NodeInportsGroup extends Component {
+  render () {
+    return <rect {...this.props} />
+  }
 }

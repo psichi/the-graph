@@ -1,4 +1,14 @@
 // temporary copy & paste include in able to require
+// Probably useful to always start this, regardless of what component is used.
+// e.g. if only a node is rendered klayjs is also available
+// then just calculate using an graph with just one unattached node.
+// which will make klayjs a service, perhaps use redux for this.
+// or else a mixin, which is used by node & graph & app
+// if something does not have position call kieler first
+// or perhaps fallback on something
+// you should be able to require a node and the ports should be setup correctly.
+// simple require could probably be enough.
+
 var worker
 var defaultOptions = {
   'intCoordinates': true,

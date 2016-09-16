@@ -17,6 +17,5 @@ export klayNoflo from './klayNoflo.js'
 export loadFBP from './loadFBP.js'
 export loadJSON from './loadJSON.js'
 export makeArcPath from './makeArcPath.js'
-export merge from './merge.js'
 export perpendicular from './perpendicular.js'
 

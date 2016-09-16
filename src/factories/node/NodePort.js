@@ -1,6 +1,8 @@
-import React from 'react'
+import React, {Component} from 'react'
 import Port from '../../Port'
 
-export default function NodePort (props) {
-  return <Port {...props} />
+export default class NodePort extends Component {
+  render () {
+    return <Port {...this.props} />
+  }
 }

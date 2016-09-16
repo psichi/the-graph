@@ -3,9 +3,7 @@ import ReactDOM from 'react-dom'
 import App from './App'
 import '../themes/the-graph-dark.css'
 
-const graph = {
-  nodes: []
-}
+const graph = null
 
 const props = {
   graph,

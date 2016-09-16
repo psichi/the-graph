@@ -239,9 +239,9 @@ storiesOf('Port', module)
  };
  */
 
-/*
 storiesOf('Node', module)
   .add('Node', () => {
+    // metadata for ports required.
     const graph = fromJSON(graphJson)
 
     return (
@@ -273,7 +273,6 @@ storiesOf('Node', module)
       </svg>
     )
   })
-*/
 
 /* Node Menu Options
  {

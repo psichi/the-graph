@@ -1,5 +1,5 @@
 import Config from '../../Config'
-import {arcs, merge} from '../../utils'
+import {arcs} from '../../utils'
 import {
   createMenuSliceArcPath,
   createMenuSliceIconText,
@@ -9,49 +9,57 @@ import {
 } from './'
 
 export default function createMenuSlice (menu, options) {
-  var direction = options.direction
-  var arcPathOptions = merge(Config.menu.arcPath, { d: arcs[direction] })
-  var children = [
+  const {direction} = options
+  const arcPathOptions = {
+    ...Config.menu.arcPath,
+    d: arcs[direction]
+  }
+
+  const children = [
     createMenuSliceArcPath(arcPathOptions)
   ]
 
   if (menu.props.menu[direction]) {
-    var slice = menu.props.menu[direction]
+    const slice = menu.props.menu[direction]
+
     if (slice.icon) {
-      var sliceIconTextOptions = {
+      const sliceIconTextOptions = {
+        ...Config.menu.sliceIconText,
         x: Config.menu.positions[direction + 'IconX'],
         y: Config.menu.positions[direction + 'IconY'],
         children: Config.FONT_AWESOME[ slice.icon ]
       }
-      sliceIconTextOptions = merge(Config.menu.sliceIconText, sliceIconTextOptions)
+
       children.push(createMenuSliceIconText(sliceIconTextOptions))
     }
     if (slice.label) {
-      var sliceLabelTextOptions = {
+      const sliceLabelTextOptions = {
+        ...Config.menu.sliceLabelText,
         x: Config.menu.positions[direction + 'IconX'],
         y: Config.menu.positions[direction + 'IconY'],
         children: slice.label
       }
-      sliceLabelTextOptions = merge(Config.menu.sliceLabelText, sliceLabelTextOptions)
+
       children.push(createMenuSliceLabelText(sliceLabelTextOptions))
     }
     if (slice.iconLabel) {
-      var sliceIconLabelTextOptions = {
+      const sliceIconLabelTextOptions = {
+        ...Config.menu.sliceIconLabelText,
         x: Config.menu.positions[direction + 'LabelX'],
         y: Config.menu.positions[direction + 'LabelY'],
         children: slice.iconLabel
       }
-      sliceIconLabelTextOptions = merge(Config.menu.sliceIconLabelText, sliceIconLabelTextOptions)
+
       children.push(createMenuSliceIconLabelText(sliceIconLabelTextOptions))
     }
   }
 
-  var containerOptions = {
+  const containerOptions = {
+    ...Config.menu.container,
     ref: direction,
     className: 'context-slice context-node-info' + (menu.state[direction + 'tappable'] ? ' click' : ''),
-    children: children
+    children
   }
-  containerOptions = merge(Config.menu.container, containerOptions)
-  console.log('containerOptions', containerOptions)
+
   return createMenuGroup(containerOptions)
 }

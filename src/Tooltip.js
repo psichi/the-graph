@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import {merge} from './utils'
 import Config from './Config'
 import {
   createTooltipGroup,
@@ -10,19 +9,31 @@ import {
 // Port view
 export default class TheGraphTooltip extends Component {
   render () {
-    var rectOptions = merge(Config.tooltip.rect, {width: this.props.label.length * 6})
-    var rect = createTooltipRect(rectOptions)
+    const {label, visible, x, y} = this.props
 
-    var textOptions = merge(Config.tooltip.text, { children: this.props.label })
-    var text = createTooltipText(textOptions)
-
-    var containerContents = [rect, text]
-
-    var containerOptions = {
-      className: 'tooltip' + (this.props.visible ? '' : ' hidden'),
-      transform: 'translate(' + this.props.x + ',' + this.props.y + ')'
+    const rectOptions = {
+      ...Config.tooltip.rect,
+      width: label.length * 6
     }
-    containerOptions = merge(Config.tooltip.container, containerOptions)
+
+    const rect = createTooltipRect(rectOptions)
+
+    const textOptions = {
+      ...Config.tooltip.text,
+      children: label
+    }
+
+    const text = createTooltipText(textOptions)
+
+    const containerContents = [rect, text]
+
+    const containerOptions = {
+      ...Config.tooltip.container,
+      className: 'tooltip' + (visible ? '' : ' hidden'),
+      transform: 'translate(' + x + ',' + y + ')'
+
+    }
+
     return createTooltipGroup(containerOptions, containerContents)
   }
 }

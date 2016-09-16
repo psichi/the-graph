@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import {findDOMNode} from 'react-dom'
-import {merge} from './utils'
 import Config from './Config'
 import {
   createNodeMenuGroup,
@@ -26,61 +25,84 @@ export default class TheGraphNodeMenu extends Component {
   }
 
   render () {
-    var scale = this.props.node.props.app.state.scale
-    var ports = this.props.ports
-    var deltaX = this.props.deltaX
-    var deltaY = this.props.deltaY
 
-    var inportsOptions = {
+    const {
+      node: {
+        props: {
+          app: {
+            state: {
+              scale
+            }
+          }
+        }
+      },
+      ports,
+      processKey,
+      menu,
+      options,
+      triggerHideContext,
+      icon,
+      label,
+      nodeWidth,
+      nodeHeight,
+      highlightPort,
+      deltaX,
+      deltaY,
+      x,
+      y
+    } = this.props
+
+    const inportsOptions = {
+      ...Config.nodeMenu.inports,
       ports: ports.inports,
       isIn: true,
-      scale: scale,
-      processKey: this.props.processKey,
-      deltaX: deltaX,
-      deltaY: deltaY,
-      nodeWidth: this.props.nodeWidth,
-      nodeHeight: this.props.nodeHeight,
-      highlightPort: this.props.highlightPort
+      scale,
+      processKey,
+      deltaX,
+      deltaY,
+      nodeWidth,
+      nodeHeight,
+      highlightPort
     }
 
-    inportsOptions = merge(Config.nodeMenu.inports, inportsOptions)
-    var inports = createNodeMenuInports(inportsOptions)
+    const inports = createNodeMenuInports(inportsOptions)
 
-    var outportsOptions = {
+    const outportsOptions = {
+      ...Config.nodeMenu.outports,
       ports: ports.outports,
       isIn: false,
-      scale: scale,
-      processKey: this.props.processKey,
-      deltaX: deltaX,
-      deltaY: deltaY,
-      nodeWidth: this.props.nodeWidth,
-      nodeHeight: this.props.nodeHeight,
-      highlightPort: this.props.highlightPort
+      scale,
+      processKey,
+      deltaX,
+      deltaY,
+      nodeWidth,
+      nodeHeight,
+      highlightPort
     }
 
-    outportsOptions = merge(Config.nodeMenu.outports, outportsOptions)
-    var outports = createNodeMenuOutports(outportsOptions)
+    const outports = createNodeMenuOutports(outportsOptions)
 
-    var menuOptions = {
-      menu: this.props.menu,
-      options: this.props.options,
-      triggerHideContext: this.props.triggerHideContext,
-      icon: this.props.icon,
-      label: this.props.label
+    const menuOptions = {
+      ...Config.nodeMenu.menu,
+      menu,
+      options,
+      triggerHideContext,
+      icon,
+      label
     }
 
-    menuOptions = merge(Config.nodeMenu.menu, menuOptions)
-    var menu = createNodeMenuMenu(menuOptions)
+    const nodeMenu = createNodeMenuMenu(menuOptions)
 
-    var children = [
-      inports, outports, menu
+    const children = [
+      inports, outports, nodeMenu
     ]
 
-    var containerOptions = {
-      transform: 'translate(' + this.props.x + ',' + this.props.y + ')',
+    const containerOptions = {
+      ...Config.nodeMenu.container,
+      transform: 'translate(' + x + ',' + y + ')',
       children: children
     }
-    containerOptions = merge(Config.nodeMenu.container, containerOptions)
+
     return createNodeMenuGroup(containerOptions)
   }
 }

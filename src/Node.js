@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import {findDOMNode} from 'react-dom'
-import {buildLabelRectOptions, merge} from './utils'
+import {buildLabelRectOptions} from './utils'
 import Config from './Config'
 import {Tooltip} from './mixins'
 import Menu from './Menu'
@@ -66,18 +66,19 @@ export default class TheGraphNode extends Component {
   }
 
   componentDidMount () {
+    const {onNodeSelection, showContext} = this.props
     const domNode = findDOMNode(this)
 
     // Dragging
     domNode.addEventListener('trackstart', this.onTrackStart)
 
     // Tap to select
-    if (this.props.onNodeSelection) {
+    if (onNodeSelection) {
       domNode.addEventListener('tap', this.onNodeSelection, true)
     }
 
     // Context menu
-    if (this.props.showContext) {
+    if (showContext) {
       findDOMNode(this).addEventListener('contextmenu', this.showContext)
       findDOMNode(this).addEventListener('hold', this.showContext)
     }
@@ -87,9 +88,11 @@ export default class TheGraphNode extends Component {
     // Don't tap app (unselect)
     event.stopPropagation()
 
-    throw Error('FIX ME')
-    var toggle = (TheGraph.metaKeyPressed || event.pointerType === 'touch')
-    this.props.onNodeSelection(this.props.nodeID, this.props.node, toggle)
+    const {nodeID, node} = this.props
+
+    const toggle = (TheGraph.metaKeyPressed || event.pointerType === 'touch')
+
+    this.props.onNodeSelection(nodeID, node, toggle)
   }
 
   onTrackStart (event) {
@@ -99,11 +102,13 @@ export default class TheGraphNode extends Component {
     // Don't change selection
     event.preventTap()
 
+    const {app, graph} = this.props
+
     // Don't drag under menu
-    if (this.props.app.menuShown) { return }
+    if (app.menuShown) { return }
 
     // Don't drag while pinching
-    if (this.props.app.pinching) { return }
+    if (app.pinching) { return }
 
     var domNode = findDOMNode(this)
     domNode.addEventListener('track', this.onTrack)
@@ -111,9 +116,9 @@ export default class TheGraphNode extends Component {
 
     // Moving a node should only be a single transaction
     if (this.props.export) {
-      this.props.graph.startTransaction('moveexport')
+      graph.startTransaction('moveexport')
     } else {
-      this.props.graph.startTransaction('movenode')
+      graph.startTransaction('movenode')
     }
   }
 
@@ -121,25 +126,28 @@ export default class TheGraphNode extends Component {
     // Don't fire on graph
     event.stopPropagation()
 
-    var scale = this.props.app.state.scale
-    var deltaX = Math.round(event.ddx / scale)
-    var deltaY = Math.round(event.ddy / scale)
+    const {graph, exportKey, isIn, node: nodeMetadata, nodeID, scale} = this.props
+    const {metadata: exportMetadata} = this.props.export
+
+    const deltaX = Math.round(event.ddx / scale)
+    const deltaY = Math.round(event.ddy / scale)
 
     // Fires a change event on noflo graph, which triggers redraw
-    if (this.props.export) {
-      var newPos = {
-        x: this.props.export.metadata.x + deltaX,
-        y: this.props.export.metadata.y + deltaY
+    if (exportMetadata) {
+      const newPos = {
+        x: exportMetadata.x + deltaX,
+        y: exportMetadata.y + deltaY
       }
-      if (this.props.isIn) {
-        this.props.graph.setInportMetadata(this.props.exportKey, newPos)
+
+      if (isIn) {
+        graph.setInportMetadata(exportKey, newPos)
       } else {
-        this.props.graph.setOutportMetadata(this.props.exportKey, newPos)
+        graph.setOutportMetadata(exportKey, newPos)
       }
     } else {
-      this.props.graph.setNodeMetadata(this.props.nodeID, {
-        x: this.props.node.metadata.x + deltaX,
-        y: this.props.node.metadata.y + deltaY
+      graph.setNodeMetadata(nodeID, {
+        x: nodeMetadata.x + deltaX,
+        y: nodeMetadata.y + deltaY
       })
     }
   }
@@ -148,38 +156,42 @@ export default class TheGraphNode extends Component {
     // Don't fire on graph
     event.stopPropagation()
 
+    const {exportKey, graph, isIn, node: {metadata: nodeMetadata}, nodeID} = this.props
+    const {metadata: exportMetadata} = this.props.export
+
     const domNode = findDOMNode(this)
     domNode.removeEventListener('track', this.onTrack)
     domNode.removeEventListener('trackend', this.onTrackEnd)
 
     // Snap to grid
-    var snapToGrid = true
-    var snap = Config.node.snap / 2
+    const snapToGrid = true
+    const snap = Config.node.snap / 2
+
     if (snapToGrid) {
-      var x, y
-      if (this.props.export) {
-        var newPos = {
-          x: Math.round(this.props.export.metadata.x / snap) * snap,
-          y: Math.round(this.props.export.metadata.y / snap) * snap
+      if (exportMetadata) {
+        const newPos = {
+          x: Math.round(exportMetadata.x / snap) * snap,
+          y: Math.round(exportMetadata.y / snap) * snap
         }
-        if (this.props.isIn) {
-          this.props.graph.setInportMetadata(this.props.exportKey, newPos)
+
+        if (isIn) {
+          graph.setInportMetadata(exportKey, newPos)
         } else {
-          this.props.graph.setOutportMetadata(this.props.exportKey, newPos)
+          graph.setOutportMetadata(exportKey, newPos)
         }
       } else {
-        this.props.graph.setNodeMetadata(this.props.nodeID, {
-          x: Math.round(this.props.node.metadata.x / snap) * snap,
-          y: Math.round(this.props.node.metadata.y / snap) * snap
+        graph.setNodeMetadata(nodeID, {
+          x: Math.round(nodeMetadata.x / snap) * snap,
+          y: Math.round(nodeMetadata.y / snap) * snap
         })
       }
     }
 
     // Moving a node should only be a single transaction
-    if (this.props.export) {
-      this.props.graph.endTransaction('moveexport')
+    if (exportMetadata) {
+      graph.endTransaction('moveexport')
     } else {
-      this.props.graph.endTransaction('movenode')
+      graph.endTransaction('movenode')
     }
   }
 
@@ -191,106 +203,131 @@ export default class TheGraphNode extends Component {
     event.stopPropagation()
     if (event.preventTap) { event.preventTap() }
 
+    const {isIn, graph, exportKey, node, nodeID, showContext} = this.props
+    const _export = this.props.export
+
     // Get mouse position
-    var x = event.x || event.clientX || 0
-    var y = event.y || event.clientY || 0
+    const x = event.x || event.clientX || 0
+    const y = event.y || event.clientY || 0
 
     // App.showContext
-    this.props.showContext({
+    showContext({
       element: this,
-      type: (this.props.export ? (this.props.isIn ? 'graphInport' : 'graphOutport') : 'node'),
+      type: (_export ? (isIn ? 'graphInport' : 'graphOutport') : 'node'),
       x: x,
       y: y,
-      graph: this.props.graph,
-      itemKey: (this.props.export ? this.props.exportKey : this.props.nodeID),
-      item: (this.props.export ? this.props.export : this.props.node)
+      graph,
+      itemKey: (_export ? exportKey : nodeID),
+      item: (_export ? _export : node)
     })
   }
 
-  getContext (menu, options, hide) {
+  getContext (menu, options, triggerHideContext) {
+    const {
+      app: {
+        state: {
+          x: appX,
+          y: appY,
+          scale
+        }
+      },
+      exportKey: label,
+      graph,
+      icon,
+      highlightPort,
+      ports,
+      node: process,
+      nodeID: processKey,
+      x: xProp,
+      y: yProp,
+      width,
+      height,
+      graphView,
+      graphView: {
+        state: {
+          edgePreview
+        }
+      }
+    } = this.props
+
+    const _export = this.props.export
+
     // If this node is an export
-    if (this.props.export) {
+    if (_export) {
       return Menu({
-        menu: menu,
-        options: options,
-        triggerHideContext: hide,
-        label: this.props.exportKey
+        menu,
+        options,
+        triggerHideContext,
+        label
       })
     }
 
     // this relies on the state of the parent app.
 
     // Absolute position of node
-    var x = options.x
-    var y = options.y
-    var scale = this.props.app.state.scale
-    var appX = this.props.app.state.x
-    var appY = this.props.app.state.y
-    var nodeX = (this.props.x + this.props.width / 2) * scale + appX
-    var nodeY = (this.props.y + this.props.height / 2) * scale + appY
-    var deltaX = nodeX - x
-    var deltaY = nodeY - y
-    var ports = this.props.ports
-    var processKey = this.props.nodeID
-    var highlightPort = this.props.highlightPort
+    const {x, y} = options
+    const nodeX = (xProp + width / 2) * scale + appX
+    const nodeY = (yProp + height / 2) * scale + appY
+    const deltaX = nodeX - x
+    const deltaY = nodeY - y
 
     // If there is a preview edge started, only show connectable ports
-    if (this.props.graphView.state.edgePreview) {
-      if (this.props.graphView.state.edgePreview.isIn) {
+    if (edgePreview) {
+      if (edgePreview.isIn) {
         // Show outputs
         return NodeMenuPorts({
           ports: ports.outports,
-          triggerHideContext: hide,
+          triggerHideContext,
           isIn: false,
-          scale: scale,
-          processKey: processKey,
-          deltaX: deltaX,
-          deltaY: deltaY,
+          scale,
+          processKey,
+          deltaX,
+          deltaY,
           translateX: x,
           translateY: y,
-          nodeWidth: this.props.width,
-          nodeHeight: this.props.height,
-          highlightPort: highlightPort
+          nodeWidth: width,
+          nodeHeight: height,
+          highlightPort
         })
       } else {
         // Show inputs
         return NodeMenuPorts({
           ports: ports.inports,
-          triggerHideContext: hide,
+          triggerHideContext,
           isIn: true,
-          scale: scale,
-          processKey: processKey,
-          deltaX: deltaX,
-          deltaY: deltaY,
+          scale,
+          processKey,
+          deltaX,
+          deltaY,
           translateX: x,
           translateY: y,
-          nodeWidth: this.props.width,
-          nodeHeight: this.props.height,
-          highlightPort: highlightPort
+          nodeWidth: width,
+          nodeHeight: height,
+          highlightPort
         })
       }
     }
 
     // Default, show whole node menu
     return NodeMenu({
-      menu: menu,
-      options: options,
-      triggerHideContext: hide,
-      label: this.props.label,
-      graph: this.props.graph,
-      graphView: this.props.graphView,
+      menu,
+      options,
+      triggerHideContext,
+      label,
+      graph,
+      graphView,
       node: this,
-      icon: this.props.icon,
-      ports: ports,
-      process: this.props.node,
-      processKey: processKey,
-      x: x,
-      y: y,
-      nodeWidth: this.props.width,
-      nodeHeight: this.props.height,
-      deltaX: deltaX,
-      deltaY: deltaY,
-      highlightPort: highlightPort
+      icon,
+      ports,
+      process,
+      processKey,
+      x,
+      y,
+      nodeWidth: width,
+      nodeHeight: height,
+      deltaX,
+      deltaY,
+      highlightPort
     })
   }
 
@@ -333,14 +370,24 @@ export default class TheGraphNode extends Component {
       y
     } = this.props
 
-    console.log('THE PROPS', ports)
+    console.log('Create PortViews Prop', type, ports)
 
     const isExport = (this.props.export !== undefined)
 
     const keys = Object.keys(ports)
 
+    // there is no position information yet.
+    // what should calculate it ?
+    // it must be calculate somewhere, so maybe draw that logic into here.
+    // or perhaps klay js is doing it.
+    // wordt inderdaad door klay js bepaald.
+    // zou dus deels bepaald kunnen worden.
+
     return keys.map((key) => {
       const info = ports[key]
+
+      //
+      console.log('PortViews port %s info:', key, info)
       const props = {
         app,
         graph,
@@ -394,39 +441,41 @@ export default class TheGraphNode extends Component {
     console.log('iCON SVG', iconsvg)
 
     if (iconsvg && iconsvg !== '') {
-      const iconSVGOptions = merge(Config.node.iconsvg, {
+      const iconSVGOptions = {
+        ...Config.node.iconsvg,
         src: iconsvg,
         x: Config.base.config.nodeRadius - 4,
         y: Config.base.config.nodeRadius - 4,
         width: width - 10,
         height: height - 10
-      })
+      }
 
       return <NodeIconSVG {...iconSVGOptions} />
     } else {
-      const iconOptions = merge(Config.node.icon, {
+      const iconOptions = {
+        ...Config.node.icon,
         x: width / 2,
         y: height / 2,
         children: icon
-      })
+      }
 
       return <NodeIconText {...iconOptions} />
     }
   }
 
   render () {
+    const {error, x, y, height, width, nodeID, selected} = this.props
+
     if (this.props.ports.dirty) {
       // This tag is set when an edge or iip changes port colors
       this.props.ports.dirty = false
     }
 
-    var label = this.props.label
-    var sublabel = this.props.sublabel
+    let label = this.props.label
+    let sublabel = this.props.sublabel
     if (!sublabel || sublabel === label) {
       sublabel = ''
     }
-    var x = this.props.x
-    var y = this.props.y
 
     // Make views
     const NodeInportViews = this.createInportViews()
@@ -434,46 +483,86 @@ export default class TheGraphNode extends Component {
 
     const NodeIconContent = this.createIconContent()
 
-    const backgroundRectOptions = merge(Config.node.background, { width: this.props.width, height: this.props.height + 25 })
-    const borderRectOptions = merge(Config.node.border, { width: this.props.width, height: this.props.height })
-    const innerRectOptions = merge(Config.node.innerRect, { width: this.props.width - 6, height: this.props.height - 6 })
+    const backgroundRectOptions = {
+      ...Config.node.background,
+      width: this.props.width,
+      height: this.props.height + 25
+    }
 
-    const inportsOptions = Config.node.inports // merge(Config.node.inports, { children: inportViews });
-    const outportsOptions = Config.node.outports // merge(Config.node.outports, { children: outportViews });
+    const borderRectOptions = {
+      ...Config.node.border,
+      width: this.props.width,
+      height: this.props.height
+    }
 
-    const labelTextOptions = merge(Config.node.labelText, { x: this.props.width / 2, y: this.props.height + 15})
-    // , children: label });
+    const innerRectOptions = {
+      ...Config.node.innerRect,
+      width: this.props.width - 6,
+      height: this.props.height - 6
+    }
+
+    const inportsOptions = {
+      ...Config.node.inports
+      // { children: inportViews }
+    }
+
+    const outportsOptions = {
+      ...Config.node.outports
+      // { children: outportViews }
+    }
+
+    const labelTextOptions = {
+      ...Config.node.labelText,
+      x: this.props.width / 2,
+      y: this.props.height + 15
+      // { children: label });
+    }
 
     let labelRectOptions
     const labelRectX = this.props.width / 2
     const labelRectY = this.props.height + 15
+
     labelRectOptions = buildLabelRectOptions(14, labelRectX, labelRectY, label.length, Config.node.labelRect.className)
-    labelRectOptions = merge(Config.node.labelRect, labelRectOptions)
+    labelRectOptions = {
+      ...Config.node.labelRect,
+      ...labelRectOptions
+    }
 
     // has children
     // / var labelGroup = createNodeLabelGroup(Config.node.labelBackground, [labelRect, labelText]);
 
-    var sublabelTextOptions = merge(Config.node.sublabelText, { x: this.props.width / 2, y: this.props.height + 30})
-    //, children: sublabel });
+    const sublabelTextOptions = {
+      ...Config.node.sublabelText,
+      x: width / 2,
+      y: height + 30
+      // { children: sublabel }
+    }
 
-    var sublabelRectX = this.props.width / 2
-    var sublabelRectY = this.props.height + 30
-    var sublabelRectOptions = buildLabelRectOptions(9, sublabelRectX, sublabelRectY, sublabel.length, Config.node.sublabelRect.className)
-    sublabelRectOptions = merge(Config.node.sublabelRect, sublabelRectOptions)
+    const sublabelRectX = width / 2
+    const sublabelRectY = height + 30
+
+    let sublabelRectOptions = buildLabelRectOptions(9, sublabelRectX, sublabelRectY, sublabel.length, Config.node.sublabelRect.className)
+    sublabelRectOptions = {
+      ...Config.node.sublabelRect,
+      ...sublabelRectOptions
+    }
 
     // var sublabelGroup = createNodeSublabelGroup(Config.node.sublabelBackground, [sublabelRect, sublabelText]);
 
     let nodeOptions
 
     nodeOptions = {
-      className: 'node drag' + (this.props.selected ? ' selected' : '') + (this.props.error ? ' error' : ''),
-      name: this.props.nodeID,
-      key: this.props.nodeID,
+      className: 'node drag' + (selected ? ' selected' : '') + (error ? ' error' : ''),
+      name: nodeID,
+      key: nodeID,
       title: label,
       transform: 'translate(' + x + ',' + y + ')'
     }
 
-    nodeOptions = merge(Config.node.container, nodeOptions)
+    nodeOptions = {
+      ...Config.node.container,
+      ...nodeOptions
+    }
 
     return (
       <NodeGroup {...nodeOptions}>

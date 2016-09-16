@@ -4,7 +4,6 @@ import {
   findLinePoint,
   perpendicular,
   findPointOnCubicBezier,
-  merge
 } from './utils'
 import {Tooltip} from './mixins'
 import Menu from './Menu'
@@ -84,9 +83,11 @@ export default class TheGraphEdge extends Component {
     // Don't click app
     event.stopPropagation()
 
-    throw Error('FIX ME')
-    var toggle = (TheGraph.metaKeyPressed || event.pointerType === 'touch')
-    this.props.onEdgeSelection(this.props.edgeID, this.props.edge, toggle)
+    const {edgeID, edge, onEdgeSelection} = this.props
+
+    const toggle = (TheGraph.metaKeyPressed || event.pointerType === 'touch')
+
+    onEdgeSelection(edgeID, edge, toggle)
   }
 
   showContext (event) {
@@ -97,19 +98,22 @@ export default class TheGraphEdge extends Component {
     event.stopPropagation()
     if (event.preventTap) { event.preventTap() }
 
+    const {isIn, exportKey, edge, graph, showContext} = this.props
+    const _export = this.props.export
+
     // Get mouse position
     var x = event.x || event.clientX || 0
     var y = event.y || event.clientY || 0
 
     // App.showContext
-    this.props.showContext({
+    showContext({
       element: this,
-      type: (this.props.export ? (this.props.isIn ? 'graphInport' : 'graphOutport') : 'edge'),
+      type: (_export ? (isIn ? 'graphInport' : 'graphOutport') : 'edge'),
       x: x,
       y: y,
-      graph: this.props.graph,
-      itemKey: (this.props.export ? this.props.exportKey : null),
-      item: (this.props.export ? this.props.export : this.props.edge)
+      graph,
+      itemKey: (_export ? exportKey : null),
+      item: (_export ? _export : edge)
     })
   }
 
@@ -123,8 +127,8 @@ export default class TheGraphEdge extends Component {
     })
   }
 
-  shouldComponentUpdate (nextProps, nextState) {
-    // Only rerender if changed
+  shouldComponentUpdate (nextProps /* , nextState */) {
+    // Only re-render if changed
     return (
       nextProps.sX !== this.props.sX ||
       nextProps.sY !== this.props.sY ||
@@ -145,15 +149,13 @@ export default class TheGraphEdge extends Component {
   }
 
   render () {
-    let sourceX = this.props.sX
-    let sourceY = this.props.sY
-    let targetX = this.props.tX
-    let targetY = this.props.tY
+    const {sX: sourceX, sY: sourceY, tX: targetX, tY: targetY, route, selected, animated, label} = this.props
 
     // Organic / curved edge
     let c1X, c1Y, c2X, c2Y
+
     if (targetX - 5 < sourceX) {
-      var curveFactor = (sourceX - targetX) * CURVE / 200
+      const curveFactor = (sourceX - targetX) * CURVE / 200
       if (Math.abs(targetY - sourceY) < Config.base.nodeSize / 2) {
         // Loopback
         c1X = sourceX + curveFactor
@@ -177,61 +179,77 @@ export default class TheGraphEdge extends Component {
 
     // Make SVG path
 
-    var path = EdgePathArray(sourceX, sourceY, c1X, c1Y, c2X, c2Y, targetX, targetY)
-    path = path.join(' ')
+    const path = EdgePathArray(sourceX, sourceY, c1X, c1Y, c2X, c2Y, targetX, targetY).join(' ')
 
-    var backgroundPathOptions = merge(Config.edge.backgroundPath, { d: path })
-
-    var foregroundPathClassName = Config.edge.foregroundPath.className + this.props.route
-    var foregroundPathOptions = merge(Config.edge.foregroundPath, { d: path, className: foregroundPathClassName })
-
-    var touchPathOptions = merge(Config.edge.touchPath, { d: path })
-
-    var containerOptions = {
-      className: 'edge' +
-      (this.props.selected ? ' selected' : '') +
-      (this.props.animated ? ' animated' : ''),
-      title: this.props.label
+    const backgroundPathOptions = {
+      ...Config.edge.backgroundPath,
+      d: path
     }
 
-    containerOptions = merge(Config.edge.container, containerOptions)
+    const foregroundPathClassName = Config.edge.foregroundPath.className + route
+
+    const foregroundPathOptions = {
+      ...Config.edge.foregroundPath,
+      d: path,
+      className: foregroundPathClassName
+    }
+
+    const touchPathOptions = {
+      ...Config.edge.touchPath,
+      d: path
+    }
+
+    const containerOptions = {
+      ...Config.edge.container,
+      className: 'edge' +
+      (selected ? ' selected' : '') +
+      (animated ? ' animated' : ''),
+      title: label
+    }
 
     var epsilon = 0.01
     var center = findPointOnCubicBezier(0.5, sourceX, sourceY, c1X, c1Y, c2X, c2Y, targetX, targetY)
 
     // estimate slope and intercept of tangent line
-    var getShiftedPoint = function (epsilon) {
-      return findPointOnCubicBezier(
-        0.5 + epsilon, sourceX, sourceY, c1X, c1Y, c2X, c2Y, targetX, targetY)
+    const getShiftedPoint = (epsilon) => {
+      return findPointOnCubicBezier(0.5 + epsilon, sourceX, sourceY, c1X, c1Y, c2X, c2Y, targetX, targetY)
     }
-    var plus = getShiftedPoint(epsilon)
-    var minus = getShiftedPoint(-epsilon)
-    var m = 1 * (plus[1] - minus[1]) / (plus[0] - minus[0])
-    var b = center[1] - (m * center[0])
 
-    var arrowLength = 12
+    const plus = getShiftedPoint(epsilon)
+    const minus = getShiftedPoint(-epsilon)
+
+    const m = 1 * (plus[1] - minus[1]) / (plus[0] - minus[0])
+    const b = center[1] - (m * center[0])
+
+    let arrowLength
+
+    arrowLength = 12
+
     // Which direction should arrow point
     if (plus[0] > minus[0]) {
       arrowLength *= -1
     }
+
     center = findLinePoint(center[0], center[1], m, b, -1 * arrowLength / 2)
 
-    var points = perpendicular(center[0], center[1], m, arrowLength * 0.9)
-    // For m === 0, figure out if arrow should be straight up or down
-    var flip = plus[1] > minus[1] ? -1 : 1
-    var arrowTip = findLinePoint(center[0], center[1], m, b, arrowLength, flip)
-    points.push(arrowTip)
+    let pointsArray = perpendicular(center[0], center[1], m, arrowLength * 0.9)
 
-    var pointsArray = points.map((point) => point.join(',')).join(' ')
+    // For m === 0, figure out if arrow should be straight up or down
+    const flip = plus[1] > minus[1] ? -1 : 1
+    const arrowTip = findLinePoint(center[0], center[1], m, b, arrowLength, flip)
+
+    pointsArray.push(arrowTip)
+
+    const points = pointsArray.map((point) => point.join(',')).join(' ')
 
     const arrowBgOptions = {
-      points: pointsArray,
+      points,
       className: 'arrow-bg'
     }
 
     const arrowOptions = {
-      points: pointsArray,
-      className: 'arrow fill route' + this.props.route
+      points,
+      className: 'arrow fill route' + route
     }
 
     return (
@@ -243,6 +261,5 @@ export default class TheGraphEdge extends Component {
         <Arrow {...arrowOptions} />
       </EdgeGroup>
     )
-    // return createEdgeGroup(containerOptions, [backgroundPath, arrowBg, foregroundPath, touchPath, arrow]);
   }
 }

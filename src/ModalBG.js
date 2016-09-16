@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import {findDOMNode} from 'react-dom'
-import {merge} from './utils'
 import Config from './Config'
 import {
   createModalBackgroundGroup,
@@ -8,17 +7,25 @@ import {
 } from './factories/modalBG'
 
 export default class TheGraphModalBG extends Component {
+  constructor (props, context) {
+    super(props, context)
+
+    this.onDown = this.onDown.bind(this)
+  }
   componentDidMount () {
-    var domNode = findDOMNode(this)
-    var rectNode = this.refs.rect
+    const domNode = findDOMNode(this)
 
     // Right-click on another item will show its menu
-    domNode.addEventListener('down', function (event) {
-      // Only if outside of menu
-      if (event && event.target === rectNode) {
-        this.hideModal()
-      }
-    }.bind(this))
+    domNode.addEventListener('down', this.onDown)
+  }
+
+  onDown (event) {
+    const {rect} = this.refs
+
+    // Only if outside of menu
+    if (event && event.target === rect) {
+      this.hideModal()
+    }
   }
 
   hideModal (/* event */) {
@@ -26,16 +33,22 @@ export default class TheGraphModalBG extends Component {
   }
 
   render () {
-    var rectOptions = {
-      width: this.props.width,
-      height: this.props.height
+    const {width, height, children} = this.props
+
+    const rectOptions = {
+      ...Config.modalBG.rect,
+      width,
+      height
     }
 
-    rectOptions = merge(Config.modalBG.rect, rectOptions)
-    var rect = createModalBackgroundRect(rectOptions)
+    const containerOptions = {
+      ...Config.modalBG.container
+    }
 
-    var containerContents = [rect, this.props.children]
-    var containerOptions = merge(Config.modalBG.container, {})
+    const rect = createModalBackgroundRect(rectOptions)
+
+    const containerContents = [rect, children]
+
     return createModalBackgroundGroup(containerOptions, containerContents)
   }
 };

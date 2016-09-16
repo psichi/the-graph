@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import {findDOMNode} from 'react-dom'
 import {FakeMouse} from './mixins'
-import {findMinMax, merge} from './utils'
+import {findMinMax} from './utils'
 import Config from './Config'
 import {
   GraphNode,
@@ -41,8 +41,12 @@ export default class TheGraphGraph extends Component {
   constructor (props, context) {
     super(props, context)
 
+    const {graph, offsetX, offsetY} = this.props
+
     this.state = {
-      graph: props.graph,
+      graph,
+      offsetX,
+      offsetY,
       displaySelectionGroup: true,
       edgePreview: null,
       edgePreviewX: 0,
@@ -51,17 +55,15 @@ export default class TheGraphGraph extends Component {
       selectedNodes: [],
       errorNodes: [],
       selectedEdges: [],
-      animatedEdges: [],
-      offsetX: props.offsetX,
-      offsetY: props.offsetY
+      animatedEdges: []
     }
 
     this.triggerRender = this.triggerRender.bind(this)
     this.resetPortRoute = this.resetPortRoute.bind(this)
     this.markDirty = this.markDirty.bind(this)
-    // this.removeNode = this.removeNode.bind(this)
     this.renderPreviewEdge = this.renderPreviewEdge.bind(this)
     this.cancelPreviewEdge = this.cancelPreviewEdge.bind(this)
+    // this.removeNode = this.removeNode.bind(this)
   }
 
   componentDidMount () {
@@ -83,35 +85,44 @@ export default class TheGraphGraph extends Component {
 
   edgeStart (event) {
     // Forwarded from App.edgeStart()
+    const {edgePreview} = this.state
+    const {app} = this.props
+    const {detail: eventDetail} = event
 
     // Port that triggered this
-    var port = event.detail.port
+    const {port} = eventDetail
 
     // Complete edge if this is the second tap and ports are compatible
-    if (this.state.edgePreview && this.state.edgePreview.isIn !== event.detail.isIn) {
+    if (edgePreview && edgePreview.isIn !== eventDetail.isIn) {
       // TODO also check compatible types
-      var halfEdge = this.state.edgePreview
-      if (event.detail.isIn) {
+      const halfEdge = edgePreview
+
+      if (eventDetail.isIn) {
         halfEdge.to = port
       } else {
         halfEdge.from = port
       }
+
       this.addEdge(halfEdge)
       this.cancelPreviewEdge()
+
       return
     }
 
-    var edge
-    if (event.detail.isIn) {
+    let edge
+
+    if (eventDetail.isIn) {
       edge = { to: port }
     } else {
       edge = { from: port }
     }
-    edge.isIn = event.detail.isIn
-    edge.metadata = { route: event.detail.route }
-    edge.type = event.detail.port.type
 
-    var appDomNode = findDOMNode(this.props.app)
+    edge.isIn = eventDetail.isIn
+    edge.metadata = { route: eventDetail.route }
+    edge.type = eventDetail.port.type
+
+    const appDomNode = findDOMNode(app)
+
     appDomNode.addEventListener('mousemove', this.renderPreviewEdge)
     appDomNode.addEventListener('track', this.renderPreviewEdge)
     // TODO tap to add new node here
@@ -121,26 +132,34 @@ export default class TheGraphGraph extends Component {
   }
 
   cancelPreviewEdge (event) {
-    var appDomNode = findDOMNode(this.props.app)
+    const {edgePreview} = this.state
+    const {app} = this.props
+    const appDomNode = findDOMNode(app)
+
     appDomNode.removeEventListener('mousemove', this.renderPreviewEdge)
     appDomNode.removeEventListener('track', this.renderPreviewEdge)
     appDomNode.removeEventListener('tap', this.cancelPreviewEdge)
-    if (this.state.edgePreview) {
+
+    if (edgePreview) {
       this.setState({edgePreview: null})
       this.markDirty()
     }
   }
 
   renderPreviewEdge (event) {
-    var x = event.x || event.clientX || 0
-    var y = event.y || event.clientY || 0
-    x -= this.props.app.state.offsetX || 0
-    y -= this.props.app.state.offsetY || 0
-    var scale = this.props.app.state.scale
+    const {app: {state: {offsetX, offsetY, scale, x: appX, y: appY} } } = this.props
+
+    let x = event.x || event.clientX || 0
+    let y = event.y || event.clientY || 0
+
+    x -= offsetX || 0
+    y -= offsetY || 0
+
     this.setState({
-      edgePreviewX: (x - this.props.app.state.x) / scale,
-      edgePreviewY: (y - this.props.app.state.y) / scale
+      edgePreviewX: (x - appX) / scale,
+      edgePreviewY: (y - appY) / scale
     })
+
     this.markDirty()
   }
 
@@ -149,13 +168,18 @@ export default class TheGraphGraph extends Component {
   }
 
   moveGroup (nodes, dx, dy) {
-    var graph = this.state.graph
+    const {graph} = this.state
 
     // Move each group member
-    var len = nodes.length
-    for (var i = 0; i < len; i++) {
-      var node = graph.getNode(nodes[i])
+    const len = nodes.length
+
+    let i
+
+    for (i = 0; i < len; i++) {
+      const node = graph.getNode(nodes[i])
+
       if (!node) { continue }
+
       if (dx !== undefined) {
         // Move by delta
         graph.setNodeMetadata(node.id, {
@@ -164,7 +188,7 @@ export default class TheGraphGraph extends Component {
         })
       } else {
         // Snap to grid
-        var snap = Config.base.nodeHeight / 2
+        const snap = Config.base.nodeHeight / 2
         graph.setNodeMetadata(node.id, {
           x: Math.round(node.metadata.x / snap) * snap,
           y: Math.round(node.metadata.y / snap) * snap
@@ -245,6 +269,7 @@ export default class TheGraphGraph extends Component {
         x: Config.base.config.nodeWidth,
         y: Config.base.config.nodeHeight / 2
       }
+
       this.dirty = true
     }
 
@@ -267,6 +292,7 @@ export default class TheGraphGraph extends Component {
         x: 0,
         y: Config.base.config.nodeHeight / 2
       }
+
       this.dirty = true
     }
 
@@ -276,6 +302,7 @@ export default class TheGraphGraph extends Component {
     if (route !== undefined) {
       port.route = route
     }
+
     return port
   }
 
@@ -283,9 +310,12 @@ export default class TheGraphGraph extends Component {
     // Trigger nodes with changed ports to rerender
     if (event.from && event.from.node) {
       const fromNode = this.portInfo[event.from.node]
+
       if (fromNode) {
         fromNode.dirty = true
+
         const outport = fromNode.outports[event.from.port]
+
         if (outport) {
           outport.route = null
         }
@@ -293,9 +323,12 @@ export default class TheGraphGraph extends Component {
     }
     if (event.to && event.to.node) {
       const toNode = this.portInfo[event.to.node]
+
       if (toNode) {
         toNode.dirty = true
+
         const inport = toNode.inports[event.to.port]
+
         if (inport) {
           inport.route = null
         }
@@ -323,7 +356,8 @@ export default class TheGraphGraph extends Component {
     return exp
   }
   getGraphInport (key) {
-    var exp = this.graphInports[key]
+    let exp = this.graphInports[key]
+
     if (!exp) {
       exp = {inports: {}, outports: {}}
       exp.outports[key] = {
@@ -337,27 +371,27 @@ export default class TheGraphGraph extends Component {
     }
     return exp
   }
-  setSelectedNodes (nodes) {
+  setSelectedNodes (selectedNodes) {
     this.setState({
-      selectedNodes: nodes
+      selectedNodes
     })
     this.markDirty()
   }
-  setErrorNodes (errors) {
+  setErrorNodes (errorNodes) {
     this.setState({
-      errorNodes: errors
+      errorNodes
     })
     this.markDirty()
   }
-  setSelectedEdges (edges) {
+  setSelectedEdges (selectedEdges) {
     this.setState({
-      selectedEdges: edges
+      selectedEdges
     })
     this.markDirty()
   }
-  setAnimatedEdges (edges) {
+  setAnimatedEdges (animatedEdges) {
     this.setState({
-      animatedEdges: edges
+      animatedEdges
     })
     this.markDirty()
   }
@@ -392,35 +426,47 @@ export default class TheGraphGraph extends Component {
   }
 
   createNodes (graph, selectedIds, highlightPort) {
+    const {app, onNodeSelection, showContext} = this.props
+
     return graph.nodes.map((node) => {
-      var componentInfo = this.getComponentInfo(node.component)
-      var key = node.id
+      const componentInfo = this.getComponentInfo(node.component)
+      const key = node.id
+
       if (!node.metadata) {
         node.metadata = {}
       }
+
       if (node.metadata.x === undefined) {
         node.metadata.x = 0
       }
+
       if (node.metadata.y === undefined) {
         node.metadata.y = 0
       }
+
       if (node.metadata.width === undefined) {
         node.metadata.width = Config.base.config.nodeWidth
       }
+
       node.metadata.height = Config.base.config.nodeHeight
+
       if (Config.base.config.autoSizeNode && componentInfo) {
         // Adjust node height based on number of ports.
-        var portCount = Math.max(componentInfo.inports.length, componentInfo.outports.length)
+        const portCount = Math.max(componentInfo.inports.length, componentInfo.outports.length)
         if (portCount > Config.base.config.maxPortCount) {
-          var diff = portCount - Config.base.config.maxPortCount
+          const diff = portCount - Config.base.config.maxPortCount
           node.metadata.height = Config.base.config.nodeHeight + (diff * Config.base.config.nodeHeightIncrement)
         }
       }
       if (!node.metadata.label || node.metadata.label === '') {
         node.metadata.label = key
       }
-      var icon = 'cog'
-      var iconsvg = ''
+
+      let icon
+      let iconsvg
+
+      icon = 'cog'
+      iconsvg = ''
 
       if (this.updatedIcons[key]) {
         icon = this.updatedIcons[key]
@@ -429,13 +475,23 @@ export default class TheGraphGraph extends Component {
       } else if (componentInfo && componentInfo.iconsvg) {
         iconsvg = componentInfo.iconsvg
       }
-      var selected = (this.state.selectedNodes[key] === true)
+      const selected = (this.state.selectedNodes[key] === true)
       if (selected) {
         selectedIds.push(key)
       }
 
-      var nodeOptions = {
-        key: key,
+      const nodeOptions = {
+        ...Config.node,
+        app,
+        key,
+        node,
+        icon,
+        graph,
+        iconsvg,
+        selected,
+        showContext,
+        onNodeSelection,
+        highlightPort,
         nodeID: key,
         x: node.metadata.x,
         y: node.metadata.y,
@@ -443,137 +499,142 @@ export default class TheGraphGraph extends Component {
         sublabel: node.metadata.sublabel || node.component,
         width: node.metadata.width,
         height: node.metadata.height,
-        app: this.props.app,
         graphView: this,
-        graph: graph,
-        node: node,
-        icon: icon,
-        iconsvg: iconsvg,
         ports: this.getPorts(graph, key, node.component),
-        onNodeSelection: this.props.onNodeSelection,
-        selected: selected,
-        error: (this.state.errorNodes[key] === true),
-        showContext: this.props.showContext,
-        highlightPort: highlightPort
+        error: (this.state.errorNodes[key] === true)
       }
 
-      nodeOptions = merge(Config.node, nodeOptions)
       return GraphNode(nodeOptions)
     })
   }
 
   createEdges (graph) {
+    const {app, onEdgeSelection, showContext} = this.props
+
     return graph.edges.map((edge) => {
-      var source = graph.getNode(edge.from.node)
-      var target = graph.getNode(edge.to.node)
+      const source = graph.getNode(edge.from.node)
+      const target = graph.getNode(edge.to.node)
+
       if (!source || !target) {
         return
       }
 
-      var route = 0
+      let route = 0
+
       if (edge.metadata && edge.metadata.route) {
         route = edge.metadata.route
       }
 
       // Initial ports from edges, and give port top/last edge color
-      var sourcePort = this.getNodeOutport(graph, edge.from.node, edge.from.port, route, source.component)
-      var targetPort = this.getNodeInport(graph, edge.to.node, edge.to.port, route, target.component)
+      const sourcePort = this.getNodeOutport(graph, edge.from.node, edge.from.port, route, source.component)
+      const targetPort = this.getNodeInport(graph, edge.to.node, edge.to.port, route, target.component)
 
-      var label = source.metadata.label + '() ' +
+      const label = source.metadata.label + '() ' +
         edge.from.port.toUpperCase() +
         (edge.from.hasOwnProperty('index') ? '[' + edge.from.index + ']' : '') + ' -> ' +
         edge.to.port.toUpperCase() +
         (edge.to.hasOwnProperty('index') ? '[' + edge.to.index + ']' : '') + ' ' +
         target.metadata.label + '()'
-      var key = edge.from.node + '() ' +
+
+      const key = edge.from.node + '() ' +
         edge.from.port.toUpperCase() +
         (edge.from.hasOwnProperty('index') ? '[' + edge.from.index + ']' : '') + ' -> ' +
         edge.to.port.toUpperCase() +
         (edge.to.hasOwnProperty('index') ? '[' + edge.to.index + ']' : '') + ' ' +
         edge.to.node + '()'
 
-      var edgeOptions = {
-        key: key,
+      const edgeOptions = {
+        ...Config.graph.edge,
+        key,
+        app,
+        edge,
+        graph,
+        label,
+        route,
+        onEdgeSelection,
+        showContext,
         edgeID: key,
-        graph: graph,
-        edge: edge,
-        app: this.props.app,
         sX: source.metadata.x + source.metadata.width,
         sY: source.metadata.y + sourcePort.y,
         tX: target.metadata.x,
         tY: target.metadata.y + targetPort.y,
-        label: label,
-        route: route,
-        onEdgeSelection: this.props.onEdgeSelection,
         selected: (this.state.selectedEdges.indexOf(edge) !== -1),
-        animated: (this.state.animatedEdges.indexOf(edge) !== -1),
-        showContext: this.props.showContext
+        animated: (this.state.animatedEdges.indexOf(edge) !== -1)
       }
 
-      edgeOptions = merge(Config.graph.edge, edgeOptions)
       return GraphEdge(edgeOptions)
     })
   }
 
   createIIPs (graph) {
     return graph.initializers.map((iip) => {
-      var target = graph.getNode(iip.to.node)
+      const target = graph.getNode(iip.to.node)
+
       if (!target) { return }
 
-      var targetPort = this.getNodeInport(graph, iip.to.node, iip.to.port, 0, target.component)
-      var tX = target.metadata.x
-      var tY = target.metadata.y + targetPort.y
+      const targetPort = this.getNodeInport(graph, iip.to.node, iip.to.port, 0, target.component)
+      const x = target.metadata.x
+      const y = target.metadata.y + targetPort.y
 
-      var data = iip.from.data
-      var type = typeof data
-      var label = data === true || data === false || type === 'number' || type === 'string' ? data : type
+      const data = iip.from.data
+      const type = typeof data
+      const label = data === true || data === false || type === 'number' || type === 'string' ? data : type
 
-      var iipOptions = {
-        graph: graph,
-        label: label,
-        x: tX,
-        y: tY
+      const iipOptions = {
+        ...Config.graph.iip,
+        graph,
+        label,
+        x,
+        y
       }
 
-      iipOptions = merge(Config.graph.iip, iipOptions)
       return GraphIIP(iipOptions)
     })
   }
 
   createInportExports (graph) {
+    const {app, showContext} = this.props
+
     const edges = Object.keys(graph.inports).map((key) => {
-      var inport = graph.inports[key]
+      const inport = graph.inports[key]
       // Export info
-      var label = key
-      var nodeKey = inport.process
-      var portKey = inport.port
+      const label = key
+      const nodeKey = inport.process
+      const portKey = inport.port
+
       if (!inport.metadata) {
         inport.metadata = {x: 0, y: 0}
       }
-      var metadata = inport.metadata
+
+      const metadata = inport.metadata
+
       if (!metadata.x) { metadata.x = 0 }
       if (!metadata.y) { metadata.y = 0 }
       if (!metadata.width) { metadata.width = Config.base.config.nodeWidth }
       if (!metadata.height) { metadata.height = Config.base.config.nodeHeight }
+
       // Private port info
-      var portInfo = this.portInfo[nodeKey]
+      const portInfo = this.portInfo[nodeKey]
       if (!portInfo) {
         console.warn('Node ' + nodeKey + ' not found for graph inport ' + label)
         return
       }
-      var privatePort = portInfo.inports[portKey]
+
+      const privatePort = portInfo.inports[portKey]
       if (!privatePort) {
         console.warn('Port ' + nodeKey + '.' + portKey + ' not found for graph inport ' + label)
         return
       }
+
       // Private node
-      var privateNode = graph.getNode(nodeKey)
+      const privateNode = graph.getNode(nodeKey)
       if (!privateNode) {
         console.warn('Node ' + nodeKey + ' not found for graph inport ' + label)
         return
       }
       // Node view
-      var expNode = {
+      const expNode = {
+        ...Config.graph.inportNode,
         key: 'inport.node.' + key,
         export: inport,
         exportKey: key,
@@ -581,24 +642,25 @@ export default class TheGraphGraph extends Component {
         y: metadata.y,
         width: metadata.width,
         height: metadata.height,
-        label: label,
-        app: this.props.app,
+        label,
+        app,
         graphView: this,
-        graph: graph,
+        graph,
         node: {},
         ports: this.getGraphInport(key),
         isIn: true,
         icon: (metadata.icon ? metadata.icon : 'sign-in'),
-        showContext: this.props.showContext
+        showContext
       }
-      expNode = merge(Config.graph.inportNode, expNode)
+
       // Edge view
-      var expEdge = {
+      const expEdge = {
+        ...Config.graph.inportEdge,
         key: 'inport.edge.' + key,
         export: inport,
         exportKey: key,
-        graph: graph,
-        app: this.props.app,
+        graph,
+        app,
         edge: {},
         route: (metadata.route ? metadata.route : 2),
         isIn: true,
@@ -607,9 +669,9 @@ export default class TheGraphGraph extends Component {
         sY: expNode.y + Config.base.config.nodeHeight / 2,
         tX: privateNode.metadata.x + privatePort.x,
         tY: privateNode.metadata.y + privatePort.y,
-        showContext: this.props.showContext
+        showContext
       }
-      expEdge = merge(Config.graph.inportEdge, expEdge)
+
       edges.unshift(GraphEdge(expEdge))
 
       return GraphNode(expNode)
@@ -619,39 +681,51 @@ export default class TheGraphGraph extends Component {
   }
 
   createOutportExports (graph) {
+    const {app, showContext} = this.props
+
     const edges = Object.keys(graph.outports).map((key) => {
-      var outport = graph.outports[key]
+      const outport = graph.outports[key]
       // Export info
-      var label = key
-      var nodeKey = outport.process
-      var portKey = outport.port
+      const label = key
+      const nodeKey = outport.process
+      const portKey = outport.port
+
       if (!outport.metadata) {
         outport.metadata = {x: 0, y: 0}
       }
-      var metadata = outport.metadata
+
+      const metadata = outport.metadata
+
       if (!metadata.x) { metadata.x = 0 }
       if (!metadata.y) { metadata.y = 0 }
       if (!metadata.width) { metadata.width = Config.base.config.nodeWidth }
       if (!metadata.height) { metadata.height = Config.base.config.nodeHeight }
+
       // Private port info
-      var portInfo = this.portInfo[nodeKey]
+      const portInfo = this.portInfo[nodeKey]
+
       if (!portInfo) {
         console.warn('Node ' + nodeKey + ' not found for graph outport ' + label)
         return
       }
-      var privatePort = portInfo.outports[portKey]
+
+      const privatePort = portInfo.outports[portKey]
+
       if (!privatePort) {
         console.warn('Port ' + nodeKey + '.' + portKey + ' not found for graph outport ' + label)
         return
       }
       // Private node
-      var privateNode = graph.getNode(nodeKey)
+      const privateNode = graph.getNode(nodeKey)
+
       if (!privateNode) {
         console.warn('Node ' + nodeKey + ' not found for graph outport ' + label)
         return
       }
+
       // Node view
-      var expNode = {
+      const expNode = {
+        ...Config.graph.outportNode,
         key: 'outport.node.' + key,
         export: outport,
         exportKey: key,
@@ -659,26 +733,25 @@ export default class TheGraphGraph extends Component {
         y: metadata.y,
         width: metadata.width,
         height: metadata.height,
-        label: label,
-        app: this.props.app,
+        label,
+        app,
         graphView: this,
-        graph: graph,
+        graph,
         node: {},
         ports: this.getGraphOutport(key),
         isIn: false,
         icon: (metadata.icon ? metadata.icon : 'sign-out'),
-        showContext: this.props.showContext
+        showContext
       }
-
-      expNode = merge(Config.graph.outportNode, expNode)
 
       // Edge view
       var expEdge = {
+        ...Config.graph.outportEdge,
         key: 'outport.edge.' + key,
         export: outport,
         exportKey: key,
-        graph: graph,
-        app: this.props.app,
+        graph,
+        app,
         edge: {},
         route: (metadata.route ? metadata.route : 4),
         isIn: false,
@@ -687,10 +760,8 @@ export default class TheGraphGraph extends Component {
         sY: privateNode.metadata.y + privatePort.y,
         tX: expNode.x,
         tY: expNode.y + Config.base.config.nodeHeight / 2,
-        showContext: this.props.showContext
+        showContext
       }
-
-      expEdge = merge(Config.graph.outportEdge, expEdge)
 
       edges.unshift(GraphEdge(expEdge))
 
@@ -701,41 +772,56 @@ export default class TheGraphGraph extends Component {
   }
 
   createGroups (graph) {
+    const {app, scale, showContext} = this.props
+
     return graph.groups.map((group) => {
       if (group.nodes.length < 1) {
         return
       }
-      var limits = findMinMax(graph, group.nodes)
+
+      const limits = findMinMax(graph, group.nodes)
+
       if (!limits) {
         return
       }
-      var groupOptions = {
+
+      const groupOptions = {
+        ...Config.graph.nodeGroup,
+        app,
+        graph,
+        scale,
+        showContext,
         key: 'group.' + group.name,
-        graph: graph,
         item: group,
-        app: this.props.app,
         minX: limits.minX,
         minY: limits.minY,
         maxX: limits.maxX,
         maxY: limits.maxY,
-        scale: this.props.scale,
         label: group.name,
         nodes: group.nodes,
         description: group.metadata.description,
         color: group.metadata.color,
-        triggerMoveGroup: this.moveGroup,
-        showContext: this.props.showContext
+        triggerMoveGroup: this.moveGroup
       }
-      groupOptions = merge(Config.graph.nodeGroup, groupOptions)
+
       return GraphGroup(groupOptions)
     })
   }
 
   render () {
     this.dirty = false
-    var graph = this.state.graph
-    var library = this.props.library
-    var selectedIds = []
+
+    const {
+      forceSelection,
+      graph,
+      edgePreview: currentEdgePreview,
+      displaySelectionGroup,
+      edgePreviewX,
+      edgePreviewY
+    } = this.state
+
+    const {app, scale, showContext} = this.props
+    const selectedIds = []
 
     // Reset ports if library has changed
     if (this.libraryDirty) {
@@ -744,15 +830,15 @@ export default class TheGraphGraph extends Component {
     }
 
     // Highlight compatible ports
-    var highlightPort = null
-    if (this.state.edgePreview && this.state.edgePreview.type) {
+    let highlightPort
+
+    highlightPort = null
+    if (currentEdgePreview && currentEdgePreview.type) {
       highlightPort = {
-        type: this.state.edgePreview.type,
-        isIn: !this.state.edgePreview.isIn
+        type: currentEdgePreview.type,
+        isIn: !currentEdgePreview.isIn
       }
     }
-
-    console.log('RENDER GRAPH', graph)
 
     // Nodes
     const nodes = this.createNodes(graph, selectedIds, highlightPort)
@@ -773,81 +859,106 @@ export default class TheGraphGraph extends Component {
     const groups = this.createGroups(graph)
 
     // Selection pseudo-group
-    if (this.state.displaySelectionGroup &&
-      selectedIds.length >= 2) {
-      var limits = findMinMax(graph, selectedIds)
+    if (displaySelectionGroup && selectedIds.length >= 2) {
+      const limits = findMinMax(graph, selectedIds)
       if (limits) {
-        var pseudoGroup = {
+        const pseudoGroup = {
           name: 'selection',
           nodes: selectedIds,
           metadata: {color: 1}
         }
-        var selectionGroupOptions = {
-          graph: graph,
-          app: this.props.app,
+
+        const selectionGroupOptions = {
+          ...Config.graph.selectionGroup,
+          graph,
+          app,
           item: pseudoGroup,
           minX: limits.minX,
           minY: limits.minY,
           maxX: limits.maxX,
           maxY: limits.maxY,
-          scale: this.props.scale,
+          scale,
           color: pseudoGroup.metadata.color,
           triggerMoveGroup: this.moveGroup,
-          showContext: this.props.showContext
+          showContext
         }
-        selectionGroupOptions = merge(Config.graph.selectionGroup, selectionGroupOptions)
-        var selectionGroup = GraphGroup(selectionGroupOptions)
+
+        const selectionGroup = GraphGroup(selectionGroupOptions)
+
         groups.push(selectionGroup)
       }
     }
 
     // Edge preview
-    var edgePreview = this.state.edgePreview
+    const edgePreview = this.state.edgePreview
+
     if (edgePreview) {
-      var edgePreviewOptions
+      let edgePreviewOptions
+
       if (edgePreview.from) {
-        var source = graph.getNode(edgePreview.from.process)
-        var sourcePort = this.getNodeOutport(graph, edgePreview.from.process, edgePreview.from.port)
+        const source = graph.getNode(edgePreview.from.process)
+        const sourcePort = this.getNodeOutport(graph, edgePreview.from.process, edgePreview.from.port)
+
         edgePreviewOptions = {
+          ...Config.graph.edgePreview,
           sX: source.metadata.x + source.metadata.width,
           sY: source.metadata.y + sourcePort.y,
-          tX: this.state.edgePreviewX,
-          tY: this.state.edgePreviewY,
+          tX: edgePreviewX,
+          tY: edgePreviewY,
           route: edgePreview.metadata.route
         }
       } else {
-        var target = graph.getNode(edgePreview.to.process)
-        var targetPort = this.getNodeInport(graph, edgePreview.to.process, edgePreview.to.port)
+        const target = graph.getNode(edgePreview.to.process)
+        const targetPort = this.getNodeInport(graph, edgePreview.to.process, edgePreview.to.port)
+
         edgePreviewOptions = {
-          sX: this.state.edgePreviewX,
-          sY: this.state.edgePreviewY,
+          ...Config.graph.edgePreview,
+          sX: edgePreviewX,
+          sY: edgePreviewY,
           tX: target.metadata.x,
           tY: target.metadata.y + targetPort.y,
           route: edgePreview.metadata.route
         }
       }
-      edgePreviewOptions = merge(Config.graph.edgePreview, edgePreviewOptions)
-      var edgePreviewView = GraphEdgePreview(edgePreviewOptions)
+
+      const edgePreviewView = GraphEdgePreview(edgePreviewOptions)
+
       edges.push(edgePreviewView)
     }
 
-    var groupsOptions = merge(Config.graph.groupsGroup, { children: groups })
-    var edgesOptions = merge(Config.graph.edgesGroup, { children: edges })
-    var iipsOptions = merge(Config.graph.iipsGroup, { children: iips })
-    var nodesOptions = merge(Config.graph.nodesGroup, { children: nodes })
-    var inportsOptions = merge(Config.graph.inportsGroup, { children: inports })
-    var outportsOptions = merge(Config.graph.outportsGroup, { children: outports })
-    var selectedClass = (this.state.forceSelection || selectedIds.length > 0) ? ' selection' : ''
-    var containerOptions = merge(Config.graph.container, { className: 'graph' + selectedClass })
+    const groupsOptions = Config.graph.groupsGroup
+    const edgesOptions = Config.graph.edgesGroup
+    const iipsOptions = Config.graph.iipsGroup
+    const nodesOptions = Config.graph.nodesGroup
+    const inportsOptions = Config.graph.inportsGroup
+    const outportsOptions = Config.graph.outportsGroup
+
+    const selectedClass = (forceSelection || selectedIds.length > 0) ? ' selection' : ''
+    const containerOptions = {
+      ...Config.graph.container,
+      className: 'graph' + selectedClass
+    }
 
     return (
       <GraphContainerGroup {...containerOptions}>
-        <GraphGroupsGroup {...groupsOptions} />
-        <GraphEdgesGroup {...edgesOptions} />
-        <GraphIIPGroup {...iipsOptions} />
-        <GraphNodesGroup {...nodesOptions} />
-        <GraphInportsGroup {...inportsOptions} />
-        <GraphGroupsGroup {...outportsOptions} />
+        <GraphGroupsGroup {...groupsOptions}>
+          {groups}
+        </GraphGroupsGroup>
+        <GraphEdgesGroup {...edgesOptions}>
+          {edges}
+        </GraphEdgesGroup>
+        <GraphIIPGroup {...iipsOptions}>
+          {iips}
+        </GraphIIPGroup>
+        <GraphNodesGroup {...nodesOptions}>
+          {nodes}
+        </GraphNodesGroup>
+        <GraphInportsGroup {...inportsOptions}>
+          {inports}
+        </GraphInportsGroup>
+        <GraphGroupsGroup {...outportsOptions}>
+          {outports}
+        </GraphGroupsGroup>
       </GraphContainerGroup>
     )
   }

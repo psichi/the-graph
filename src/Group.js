@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import {merge} from './utils'
 import {findDOMNode} from 'react-dom'
 import Menu from './Menu'
 import Config from './Config'
@@ -30,7 +29,7 @@ export default class TheGraphGroup extends Component {
       findDOMNode(this.refs.label).addEventListener('trackstart', this.onTrackStart)
     }
 
-    var domNode = findDOMNode(this)
+    const domNode = findDOMNode(this)
 
     // Don't pan under menu
     domNode.addEventListener('trackstart', this.dontPan)
@@ -49,60 +48,76 @@ export default class TheGraphGroup extends Component {
     event.stopPropagation()
     if (event.preventTap) { event.preventTap() }
 
+    const {graph, label: itemKey, item, isSelectionGroup, showContext} = this.props
+
     // Get mouse position
-    var x = event.x || event.clientX || 0
-    var y = event.y || event.clientY || 0
+    const x = event.x || event.clientX || 0
+    const y = event.y || event.clientY || 0
 
     // App.showContext
-    this.props.showContext({
+    showContext({
       element: this,
-      type: (this.props.isSelectionGroup ? 'selection' : 'group'),
-      x: x,
-      y: y,
-      graph: this.props.graph,
-      itemKey: this.props.label,
-      item: this.props.item
+      type: (isSelectionGroup ? 'selection' : 'group'),
+      x,
+      y,
+      graph,
+      itemKey,
+      item
     })
   }
-  getContext (menu, options, hide) {
+  getContext (menu, options, triggerHideContext) {
+    const {label} = this.props
+
     return Menu({
-      menu: menu,
-      options: options,
-      label: this.props.label,
-      triggerHideContext: hide
+      menu,
+      options,
+      label,
+      triggerHideContext
     })
   }
+
   dontPan (event) {
+    const {app: {menuShown}} = this.props
     // Don't drag under menu
-    if (this.props.app.menuShown) {
+    if (menuShown) {
       event.stopPropagation()
     }
   }
+
   onTrackStart (event) {
     // Don't drag graph
     event.stopPropagation()
 
-    if (this.props.isSelectionGroup) {
-      var box = findDOMNode(this.refs.box)
-      box.addEventListener('track', this.onTrack)
-      box.addEventListener('trackend', this.onTrackEnd)
+    const {graph, isSelectionGroup} = this.props
+    const {box, label} = this.refs
+
+    if (isSelectionGroup) {
+      const boxEl = findDOMNode(box)
+
+      boxEl.addEventListener('track', this.onTrack)
+      boxEl.addEventListener('trackend', this.onTrackEnd)
     } else {
-      var label = findDOMNode(this.refs.label)
-      label.addEventListener('track', this.onTrack)
-      label.addEventListener('trackend', this.onTrackEnd)
+      const labelEl = findDOMNode(label)
+
+      labelEl.addEventListener('track', this.onTrack)
+      labelEl.addEventListener('trackend', this.onTrackEnd)
     }
 
-    this.props.graph.startTransaction('movegroup')
+    graph.startTransaction('movegroup')
   }
+
   onTrack (event) {
     // Don't fire on graph
     event.stopPropagation()
 
-    var deltaX = Math.round(event.ddx / this.props.scale)
-    var deltaY = Math.round(event.ddy / this.props.scale)
+    const {scale, triggerMoveGroup, item: {nodes}} = this.props
 
-    this.props.triggerMoveGroup(this.props.item.nodes, deltaX, deltaY)
+    const deltaX = Math.round(event.ddx / scale)
+    const deltaY = Math.round(event.ddy / scale)
+
+    triggerMoveGroup(nodes, deltaX, deltaY)
   }
+
   onTrackEnd (event) {
     // Don't fire on graph
     event.stopPropagation()
@@ -110,59 +125,71 @@ export default class TheGraphGroup extends Component {
     // Don't tap graph (deselect)
     event.preventTap()
 
-    // Snap to grid
-    this.props.triggerMoveGroup(this.props.item.nodes)
+    const {isSelectionGroup, triggerMoveGroup, item: {nodes}} = this.props
+    const {box, label} = this.refs
 
-    if (this.props.isSelectionGroup) {
-      var box = findDOMNode(this.refs.box)
-      box.removeEventListener('track', this.onTrack)
-      box.removeEventListener('trackend', this.onTrackEnd)
+    // Snap to grid
+    triggerMoveGroup(nodes)
+
+    if (isSelectionGroup) {
+      const boxEl = findDOMNode(box)
+
+      boxEl.removeEventListener('track', this.onTrack)
+      boxEl.removeEventListener('trackend', this.onTrackEnd)
     } else {
-      var label = findDOMNode(this.refs.label)
-      label.removeEventListener('track', this.onTrack)
-      label.removeEventListener('trackend', this.onTrackEnd)
+      const labelEl = findDOMNode(label)
+
+      labelEl.removeEventListener('track', this.onTrack)
+      labelEL.removeEventListener('trackend', this.onTrackEnd)
     }
 
     this.props.graph.endTransaction('movegroup')
   }
   render () {
-    var x = this.props.minX - Config.base.config.nodeWidth / 2
-    var y = this.props.minY - Config.base.config.nodeHeight / 2
-    var color = (this.props.color ? this.props.color : 0)
-    var selection = (this.props.isSelectionGroup ? ' selection drag' : '')
-    var boxRectOptions = {
-      x: x,
-      y: y,
-      width: this.props.maxX - x + Config.base.config.nodeWidth * 0.5,
-      height: this.props.maxY - y + Config.base.config.nodeHeight * 0.75,
+    const {isSelectionGroup, color: colorProp, description, label, minX, maxX, minY, maxY} = this.props
+
+    const x = minX - Config.base.config.nodeWidth / 2
+    const y = minY - Config.base.config.nodeHeight / 2
+    const color = (colorProp ? colorProp : 0)
+    const selection = (isSelectionGroup ? ' selection drag' : '')
+    const boxRectOptions = {
+      ...Config.group.boxRect,
+      x,
+      y,
+      width: maxX - x + Config.base.config.nodeWidth * 0.5,
+      height: maxY - y + Config.base.config.nodeHeight * 0.75,
       className: 'group-box color' + color + selection
     }
-    boxRectOptions = merge(Config.group.boxRect, boxRectOptions)
-    var boxRect = createGroupBoxRect(boxRectOptions)
 
-    var labelTextOptions = {
+    const boxRect = createGroupBoxRect(boxRectOptions)
+
+    const labelTextOptions = {
+      ...Config.group.labelText,
       x: x + Config.base.config.nodeRadius,
       y: y + 9,
-      children: this.props.label
+      children: label
     }
-    labelTextOptions = merge(Config.group.labelText, labelTextOptions)
-    var labelText = createGroupLabelText(labelTextOptions)
 
-    var descriptionTextOptions = {
+    const labelText = createGroupLabelText(labelTextOptions)
+
+    const descriptionTextOptions = {
+      ...Config.group.descriptionText,
       x: x + Config.base.nodeRadius,
       y: y + 24,
-      children: this.props.description
+      children: description
     }
-    descriptionTextOptions = merge(Config.group.descriptionText, descriptionTextOptions)
-    var descriptionText = createGroupDescriptionText(descriptionTextOptions)
 
-    var groupContents = [
+    const descriptionText = createGroupDescriptionText(descriptionTextOptions)
+
+    const groupContents = [
       boxRect,
       labelText,
       descriptionText
     ]
 
-    var containerOptions = merge(Config.group.container, {})
+    const containerOptions = {
+      ...Config.group.container
+    }
 
     return createGroupGroup(containerOptions, groupContents)
   }

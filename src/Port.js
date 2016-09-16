@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import {findDOMNode} from 'react-dom'
-import {arcs, merge} from './utils'
+import {arcs} from './utils'
 import Config from './Config'
 import {Tooltip} from './mixins'
 import Menu from './Menu'
@@ -22,11 +22,11 @@ export default class TheGraphPort extends Component {
     app: PropTypes.object,
     label: PropTypes.string.isRequired,
     isIn: PropTypes.bool,
-    port: PropTypes.object,
+    port: PropTypes.object.isRequired,
     graph: PropTypes.object,
     route: PropTypes.number,
-    x: PropTypes.number,
-    y: PropTypes.number,
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
     showContext: PropTypes.func,
     isExport: PropTypes.bool
   }
@@ -41,17 +41,19 @@ export default class TheGraphPort extends Component {
   }
 
   componentDidMount () {
+    const {addEventListener} = findDOMNode(this)
+
     // Preview edge start
-    findDOMNode(this).addEventListener('tap', this.edgeStart)
-    findDOMNode(this).addEventListener('trackstart', this.edgeStart)
+    addEventListener('tap', this.edgeStart)
+    addEventListener('trackstart', this.edgeStart)
     // Make edge
-    findDOMNode(this).addEventListener('trackend', this.triggerDropOnTarget)
-    findDOMNode(this).addEventListener('the-graph-edge-drop', this.edgeStart)
+    addEventListener('trackend', this.triggerDropOnTarget)
+    addEventListener('the-graph-edge-drop', this.edgeStart)
 
     // Show context menu
     if (this.props.showContext) {
-      findDOMNode(this).addEventListener('contextmenu', this.showContext)
-      findDOMNode(this).addEventListener('hold', this.showContext)
+      addEventListener('contextmenu', this.showContext)
+      addEventListener('hold', this.showContext)
     }
   }
 
@@ -60,21 +62,27 @@ export default class TheGraphPort extends Component {
   }
 
   shouldShowTooltip () {
+    const {label, app: {state: {scale}}} = this.props
+
     return (
-      this.props.app.state.scale < Config.base.zbpBig ||
-      this.props.label.length > 8
+      scale < Config.base.zbpBig || label.length > 8
     )
   }
 
   showContext (event) {
+    const {isExport, isIn, graph, label: itemKey, port: item, showContext} = this.props
+    const {label: labelRef} = this.refs
+
     // Don't show port menu on export node port
-    if (this.props.isExport) {
+    if (isExport) {
       return
     }
+
     // Click on label, pass context menu to node
-    if (event && (event.target === findDOMNode(this.refs.label))) {
+    if (event && (event.target === findDOMNode(labelRef))) {
       return
     }
+
     // Don't show native context menu
     event.preventDefault()
 
@@ -83,124 +91,141 @@ export default class TheGraphPort extends Component {
     if (event.preventTap) { event.preventTap() }
 
     // Get mouse position
-    var x = event.x || event.clientX || 0
-    var y = event.y || event.clientY || 0
+    const x = event.x || event.clientX || 0
+    const y = event.y || event.clientY || 0
 
     // App.showContext
-    this.props.showContext({
+    showContext({
       element: this,
-      type: (this.props.isIn ? 'nodeInport' : 'nodeOutport'),
-      x: x,
-      y: y,
-      graph: this.props.graph,
-      itemKey: this.props.label,
-      item: this.props.port
+      type: (isIn ? 'nodeInport' : 'nodeOutport'),
+      x,
+      y,
+      graph,
+      itemKey,
+      item
     })
   }
 
-  getContext (menu, options, hide) {
+  getContext (menu, options, triggerHideContext) {
+    const {label} = this.props
+
     return Menu({
-      menu: menu,
-      options: options,
-      label: this.props.label,
-      triggerHideContext: hide
+      menu,
+      options,
+      label,
+      triggerHideContext
     })
   }
 
   edgeStart (event) {
+    const {isExport, isIn, port, route} = this.props
+    const {label: labelRef} = this.refs
+    const {dispatchEvent} = findDOMNode(this)
+
     // Don't start edge on export node port
-    if (this.props.isExport) {
+    if (isExport) {
       return
     }
     // Click on label, pass context menu to node
-    if (event && (event.target === findDOMNode(this.refs.label))) {
+    if (event && (event.target === findDOMNode(labelRef))) {
       return
     }
     // Don't tap graph
     event.stopPropagation()
 
-    var edgeStartEvent = new CustomEvent('the-graph-edge-start', {
+    const edgeStartEvent = new CustomEvent('the-graph-edge-start', {
       detail: {
-        isIn: this.props.isIn,
-        port: this.props.port,
+        isIn,
+        port,
         // process: this.props.processKey,
-        route: this.props.route
+        route
       },
       bubbles: true
     })
-    findDOMNode(this).dispatchEvent(edgeStartEvent)
+
+    dispatchEvent(edgeStartEvent)
   }
 
   triggerDropOnTarget (event) {
     // If dropped on a child element will bubble up to port
     if (!event.relatedTarget) { return }
-    var dropEvent = new CustomEvent('the-graph-edge-drop', {
+
+    const dropEvent = new CustomEvent('the-graph-edge-drop', {
       detail: null,
       bubbles: true
     })
+
     event.relatedTarget.dispatchEvent(dropEvent)
   }
 
   render () {
-    var style
-    console.log('PORT PROPS!!', this.props)
-    if (this.props.label.length > 7) {
-      var fontSize = 6 * (30 / (4 * this.props.label.length))
+    let style
+
+    const {label, highlightPort, isIn, port, route, x, y} = this.props
+
+    if (label.length > 7) {
+      const fontSize = 6 * (30 / (4 * label.length))
       style = { 'fontSize': fontSize + 'px' }
     }
-    var r = 4
+
+    let r
+    let inArc
+    let outArc
+
     // Highlight matching ports
-    var highlightPort = this.props.highlightPort
-    var inArc = arcs.inport
-    var outArc = arcs.outport
-    if (highlightPort && highlightPort.isIn === this.props.isIn && (highlightPort.type === this.props.port.type || this.props.port.type === 'any')) {
+    r = 4
+    inArc = arcs.inport
+    outArc = arcs.outport
+
+    if (highlightPort && highlightPort.isIn === isIn && (highlightPort.type === port.type || port.type === 'any')) {
       r = 6
       inArc = arcs.inportBig
       outArc = arcs.outportBig
     }
 
-    var backgroundCircleOptions = merge(Config.port.backgroundCircle, { r: r + 1 })
-    // var backgroundCircle = createPortBackgroundCircle(backgroundCircleOptions);
+    const backgroundCircleOptions = {
+      ...Config.port.backgroundCircle,
+      r: r + 1
+    }
 
-    var arcOptions = merge(Config.port.arc, { d: (this.props.isIn ? inArc : outArc) })
+    // const backgroundCircle = createPortBackgroundCircle(backgroundCircleOptions);
+
+    const arcOptions = {
+      ...Config.port.arc,
+      d: (isIn ? inArc : outArc)
+    }
+
     // var arc = createPortArc(arcOptions);
 
-    var innerCircleOptions = {
-      className: 'port-circle-small fill route' + this.props.route,
+    const innerCircleOptions = {
+      ...Config.port.innerCircle,
+      className: 'port-circle-small fill route' + route,
       r: r - 1.5
     }
 
-    innerCircleOptions = merge(Config.port.innerCircle, innerCircleOptions)
-    // var innerCircle = createPortInnerCircle(innerCircleOptions);
+    // const innerCircle = createPortInnerCircle(innerCircleOptions);
 
-    var labelTextOptions = {
-      x: (this.props.isIn ? 5 : -5),
-      style: style,
-      children: this.props.label
+    const labelTextOptions = {
+      ...Config.port.text,
+      x: (isIn ? 5 : -5),
+      style
+      // children: label
     }
-    labelTextOptions = merge(Config.port.text, labelTextOptions)
-    // var labelText = createPortLabelText(labelTextOptions);
 
-    /*
-    var portContents = [
-      backgroundCircle,
-      arc,
-      innerCircle,
-      labelText
-    ];
-    */
+    const containerOptions = {
+      ...Config.port.container,
+      title: label,
+      transform: 'translate(' + x + ',' + y + ')'
+    }
 
-    var containerOptions = merge(Config.port.container, { title: this.props.label, transform: 'translate(' + this.props.x + ',' + this.props.y + ')' })
-    // return createPortGroup(containerOptions, portContents);
-
-    // can just look like this.
-    // should almost work
     return (
       <PortGroup {...containerOptions}>
         <PortBackgroundCircle {...backgroundCircleOptions} />
         <PortArc {...arcOptions} />
         <PortInnerCircle {...innerCircleOptions} />
-        <PortLabelText {...labelTextOptions} />
+        <PortLabelText {...labelTextOptions}>
+          {label}
+        </PortLabelText>
       </PortGroup>
     )
   }
