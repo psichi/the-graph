@@ -360,14 +360,10 @@ export default class TheGraphNode extends Component {
     const {
       app,
       graph,
-      height,
       highlightPort,
       node,
       nodeID,
       showContext,
-      width,
-      x,
-      y
     } = this.props
 
     const isExport = (this.props.export !== undefined)
