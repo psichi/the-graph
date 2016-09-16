@@ -38,31 +38,25 @@ export default class KlayNoflo {
   // Initialize the layouter as a WebWorker
   init (params) {
     // Set up some properties
-    let onSuccess
-    let onError
-    let workerScript
+    let {onSuccess, onError, workerScript} = params
 
-    if ('onSuccess' in params) {
-      onSuccess = params.onSuccess
-    } else {
+    if (!onSuccess) {
       onSuccess = console.log
     }
 
-    if ('onError' in params) {
-      onError = params.onError
-    } else {
+    if (!onError) {
       onError = console.error
     }
 
     if ('KLAY_CONFIG' in window && 'workerScript' in window.KLAY_CONFIG) {
       workerScript = window.KLAY_CONFIG.workerScript
-    } else if ('workerScript' in params) {
-      workerScript = params.workerScript
-    } else {
+    } else if (!workerScript) {
       workerScript = '../../node_modules/klayjs/klay.js'
     }
+
     // Start the WebWorker
     this.worker = new Worker(workerScript)
+
     // Register a listener to default WebWorker event, calling
     // 'callback' when layout succeeds
     this.worker.addEventListener('message', function (e) {
@@ -110,10 +104,8 @@ export default class KlayNoflo {
     })
   }
 
-  nofloToKieler (graph, portInfo, direction) {
-    // Default direction is left to right
-    direction = direction || 'RIGHT'
-
+  // Default direction is left to right
+  nofloToKieler (graph, portInfo, direction = 'RIGHT') {
     // Default port and node properties
     const portProperties = {
       inportSide: 'WEST',
