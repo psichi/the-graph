@@ -416,9 +416,6 @@ export default class TheGraphNode extends Component {
       icon = Config.FONT_AWESOME.cog
     }
 
-    console.log('iCON', icon)
-    console.log('iCON SVG', iconsvg)
-
     if (iconsvg && iconsvg !== '') {
       const iconSVGOptions = {
         ...Config.node.iconsvg,
@@ -482,19 +479,16 @@ export default class TheGraphNode extends Component {
 
     const inportsOptions = {
       ...Config.node.inports
-      // { children: inportViews }
     }
 
     const outportsOptions = {
       ...Config.node.outports
-      // { children: outportViews }
     }
 
     const labelTextOptions = {
       ...Config.node.labelText,
       x: this.props.width / 2,
       y: this.props.height + 15
-      // { children: label });
     }
 
     let labelRectOptions
@@ -507,14 +501,10 @@ export default class TheGraphNode extends Component {
       ...labelRectOptions
     }
 
-    // has children
-    // / var labelGroup = createNodeLabelGroup(Config.node.labelBackground, [labelRect, labelText]);
-
     const sublabelTextOptions = {
       ...Config.node.sublabelText,
       x: width / 2,
       y: height + 30
-      // { children: sublabel }
     }
 
     const sublabelRectX = width / 2
@@ -525,8 +515,6 @@ export default class TheGraphNode extends Component {
       ...Config.node.sublabelRect,
       ...sublabelRectOptions
     }
-
-    // var sublabelGroup = createNodeSublabelGroup(Config.node.sublabelBackground, [sublabelRect, sublabelText]);
 
     let nodeOptions
 
@@ -571,17 +559,3 @@ export default class TheGraphNode extends Component {
     )
   }
 }
-
-/* Main Structure
- var nodeContents = [
- backgroundRect,
- borderRect,
- innerRect,
- iconContent,
- inportsGroup,
- outportsGroup,
- labelGroup,
- sublabelGroup
- ];
- */
-// return createNodeGroup(nodeOptions, nodeContents);
