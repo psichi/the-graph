@@ -10,7 +10,7 @@ import Node from '../Node'
 import Menu from '../Menu'
 import Graph from '../Graph'
 import Canvas from './Canvas'
-import library from './library'
+import {graph as graphJson, library} from './fixtures'
 
 require('../utils/shims/rAF')
 
@@ -100,35 +100,6 @@ const ports = {
   }
 }
 
-let graphJson = {
-  'properties': {
-    'name': 'Count lines in a file'
-  },
-  'processes': {
-    'basic': { 'component': 'basic' },
-    'basic2': { 'component': 'basic' },
-    'basic3': { 'component': 'basic' },
-    'basic4': { 'component': 'basic' },
-    'tall': {
-      'component': 'tall'
-    }
-  },
-  'connections': [
-    {
-      'data': 'package.json',
-      'tgt': {
-        'process': 'basic',
-        'port': 'in1'
-      }
-    },
-    { 'src': { 'process': 'basic', 'port': 'out' }, 'tgt': { 'process': 'tall', 'port': 'in1' } },
-    { 'src': { 'process': 'basic2', 'port': 'out' }, 'tgt': { 'process': 'tall', 'port': 'in2' } },
-    { 'src': { 'process': 'basic3', 'port': 'out' }, 'tgt': { 'process': 'tall', 'port': 'in3' } },
-    { 'src': { 'process': 'basic4', 'port': 'out' }, 'tgt': { 'process': 'tall', 'port': 'in4' } }
-  ]
-}
-
-
 storiesOf('Welcome', module)
   .add('to Storybook', () => (
     <Welcome showApp={linkTo('Button')} />
@@ -158,12 +129,13 @@ storiesOf('App', module)
       height={600}
       library={library}
       menus={menus}
+      theme="the-graph-light"
       editable
-      onEdgeSelection={function onEdgeSelection () {}}
-      onNodeSelection={function onNodeSelection () {}}
-      onPanScale={function onPanScale () {}}
-      getMenuDef={function getMenuDef () {}}
-      displaySelectionGroup={function displaySelectionGroup () {}}
+      onEdgeSelection={() => alert('edge selected')}
+      onNodeSelection={() => alert('node selected')}
+      onPanScale={() => console.log('scaling')}
+      getMenuDef={() => {}}
+      displaySelectionGroup={() => {}}
       forceSelection={false}
       offsetY={10}
       offsetX={10}
@@ -182,37 +154,77 @@ storiesOf('Graph', module)
   })
 */
 
-/* props node port
- var props = {
- app: app,
- graph: graph,
- node: node,
- key: processKey + '.in.' + info.label, || '.out.'
- label: info.label,
- processKey: processKey,
- isIn: true,
- isExport: isExport,
- nodeX: x,
- nodeY: y,
- nodeWidth: width,
- nodeHeight: height,
- x: info.x,
- y: info.y,
- port: {process:processKey, port:info.label, type:info.type},
- highlightPort: highlightPort,
- route: info.route,
- showContext: showContext
- };
- */
-
 /*
-storiesOf('Port', module)
-  .add('IN', () => (
-    <svg className='the-graph-dark'>
-      <Port label='IN' />
-    </svg>
-  ))
+{
+  app,
+    graph,
+    node,
+    key: `${nodeID}.${type}.${info.label}`,
+  label: info.label,
+  processKey: nodeID,
+  isIn: type === 'in',
+  isExport,
+  nodeX: x,
+  nodeY: y,
+  nodeWidth: width,
+  nodeHeight: height,
+  x: info.x,
+  y: info.y,
+  port: {
+  process: nodeID,
+    port: info.label,
+    type: info.type
+},
+  highlightPort,
+    route: info.route,
+  showContext
+}
 */
+
+var portProps = {
+  // neede for current state of scale
+  app: {
+    state: {
+      scale: 5
+    }
+  },
+  // needed for embedded showContext
+  // showContext is a function which sets the state on the entire app
+  // see App#showContext
+  graph: {},
+
+  // is never used
+  // node: node,
+  // key: processKey + '.in.' + info.label, || '.out.'
+  label: 'INPUT',
+  isIn: true,
+  port: {
+    process: 'someProcess',
+    port: 'IN',
+    type: 'any'
+  },
+  processKey: 'someProcess',
+  route: 5,
+  x: 30,
+  y: 30,
+  // normally is a function which sets the state for the App
+  showContext: () => alert('Show context'),
+  isExport: false,
+  highlightPort: false
+};
+
+storiesOf('Port', module)
+  .add('IN', () => {
+    const svgProps = {
+      className: 'the-graph-dark big'
+    }
+
+    return (
+      <svg {...svgProps}>
+        <Port {...portProps} />
+      </svg>
+    )
+  })
 
 /* Node Options
  {

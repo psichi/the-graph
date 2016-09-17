@@ -616,26 +616,26 @@ export default class TheGraphGraph extends Component {
       // Private port info
       const portInfo = this.portInfo[nodeKey]
       if (!portInfo) {
-        console.warn('Node ' + nodeKey + ' not found for graph inport ' + label)
+        console.warn(`Node ${nodeKey} not found for graph inport ${label}`)
         return
       }
 
       const privatePort = portInfo.inports[portKey]
       if (!privatePort) {
-        console.warn('Port ' + nodeKey + '.' + portKey + ' not found for graph inport ' + label)
+        console.warn(`Port ${nodeKey}.${portKey} not found for graph inport ${label}`)
         return
       }
 
       // Private node
       const privateNode = graph.getNode(nodeKey)
       if (!privateNode) {
-        console.warn('Node ' + nodeKey + ' not found for graph inport ' + label)
+        console.warn(`Node ${nodeKey} not found for graph inport ${label}`)
         return
       }
       // Node view
       const expNode = {
         ...Config.graph.inportNode,
-        key: 'inport.node.' + key,
+        key: `inport.node.${key}`,
         export: inport,
         exportKey: key,
         x: metadata.x,
@@ -656,7 +656,7 @@ export default class TheGraphGraph extends Component {
       // Edge view
       const expEdge = {
         ...Config.graph.inportEdge,
-        key: 'inport.edge.' + key,
+        key: `inport.edge.${key}`,
         export: inport,
         exportKey: key,
         graph,
@@ -664,7 +664,7 @@ export default class TheGraphGraph extends Component {
         edge: {},
         route: (metadata.route ? metadata.route : 2),
         isIn: true,
-        label: 'export in ' + label.toUpperCase() + ' -> ' + portKey.toUpperCase() + ' ' + privateNode.metadata.label,
+        label: `export in ${label.toUpperCase()} -> ${portKey.toUpperCase()} ${privateNode.metadata.label}`,
         sX: expNode.x + Config.base.config.nodeWidth,
         sY: expNode.y + Config.base.config.nodeHeight / 2,
         tX: privateNode.metadata.x + privatePort.x,
@@ -705,28 +705,28 @@ export default class TheGraphGraph extends Component {
       const portInfo = this.portInfo[nodeKey]
 
       if (!portInfo) {
-        console.warn('Node ' + nodeKey + ' not found for graph outport ' + label)
+        console.warn(`Node ${nodeKey} not found for graph outport ${label}`)
         return
       }
 
       const privatePort = portInfo.outports[portKey]
 
       if (!privatePort) {
-        console.warn('Port ' + nodeKey + '.' + portKey + ' not found for graph outport ' + label)
+        console.warn(`Port ${nodeKey}.${portKey} not found for graph outport ${label}`)
         return
       }
       // Private node
       const privateNode = graph.getNode(nodeKey)
 
       if (!privateNode) {
-        console.warn('Node ' + nodeKey + ' not found for graph outport ' + label)
+        console.warn(`Node ${nodeKey} not found for graph outport ${label}`)
         return
       }
 
       // Node view
       const expNode = {
         ...Config.graph.outportNode,
-        key: 'outport.node.' + key,
+        key: `outport.node.${key}`,
         export: outport,
         exportKey: key,
         x: metadata.x,
@@ -747,7 +747,7 @@ export default class TheGraphGraph extends Component {
       // Edge view
       var expEdge = {
         ...Config.graph.outportEdge,
-        key: 'outport.edge.' + key,
+        key: `outport.edge.${key}`,
         export: outport,
         exportKey: key,
         graph,
@@ -755,7 +755,7 @@ export default class TheGraphGraph extends Component {
         edge: {},
         route: (metadata.route ? metadata.route : 4),
         isIn: false,
-        label: privateNode.metadata.label + ' ' + portKey.toUpperCase() + ' -> ' + label.toUpperCase() + ' export out',
+        label: `${privateNode.metadata.label} ${portKey.toUpperCase()} -> ${label.toUpperCase()} export out`,
         sX: privateNode.metadata.x + privatePort.x,
         sY: privateNode.metadata.y + privatePort.y,
         tX: expNode.x,
@@ -791,7 +791,7 @@ export default class TheGraphGraph extends Component {
         graph,
         scale,
         showContext,
-        key: 'group.' + group.name,
+        key: `group.${group.name}`,
         item: group,
         minX: limits.minX,
         minY: limits.minY,

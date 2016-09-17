@@ -83,7 +83,7 @@ export default class TheGraphNodeMenuPorts extends Component {
 
     transform = ''
     if (translateX !== undefined) {
-      transform = 'translate(' + translateX + ',' + translateY + ')'
+      transform = `translate(${translateX},${translateY})`
     }
 
     const linesGroupOptions = {
@@ -103,7 +103,7 @@ export default class TheGraphNodeMenuPorts extends Component {
     const containerContents = [linesGroup, portsGroup]
     const containerOptions = {
       ...Config.nodeMenuPorts.container,
-      className: 'context-ports context-ports-' + (isIn ? 'in' : 'out'),
+      className: `context-ports context-ports-${(isIn ? 'in' : 'out')}`,
       transform
     }
 

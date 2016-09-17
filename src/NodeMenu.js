@@ -99,7 +99,7 @@ export default class TheGraphNodeMenu extends Component {
 
     const containerOptions = {
       ...Config.nodeMenu.container,
-      transform: 'translate(' + x + ',' + y + ')',
+      transform: `translate(${x},${y})`,
       children: children
     }
 

@@ -56,7 +56,7 @@ export default class TheGraphNodeMenuPort extends Component {
 
     const rectOptions = {
       ...Config.nodeMenuPort.backgroundRect,
-      className: 'context-port-bg' + (highlight ? ' highlight' : ''),
+      className: `context-port-bg${(highlight ? ' highlight' : '')}`,
       x: x + (isIn ? -bgWidth : 0),
       y: y - Config.base.contextPortSize / 2,
       width: bgWidth
@@ -66,7 +66,7 @@ export default class TheGraphNodeMenuPort extends Component {
 
     const circleOptions = {
       ...Config.nodeMenuPort.circle,
-      className: 'context-port-hole stroke route' + route,
+      className: `context-port-hole stroke route${route}`,
       cx: x,
       cy: y
     }
@@ -75,7 +75,7 @@ export default class TheGraphNodeMenuPort extends Component {
 
     const textOptions = {
       ...Config.nodeMenuPort.text,
-      className: 'context-port-label fill route' + route,
+      className: `context-port-label fill route${route}`,
       x: x + (isIn ? -20 : 20),
       y: y,
       children: label.replace(/(.*)\/(.*)(_.*)\.(.*)/, '$2.$4')
@@ -87,7 +87,7 @@ export default class TheGraphNodeMenuPort extends Component {
 
     const containerOptions = {
       ...Config.nodeMenuPort.container,
-      className: 'context-port click context-port-' + (isIn ? 'in' : 'out')
+      className: `context-port click context-port-${(isIn ? 'in' : 'out')}`
     }
 
     return createNodeMenuPortGroup(containerOptions, containerContents)

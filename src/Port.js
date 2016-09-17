@@ -166,7 +166,9 @@ export default class TheGraphPort extends Component {
 
     if (label.length > 7) {
       const fontSize = 6 * (30 / (4 * label.length))
-      style = { 'fontSize': fontSize + 'px' }
+      style = {
+        fontSize: `${fontSize}px`
+      }
     }
 
     let r
@@ -196,7 +198,7 @@ export default class TheGraphPort extends Component {
 
     const innerCircleOptions = {
       ...Config.port.innerCircle,
-      className: 'port-circle-small fill route' + route,
+      className: `port-circle-small fill route${route}`,
       r: r - 1.5
     }
 
@@ -209,7 +211,7 @@ export default class TheGraphPort extends Component {
     const containerOptions = {
       ...Config.port.container,
       title: label,
-      transform: 'translate(' + x + ',' + y + ')'
+      transform: `translate(${x},${y})`
     }
 
     return (

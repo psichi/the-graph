@@ -166,7 +166,7 @@ export default class TheGraphMenu extends Component {
       iconStyle = ''
 
       if (iconColor) {
-        iconStyle = ' fill route' + iconColor
+        iconStyle = ` fill route${iconColor}`
       }
 
       const middleIconRectOptions = {
@@ -177,7 +177,7 @@ export default class TheGraphMenu extends Component {
 
       const middleIconTextOptions = {
         ...Config.menu.iconText,
-        className: 'icon context-node-icon' + iconStyle,
+        className: `icon context-node-icon${iconStyle}`,
         children: Config.FONT_AWESOME[ (icon ? icon : menu.icon) ]
       }
 
@@ -188,7 +188,7 @@ export default class TheGraphMenu extends Component {
 
     const containerOptions = {
       ...Config.menu.container,
-      transform: 'translate(' + position.x + ',' + position.y + ')',
+      transform: `translate(${position.x},${position.y})`,
       children: children
     }
 

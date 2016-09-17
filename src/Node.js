@@ -440,15 +440,14 @@ export default class TheGraphNode extends Component {
   }
 
   render () {
-    const {error, x, y, height, width, nodeID, selected} = this.props
+    const {error, label, x, y, height, width, nodeID, selected} = this.props
+    let {sublabel} = this.props
 
     if (this.props.ports.dirty) {
       // This tag is set when an edge or iip changes port colors
       this.props.ports.dirty = false
     }
 
-    let label = this.props.label
-    let sublabel = this.props.sublabel
     if (!sublabel || sublabel === label) {
       sublabel = ''
     }
@@ -461,20 +460,20 @@ export default class TheGraphNode extends Component {
 
     const backgroundRectOptions = {
       ...Config.node.background,
-      width: this.props.width,
-      height: this.props.height + 25
+      width,
+      height: height + 25
     }
 
     const borderRectOptions = {
       ...Config.node.border,
-      width: this.props.width,
-      height: this.props.height
+      width,
+      height
     }
 
     const innerRectOptions = {
       ...Config.node.innerRect,
-      width: this.props.width - 6,
-      height: this.props.height - 6
+      width: width - 6,
+      height: height - 6
     }
 
     const inportsOptions = {
@@ -487,13 +486,13 @@ export default class TheGraphNode extends Component {
 
     const labelTextOptions = {
       ...Config.node.labelText,
-      x: this.props.width / 2,
-      y: this.props.height + 15
+      x: width / 2,
+      y: height + 15
     }
 
     let labelRectOptions
-    const labelRectX = this.props.width / 2
-    const labelRectY = this.props.height + 15
+    const labelRectX = width / 2
+    const labelRectY = height + 15
 
     labelRectOptions = buildLabelRectOptions(14, labelRectX, labelRectY, label.length, Config.node.labelRect.className)
     labelRectOptions = {
@@ -519,11 +518,11 @@ export default class TheGraphNode extends Component {
     let nodeOptions
 
     nodeOptions = {
-      className: 'node drag' + (selected ? ' selected' : '') + (error ? ' error' : ''),
+      className: `node drag${(selected ? ' selected' : '')}${(error ? ' error' : '')}`,
       name: nodeID,
       key: nodeID,
       title: label,
-      transform: 'translate(' + x + ',' + y + ')'
+      transform: `translate(${x},${y})`
     }
 
     nodeOptions = {
@@ -552,7 +551,7 @@ export default class TheGraphNode extends Component {
         <NodeSublabelGroup {...Config.node.sublabelBackground}>
           <NodeSublabelRect {...sublabelRectOptions} />
           <NodeSublabelText {...sublabelTextOptions}>
-            Heh {sublabel}
+            {sublabel}
           </NodeSublabelText>
         </NodeSublabelGroup>
       </NodeGroup>

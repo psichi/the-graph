@@ -1,5 +1,5 @@
 // Component library
-module.exports = {
+export default {
   basic: {
     name: 'basic',
     description: 'basic demo component',

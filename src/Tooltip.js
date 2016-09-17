@@ -29,8 +29,8 @@ export default class TheGraphTooltip extends Component {
 
     const containerOptions = {
       ...Config.tooltip.container,
-      className: 'tooltip' + (visible ? '' : ' hidden'),
-      transform: 'translate(' + x + ',' + y + ')'
+      className: `tooltip${(visible ? '' : ' hidden')}`,
+      transform: `translate(${x},${y})`
 
     }
 
