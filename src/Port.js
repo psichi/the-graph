@@ -189,14 +189,10 @@ export default class TheGraphPort extends Component {
       r: r + 1
     }
 
-    // const backgroundCircle = createPortBackgroundCircle(backgroundCircleOptions);
-
     const arcOptions = {
       ...Config.port.arc,
       d: (isIn ? inArc : outArc)
     }
-
-    // var arc = createPortArc(arcOptions);
 
     const innerCircleOptions = {
       ...Config.port.innerCircle,
@@ -204,13 +200,10 @@ export default class TheGraphPort extends Component {
       r: r - 1.5
     }
 
-    // const innerCircle = createPortInnerCircle(innerCircleOptions);
-
     const labelTextOptions = {
       ...Config.port.text,
       x: (isIn ? 5 : -5),
       style
-      // children: label
     }
 
     const containerOptions = {
