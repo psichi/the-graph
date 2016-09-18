@@ -755,44 +755,54 @@ export default class TheGraphApp extends Component {
     return <Menu {...menuOptions} />
   }
 
+  // can be moved to app modal gropu
+  getContextModal () {
+    const {contextMenu: currentContextMenu} = this.props
+    const {width, height} = this.state
+
+    if (currentContextMenu) {
+      const {element: {getContext}} = currentContextMenu
+
+      const menu = getMenuDef(currentContextMenu)
+
+      if (menu) {
+        contextMenu = getContext(menu, currentContextMenu, this.hideContext)
+
+        const modalBGOptions = {
+          width,
+          height,
+          triggerHideContext: this.hideContext
+        }
+
+        this.menuShown = true
+
+        return [
+          (
+            <AppModalBackground {...modalBGOptions}>
+              {contextMenu}
+            </AppModalBackground>
+          )
+        ]
+      }
+    }
+
+    this.menuShown = false
+
+    return null
+  }
+
   render () {
     // console.timeEnd('App.render');
     // console.time('App.render');
 
-    // pan and zoom
-    const {contextMenu: currentContextMenu, scale, x, y, tooltip, tooltipX, tooltipY, tooltipVisible, width, height} = this.state
     const {graph, library, getMenuDef, onNodeSelection, onEdgeSelection, theme} = this.props
+    const {scale, x, y, tooltip, tooltipX, tooltipY, tooltipVisible, width, height} = this.state
 
     const transform = `matrix(${scale},0,0,${scale},${x},${y})`
 
     const scaleClass = scale > Config.base.zbpBig ? 'big' : (scale > Config.base.zbpNormal ? 'normal' : 'small')
 
-    let contextMenu
-    let contextModal
-
-    if (currentContextMenu) {
-      var menu = getMenuDef(currentContextMenu)
-      if (menu) {
-        contextMenu = currentContextMenu.element.getContext(menu, currentContextMenu, this.hideContext)
-      }
-    }
-
-    if (contextMenu) {
-      const modalBGOptions = {
-        width: this.state.width,
-        height: this.state.height,
-        triggerHideContext: this.hideContext,
-        children: contextMenu
-      }
-
-      contextModal = [
-        AppModalBackground(modalBGOptions)
-      ]
-
-      this.menuShown = true
-    } else {
-      this.menuShown = false
-    }
+    const contextModal = this.getContextModal()
 
     const graphElementOptions = {
       ...Config.app.graph,
@@ -819,8 +829,7 @@ export default class TheGraphApp extends Component {
     }
 
     const modalGroupOptions = {
-      ...Config.app.modal,
-      children: contextModal
+      ...Config.app.modal
     }
 
     const svgOptions = {
@@ -859,7 +868,9 @@ export default class TheGraphApp extends Component {
               <AppGraph {...graphElementOptions} />
             </AppSvgGroup>
             <AppTooltip {...tooltipOptions} />
-            <AppModalGroup {...modalGroupOptions} />
+            <AppModalGroup {...modalGroupOptions}>
+              {contextModal}
+            </AppModalGroup>
           </AppSvg>
         </AppContainer>
       </div>

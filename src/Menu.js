@@ -2,13 +2,13 @@ import React, {Component, PropTypes} from 'react'
 import {findDOMNode} from 'react-dom'
 import Config from './Config'
 import {
-  createMenuSlice,
-  createMenuCircleXPath,
-  createMenuOutlineCircle,
-  createMenuLabelText,
-  createMenuMiddleIconRect,
-  createMenuMiddleIconText,
-  createMenuGroup
+  MenuSlice,
+  MenuCircleXPath,
+  MenuOutlineCircle,
+  MenuLabelText,
+  MenuMiddleIconRect,
+  MenuMiddleIconText,
+  MenuGroup
 } from './factories/menu'
 
 export default class TheGraphMenu extends Component {
@@ -35,39 +35,14 @@ export default class TheGraphMenu extends Component {
       w4tappable: (this.props.menu.w4 && this.props.menu.w4.action)
     }
 
-    this.onTapN4 = this.onTapN4.bind(this)
-    this.onTapS4 = this.onTapS4.bind(this)
-    this.onTapE4 = this.onTapE4.bind(this)
-    this.onTapW4 = this.onTapW4.bind(this)
+    this.onTap.bind(this)
+
     this.onContextMenu = this.onContextMenu.bind(this)
   }
 
-  onTapN4 () {
-    const {options, menu: {n4: action}, triggerHideContext} = this.props
-
-    action(options.graph, options.itemKey, options.item)
-
-    triggerHideContext()
-  }
-
-  onTapS4 () {
-    const {options, menu: {s4: action}, triggerHideContext} = this.props
-
-    action(options.graph, options.itemKey, options.item)
-
-    triggerHideContext()
-  }
-
-  onTapE4 () {
-    const {options, menu: {e4: action}, triggerHideContext} = this.props
-
-    action(options.graph, options.itemKey, options.item)
-
-    triggerHideContext()
-  }
-
-  onTapW4 () {
-    const {options, menu: {w4: action}, triggerHideContext} = this.props
+  onTap (direction) {
+    const {options, menu, triggerHideContext} = this.props
+    const action = menu[direction]
 
     action(options.graph, options.itemKey, options.item)
 
@@ -75,25 +50,6 @@ export default class TheGraphMenu extends Component {
   }
 
   componentDidMount () {
-    if (this.state.n4tappable) {
-      this.refs.n4.addEventListener('up', this.onTapN4)
-    }
-
-    // refs are not available yet.
-    if (this.state.s4tappable) {
-      alert('2')
-      // refs are empty
-      console.log('refs', this.refs)
-      // hm ok this ref depends on what config?
-      this.refs.s4.addEventListener('up', this.onTapS4);
-    }
-    if (this.state.e4tappable) {
-      this.refs.e4.addEventListener('up', this.onTapE4);
-    }
-    if (this.state.w4tappable) {
-      this.refs.w4.addEventListener('up', this.onTapW4);
-    }
-
     // Prevent context menu
     const {addEventListener} = findDOMNode(this)
 
@@ -122,44 +78,29 @@ export default class TheGraphMenu extends Component {
     }
   }
 
-  render () {
-    const {icon, iconColor: iconColorProp, label, menu} = this.props
-    const position = this.getPosition()
-
-    const circleXOptions = {
-      ...Config.menu.circleXPath
-    }
-
-    const outlineCircleOptions = {
-      ...Config.menu.outlineCircle,
-      r: this.radius
-    }
-
-    const children = [
-      // Directional slices
-      createMenuSlice(this, { direction: 'n4' }),
-      createMenuSlice(this, { direction: 's4' }),
-      createMenuSlice(this, { direction: 'e4' }),
-      createMenuSlice(this, { direction: 'w4' }),
-      // Outline and X
-      createMenuCircleXPath(circleXOptions),
-      createMenuOutlineCircle(outlineCircleOptions)
-    ]
-
-    // Menu label
+  renderMenuLabelText (label, menu) {
     if (label || menu.icon) {
       const labelTextOptions = {
         ...Config.menu.labelText,
         x: 0,
-        y: 0 - this.radius - 15,
-        children: (label ? label : menu.label)
+        y: 0 - this.radius - 15
       }
 
-      children.push(createMenuLabelText(labelTextOptions))
+      const text = (label ? label : menu.label)
+
+      return (
+        <MenuLabelText {...labelTextOptions}>
+          {text}
+        </MenuLabelText>
+      )
     }
 
-    // Middle icon
+    return null
+  }
+
+  renderMenuMiddleIcon (icon, menu) {
     if (icon || menu.icon) {
+      const {iconColor: iconColorProp} = this.props
       const iconColor = (iconColorProp !== undefined ? iconColorProp : menu.iconColor)
       let iconStyle
 
@@ -173,25 +114,64 @@ export default class TheGraphMenu extends Component {
         ...Config.menu.iconRect
       }
 
-      const middleIcon = createMenuMiddleIconRect(middleIconRectOptions)
 
       const middleIconTextOptions = {
         ...Config.menu.iconText,
-        className: `icon context-node-icon${iconStyle}`,
-        children: Config.FONT_AWESOME[ (icon ? icon : menu.icon) ]
+        className: `icon context-node-icon${iconStyle}`
       }
 
-      const iconText = createMenuMiddleIconText(middleIconTextOptions)
+      const iconText = Config.FONT_AWESOME[(icon ? icon : menu.icon)]
 
-      children.push(middleIcon, iconText)
+      return [
+        <MenuMiddleIconRect {...middleIconRectOptions} />,
+        <MenuMiddleIconText {...middleIconTextOptions}>
+          {iconText}
+        </MenuMiddleIconText>
+      ]
     }
+
+    return null
+  }
+
+  render () {
+    const {icon, label, menu} = this.props
+    const {n4tappable, s4tappable, e4tappable, w4tappable} = this.state
+    const position = this.getPosition()
+
+    const circleXOptions = {
+      ...Config.menu.circleXPath
+    }
+
+    const outlineCircleOptions = {
+      ...Config.menu.outlineCircle,
+      r: this.radius
+    }
+
+    const {menu: {positions}} = Config
+
+    // Menu label
+    const menuLabelText = this.renderMenuLabelText(label, menu)
+
+    // Middle icon
+    const menuMiddleIcon = this.renderMenuMiddleIcon(icon, menu)
 
     const containerOptions = {
       ...Config.menu.container,
-      transform: `translate(${position.x},${position.y})`,
-      children: children
+      transform: `translate(${position.x},${position.y})`
     }
 
-    return createMenuGroup(containerOptions)
+    return (
+      <MenuGroup {...containerOptions}>
+        // Directional slices
+        <MenuSlice direction="n4" positions={positions.n4} onTap={this.onTap} tappable={n4tappable} menu={menu} />,
+        <MenuSlice direction="s4" positions={positions.s4} onTap={this.onTap} tappable={s4tappable} menu={menu} />,
+        <MenuSlice direction="e4" positions={positions.e4} onTap={this.onTap} tappable={e4tappable} menu={menu} />,
+        <MenuSlice direction="w4" positions={positions.w4} onTap={this.onTap} tappable={w4tappable} menu={menu} />,
+        <MenuCircleXPath {...circleXOptions} />,
+        <MenuOutlineCircle {...outlineCircleOptions} />
+        {menuLabelText}
+        {menuMiddleIcon}
+      </MenuGroup>
+    )
   }
 }

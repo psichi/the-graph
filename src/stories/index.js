@@ -8,6 +8,7 @@ import App from '../App'
 import Port from '../Port'
 import Node from '../Node'
 import Menu from '../Menu'
+import MenuSlice from '../factories/menu/MenuSlice'
 import Graph from '../Graph'
 import Canvas from './Canvas'
 import {graph as graphJson, library} from './fixtures'
@@ -40,27 +41,6 @@ const app = {}
 const graphView = {}
 
 const menus = {}
-
-const menuOptions = {
-  graph: {},
-  itemKey: {},
-  item: {}
-}
-
-const menu = {
-  icon: 'sign-out',
-  iconColor: 5,
-  n4: {
-    label: 'outport'
-  },
-  s4: {
-    icon: 'trash-o',
-    iconLabel: 'delete',
-    action: function (graph, itemKey, item) {
-      graph.removeOutport(itemKey)
-    }
-  }
-}
 
 const ports = {
   inports: {
@@ -222,6 +202,97 @@ storiesOf('Port', module)
     return (
       <svg {...svgProps}>
         <Port {...portProps} />
+      </svg>
+    )
+  })
+
+storiesOf('MenuSlice', module)
+  .add('The Slice', () => {
+
+    // Too much goes in
+    const menu = {
+      n4: {
+        label: 'outport'
+      },
+      s4: {
+        icon: 'trash-o',
+        iconLabel: 'delete',
+      }
+    }
+
+    const menuSliceOptions = {
+      menu,
+      direction: 's4',
+      tappable: true,
+      onTap: function (direction) {
+        alert(`Tapped ${direction}`)
+      },
+      positions: {
+        IconX: 0,
+        IconY: 52,
+        LabelX: 0,
+        LabelY: 35
+      }
+    }
+
+    return (
+      <svg className='the-graph-dark'>
+        <MenuSlice {...menuSliceOptions} />
+      </svg>
+    )
+  })
+
+storiesOf('Menu', module)
+  .add('Normal', () => {
+    const graph = fromJSON(graphJson)
+    /* passes more options the now defined in Menu
+     menu,
+     options,
+     graph,
+     x,
+     y,
+     nodeWidth,
+     nodeHeight,
+     triggerHideContext,
+     label: 'Hello',
+     node: this,
+     ports: [],
+     process: [],
+     processKey: null,
+     deltaX: 0,
+     deltaY: 0,
+     highlightPort: false
+     */
+    const menu = {
+      n4: {
+        label: 'outport'
+      },
+      s4: {
+        icon: 'trash-o',
+        iconLabel: 'delete',
+        action: function (graph, itemKey, item) {
+          alert('DELETE')
+        }
+      }
+    }
+
+    const menuOptions = {
+      icon: 'sign-out',
+      iconColor: 5,
+      x: 75,
+      y: 75,
+      label: 'The Menu',
+      menu,
+      options: {
+        graph,
+        itemKey: {},
+        item: {}
+      }
+    }
+
+    return (
+      <svg className='the-graph-dark'>
+        <Menu {...menuOptions} />
       </svg>
     )
   })

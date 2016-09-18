@@ -8,3 +8,10 @@
     font-weight: normal;
     font-style: normal;
 }
+
+/* stretch the svg to fit the stories iframe */
+svg {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}

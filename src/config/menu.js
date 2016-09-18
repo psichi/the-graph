@@ -3,22 +3,30 @@ import base from './base'
 export default {
   radius: 72,
   positions: {
-    n4IconX: 0,
-    n4IconY: -52,
-    n4LabelX: 0,
-    n4LabelY: -35,
-    s4IconX: 0,
-    s4IconY: 52,
-    s4LabelX: 0,
-    s4LabelY: 35,
-    e4IconX: 45,
-    e4IconY: -5,
-    e4LabelX: 45,
-    e4LabelY: 15,
-    w4IconX: -45,
-    w4IconY: -5,
-    w4LabelX: -45,
-    w4LabelY: 15
+    n4: {
+      IconX: 0,
+      IconY: -52,
+      LabelX: 0,
+      LabelY: -35
+    },
+    s4: {
+      IconX: 0,
+      IconY: 52,
+      LabelX: 0,
+      LabelY: 35
+    },
+    e4: {
+      IconX: 45,
+      IconY: -5,
+      LabelX: 45,
+      LabelY: 15,
+    },
+    w4: {
+      IconX: -45,
+      IconY: -5,
+      LabelX: -45,
+      LabelY: 15
+    }
   },
   container: {
     className: 'context-menu'

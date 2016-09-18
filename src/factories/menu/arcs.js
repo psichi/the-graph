@@ -1,4 +1,4 @@
-import makeArcPath from './makeArcPath'
+import makeArcPath from '../../utils/makeArcPath'
 
 export default {
   n4: makeArcPath(7 / 8, 5 / 8, 36),
