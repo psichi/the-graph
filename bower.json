@@ -1,0 +1,29 @@
+{
+  "name": "the-graph",
+  "version": "0.4.4",
+  "keywords": [
+    "graph",
+    "flow",
+    "noflo"
+  ],
+  "description": "HTML custom elements for dataflow graph editing",
+  "dependencies": {
+    "polymer": "^1.6.1",
+    "webcomponentsjs": "^0.7.22"
+  },
+  "main": "the-graph/the-graph.html",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "docs",
+    "tools"
+  ],
+  "resolutions": {
+    "webcomponentsjs": "^0.7.22",
+    "polymer": "^1.6.1"
+  }
+}
