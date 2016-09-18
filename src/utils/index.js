@@ -1,8 +1,9 @@
 'create index'
 
-export Clipboard from './Clipboard.js'
+export Clipboard from '../Clipboard.js'
 export angleToX from './angleToX.js'
 export angleToY from './angleToY.js'
+export cleanArray from './cleanArray.js'
 export arcs from './arcs.js'
 export buildLabelRectOptions from './buildLabelRectOptions.js'
 export findAreaFit from './findAreaFit.js'

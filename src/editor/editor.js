@@ -396,4 +396,3 @@ Polymer('the-graph-editor', {
     return this.nofloGraph.toJSON();
   }
 });
-})();

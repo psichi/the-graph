@@ -2,8 +2,8 @@
  * Created by mpricope on 05.09.14.
  */
 
-import cloneObject from './cloneObject'
-import makeNewId from './makeNewId'
+import cloneObject from './utils/cloneObject'
+import makeNewId from './utils/makeNewId'
 
 const Clipboard = {}
 var clipboardContent = {}

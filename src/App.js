@@ -31,7 +31,8 @@ export default class TheGraphApp extends Component {
   pinching = false
 
   static defaultProps = {
-    snap: 36
+    snap: 36,
+    theme: 'the-graph-dark'
   }
 
   static propTypes = {
@@ -42,6 +43,7 @@ export default class TheGraphApp extends Component {
     maxZoom: PropTypes.number,
     offsetY: PropTypes.number,
     offsetX: PropTypes.number,
+    theme: PropTypes.string,
     snap: PropTypes.number
   }
 
@@ -134,22 +136,22 @@ export default class TheGraphApp extends Component {
 
     // Calls the autolayouter
     this.autolayouter.layout({
-      'graph': graph,
-      'portInfo': graphView.portInfo,
-      'direction': 'RIGHT',
-      'options': {
-        'intCoordinates': true,
-        'algorithm': 'de.cau.cs.kieler.klay.layered',
-        'layoutHierarchy': true,
-        'spacing': 36,
-        'borderSpacing': 20,
-        'edgeSpacingFactor': 0.2,
-        'inLayerSpacingFactor': 2,
-        'nodePlace': 'BRANDES_KOEPF',
-        'nodeLayering': 'NETWORK_SIMPLEX',
-        'edgeRouting': 'POLYLINE',
-        'crossMin': 'LAYER_SWEEP',
-        'direction': 'RIGHT'
+      graph: graph,
+      portInfo: graphView.portInfo,
+      direction: 'RIGHT',
+      options: {
+        intCoordinates: true,
+        algorithm: 'de.cau.cs.kieler.klay.layered',
+        layoutHierarchy: true,
+        spacing: 36,
+        borderSpacing: 20,
+        edgeSpacingFactor: 0.2,
+        inLayerSpacingFactor: 2,
+        nodePlace: 'BRANDES_KOEPF',
+        nodeLayering: 'NETWORK_SIMPLEX',
+        edgeRouting: 'POLYLINE',
+        crossMin: 'LAYER_SWEEP',
+        direction: 'RIGHT'
       }
     })
   }
@@ -492,18 +494,6 @@ export default class TheGraphApp extends Component {
 
     const domNode = findDOMNode(this)
 
-    // Set up PolymerGestures for app and all children
-    /* Do not use polymer
-     var noop = function(){};
-     PolymerGestures.addEventListener(domNode, 'up', noop);
-     PolymerGestures.addEventListener(domNode, 'down', noop);
-     PolymerGestures.addEventListener(domNode, 'tap', noop);
-     PolymerGestures.addEventListener(domNode, 'trackstart', noop);
-     PolymerGestures.addEventListener(domNode, 'track', noop);
-     PolymerGestures.addEventListener(domNode, 'trackend', noop);
-     PolymerGestures.addEventListener(domNode, 'hold', noop);
-     */
-
     // Unselect edges and nodes
     if (onNodeSelection) {
       domNode.addEventListener('tap', this.unselectAll)
@@ -555,22 +545,15 @@ export default class TheGraphApp extends Component {
     document.addEventListener('keyup', this.keyUp)
 
     // Canvas background
-    /*
-     this.bgCanvas = unwrap(findDOMNode(this.refs.canvas));
-     this.bgContext = unwrap(this.bgCanvas.getContext('2d'));
-     seems to be from polymer custom elements
-     */
-    // this.bgCanvas = findDOMNode(this.refs.canvas);
-
     this.bgCanvas = this.refs.canvas
     this.bgContext = this.bgCanvas.getContext('2d')
 
     this.componentDidUpdate()
 
     // Rerender graph once to fix edges
-    setTimeout(function () {
+    setTimeout(() => {
       this.renderGraph()
-    }.bind(this), 500)
+    }, 500)
   }
 
   onShowContext (event) {
@@ -601,7 +584,7 @@ export default class TheGraphApp extends Component {
 
     // HACK metaKey global for taps https://github.com/Polymer/PointerGestures/issues/29
     if (metaKey || ctrlKey) {
-      throw Error('Fix ME')
+      console.error('Fix ME global meta key')
       // TheGraph.metaKeyPressed = true;
     }
 
@@ -665,13 +648,15 @@ export default class TheGraphApp extends Component {
       }
       this.refs.graph.cancelPreviewEdge()
     }
-    // HACK metaKey global for taps https://github.com/Polymer/PointerGestures/issues/29
-    throw Error('Fix ME')
+
+    console.error('FIX ME: global metakey')
+
     /*
+     // HACK metaKey global for taps https://github.com/Polymer/PointerGestures/issues/29
      if (TheGraph.metaKeyPressed) {
-     TheGraph.metaKeyPressed = false;
+       TheGraph.metaKeyPressed = false;
      }
-     */
+    */
   }
 
   unselectAll (/* event */) {
@@ -762,9 +747,9 @@ export default class TheGraphApp extends Component {
 
     // pan and zoom
     const {contextMenu: currentContextMenu, scale, x, y, tooltip, tooltipX, tooltipY, tooltipVisible, width, height} = this.state
-    const {graph, library, onNodeSelection, onEdgeSelection} = this.props
+    const {graph, library, onNodeSelection, onEdgeSelection, theme} = this.props
 
-    const transform = 'matrix(' + scale + ',0,0,' + scale + ',' + x + ',' + y + ')'
+    const transform = `matrix(${scale},0,0,${scale},${x},${y})`
 
     const scaleClass = scale > Config.base.zbpBig ? 'big' : (scale > Config.base.zbpNormal ? 'normal' : 'small')
 
@@ -778,7 +763,6 @@ export default class TheGraphApp extends Component {
       }
     }
 
-    // is dynamically from many different components.
     if (contextMenu) {
       const modalBGOptions = {
         width: this.state.width,
@@ -807,14 +791,10 @@ export default class TheGraphApp extends Component {
       showContext: this.showContext
     }
 
-    // var graphElement = createAppGraph(graphElementOptions);
-
     const svgGroupOptions = {
       ...Config.app.svgGroup,
       transform
     }
-
-    // var svgGroup = createAppSvgGroup(svgGroupOptions, [graphElement]);
 
     const tooltipOptions = {
       ...Config.app.tooltip,
@@ -824,22 +804,10 @@ export default class TheGraphApp extends Component {
       label: tooltip
     }
 
-    // var tooltip = createAppTooltip(tooltipOptions);
     const modalGroupOptions = {
       ...Config.app.modal,
       children: contextModal
     }
-
-    // var modalGroupOptions = Config.app.modal;
-    // var modalGroup = createAppModalGroup(modalGroupOptions);
-
-    /*
-     var svgContents = [
-     svgGroup,
-     tooltip,
-     modalGroup
-     ];
-     */
 
     const svgOptions = {
       ...Config.app.svg,
@@ -847,13 +815,11 @@ export default class TheGraphApp extends Component {
       height
     }
 
-    // var svg = createAppSvg(svgOptions, svgContents);
     const canvasOptions = {
       ...Config.app.canvas,
       width,
       height
     }
-    // var canvas = createAppCanvas(canvasOptions);
 
     const containerOptions = {
       ...Config.app.container,
@@ -865,26 +831,15 @@ export default class TheGraphApp extends Component {
 
     containerOptions.className += ' ' + scaleClass
 
-    // return createAppContainer(containerOptions, appContents);
+    const themeWrapperOptions = {
+      id: 'svgcontainer',
+      className: theme
+    }
+
     return (
-      <div id="svgcontainer" className="the-graph-dark">
-        <div {...containerOptions}>
-          <canvas {...canvasOptions} />
-          <svg {...svgOptions}>
-            <g {...svgGroupOptions}>
-              <AppGraph {...graphElementOptions} />
-            </g>
-            <AppTooltip {...tooltipOptions} />
-            <AppModalGroup {...modalGroupOptions} />
-          </svg>
-        </div>
-      </div>
-    )
-    /*
-    return (
-      <div id="svgcontainer" className="the-graph-dark">
+      <div {...themeWrapperOptions}>
         <AppContainer {...containerOptions}>
-          <AppCanvas {...canvasOptions} />
+          <canvas {...canvasOptions} />
           <AppSvg {...svgOptions}>
             <AppSvgGroup {...svgGroupOptions}>
               <AppGraph {...graphElementOptions} />
@@ -895,6 +850,5 @@ export default class TheGraphApp extends Component {
         </AppContainer>
       </div>
     )
-    */
   }
 }
