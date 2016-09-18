@@ -32,7 +32,8 @@ export default class TheGraphApp extends Component {
 
   static defaultProps = {
     snap: 36,
-    theme: 'the-graph-dark'
+    theme: 'the-graph-dark',
+    klayjs: 'klayjs/klay.js'
   }
 
   static propTypes = {
@@ -44,7 +45,8 @@ export default class TheGraphApp extends Component {
     offsetY: PropTypes.number,
     offsetX: PropTypes.number,
     theme: PropTypes.string,
-    snap: PropTypes.number
+    snap: PropTypes.number,
+    klayjs: PropTypes.string
   }
 
   constructor (props, context) {
@@ -89,10 +91,12 @@ export default class TheGraphApp extends Component {
   }
 
   componentWillMount () {
+    const {klayjs} = this.props
+
     // Initializes the autolayouter
     this.autolayouter = klayNoflo.create({
       onSuccess: this.applyAutolayout.bind(this),
-      workerScript: 'klayjs/klay.js'
+      workerScript: klayjs
     })
   }
 
