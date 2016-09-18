@@ -118,13 +118,15 @@ export default class TheGraphEdge extends Component {
   }
 
   getContext (menu, options, hide) {
-    return Menu({
+    const menuOptions = {
       menu: menu,
       options: options,
       triggerHideContext: hide,
       label: this.props.label,
       iconColor: this.props.route
-    })
+    }
+
+    return <Menu {...menuOptions} />
   }
 
   shouldComponentUpdate (nextProps /* , nextState */) {

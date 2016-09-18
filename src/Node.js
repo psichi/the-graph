@@ -251,15 +251,18 @@ export default class TheGraphNode extends Component {
     } = this.props
 
     const _export = this.props.export
+    let menuOptions
 
     // If this node is an export
     if (_export) {
-      return Menu({
+      menuOptions = {
         menu,
         options,
         triggerHideContext,
         label
-      })
+      }
+
+      return <Menu {...menuOptions} />
     }
 
     // this relies on the state of the parent app.
@@ -273,9 +276,10 @@ export default class TheGraphNode extends Component {
 
     // If there is a preview edge started, only show connectable ports
     if (edgePreview) {
+
       if (edgePreview.isIn) {
         // Show outputs
-        return NodeMenuPorts({
+        menuOptions = {
           ports: ports.outports,
           triggerHideContext,
           isIn: false,
@@ -288,10 +292,10 @@ export default class TheGraphNode extends Component {
           nodeWidth: width,
           nodeHeight: height,
           highlightPort
-        })
+        }
       } else {
         // Show inputs
-        return NodeMenuPorts({
+        menuOptions = {
           ports: ports.inports,
           triggerHideContext,
           isIn: true,
@@ -304,12 +308,13 @@ export default class TheGraphNode extends Component {
           nodeWidth: width,
           nodeHeight: height,
           highlightPort
-        })
+        }
       }
+
+      return <NodeMenuPorts {...menuOptions} />
     }
 
-    // Default, show whole node menu
-    return NodeMenu({
+    menuOptions = {
       menu,
       options,
       triggerHideContext,
@@ -328,7 +333,10 @@ export default class TheGraphNode extends Component {
       deltaX,
       deltaY,
       highlightPort
-    })
+    }
+
+    // Default, show whole node menu
+    return <NodeMenu {...menuOptions} />
   }
 
   getTooltipTrigger () {

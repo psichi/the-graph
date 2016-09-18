@@ -36,6 +36,7 @@ export default class TheGraphApp extends Component {
     klayjs: 'klayjs/klay.js'
   }
 
+
   static propTypes = {
     graph: PropTypes.object.isRequired,
     width: PropTypes.number,
@@ -46,7 +47,15 @@ export default class TheGraphApp extends Component {
     offsetX: PropTypes.number,
     theme: PropTypes.string,
     snap: PropTypes.number,
-    klayjs: PropTypes.string
+    klayjs: PropTypes.string,
+    library: PropTypes.object,
+    menus: PropTypes.array,
+    editable: PropTypes.bool,
+    onEdgeSelection: PropTypes.func,
+    onNodeSelection: PropTypes.func,
+    onPanScale: PropTypes.func,
+    getMenuDef: PropTypes.func,
+    displaySelectionGroup: PropTypes.bool,
   }
 
   constructor (props, context) {
@@ -724,8 +733,7 @@ export default class TheGraphApp extends Component {
   getContext (menu, options, triggerHideContext) {
     const {graph, width: nodeWidth, height: nodeHeight} = this.props
     const {x, y} = options
-
-    return Menu({
+    const menuOptions = {
       menu,
       options,
       graph,
@@ -742,7 +750,9 @@ export default class TheGraphApp extends Component {
       deltaX: 0,
       deltaY: 0,
       highlightPort: false
-    })
+    }
+
+    return <Menu {...menuOptions} />
   }
 
   render () {
@@ -751,7 +761,7 @@ export default class TheGraphApp extends Component {
 
     // pan and zoom
     const {contextMenu: currentContextMenu, scale, x, y, tooltip, tooltipX, tooltipY, tooltipVisible, width, height} = this.state
-    const {graph, library, onNodeSelection, onEdgeSelection, theme} = this.props
+    const {graph, library, getMenuDef, onNodeSelection, onEdgeSelection, theme} = this.props
 
     const transform = `matrix(${scale},0,0,${scale},${x},${y})`
 
@@ -761,7 +771,7 @@ export default class TheGraphApp extends Component {
     let contextModal
 
     if (currentContextMenu) {
-      var menu = this.props.getMenuDef(currentContextMenu)
+      var menu = getMenuDef(currentContextMenu)
       if (menu) {
         contextMenu = currentContextMenu.element.getContext(menu, currentContextMenu, this.hideContext)
       }

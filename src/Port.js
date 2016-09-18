@@ -110,12 +110,14 @@ export default class TheGraphPort extends Component {
   getContext (menu, options, triggerHideContext) {
     const {label} = this.props
 
-    return Menu({
+    const menuOptions = {
       menu,
       options,
       label,
       triggerHideContext
-    })
+    }
+
+    return <Menu {...menuOptions} />
   }
 
   edgeStart (event) {
