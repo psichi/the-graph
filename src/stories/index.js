@@ -5,6 +5,8 @@ import NodeMenu from '../NodeMenu'
 import NodeMenuPort from '../NodeMenuPort'
 import NodeMenuPorts from '../NodeMenuPorts'
 import App from '../App'
+import Edge from '../Edge'
+import IIP from '../Iip'
 import Port from '../Port'
 import Node from '../Node'
 import Menu from '../Menu'
@@ -333,6 +335,52 @@ storiesOf('Menu', module)
     return (
       <svg className='the-graph-dark'>
         <Menu {...menuOptions} />
+      </svg>
+    )
+  })
+
+storiesOf('Edge', module)
+  .add('Edge', () => {
+    const graph = fromJSON(graphJson)
+
+    const edgeOptions = {
+      onEdgeSelection: action('Edge Selection'),
+      showContext: action('Show Context'),
+      app: {},
+      edgeID: 'edge-id',
+      edge: {
+
+      },
+      export: false,
+      isIn: true,
+      graph,
+      exportKey: '',
+      label: 'The Edge',
+      route: 2,
+      sX: 100,
+      sY: 30,
+      tX: 300,
+      tY: 50,
+      selected: false,
+      animated: false
+    }
+
+    const edgeOptions2 = {
+      ...edgeOptions,
+      isIn: false,
+      sY: 50,
+      tY: 100,
+      route: 7,
+      selected: false,
+      animated: true
+    }
+
+    return (
+      <svg className='the-graph-dark'>
+        <g className='graph'>
+          <Edge {...edgeOptions}/>
+          <Edge {...edgeOptions2}/>
+        </g>
       </svg>
     )
   })
