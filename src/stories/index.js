@@ -1,6 +1,5 @@
 import React from 'react'
 import { storiesOf, action, linkTo } from '@kadira/storybook'
-import Button from './Button'
 import Welcome from './Welcome'
 import NodeMenu from '../NodeMenu'
 import NodeMenuPorts from '../NodeMenuPorts'
