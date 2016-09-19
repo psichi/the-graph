@@ -112,6 +112,28 @@ export default class TheGraphApp extends Component {
     this.autolayouter.destroy()
   }
 
+  addGraphListeners (graph) {
+    graph.on('addNode', this.triggerAutolayout)
+    graph.on('removeNode', this.triggerAutolayout)
+    graph.on('addInport', this.triggerAutolayout)
+    graph.on('removeInport', this.triggerAutolayout)
+    graph.on('addOutport', this.triggerAutolayout)
+    graph.on('removeOutport', this.triggerAutolayout)
+    graph.on('addEdge', this.triggerAutolayout)
+    graph.on('removeEdge', this.triggerAutolayout)
+  }
+
+  removeGraphListeners (graph) {
+    graph.removeListener('addNode', this.triggerAutolayout)
+    graph.removeListener('removeNode', this.triggerAutolayout)
+    graph.removeListener('addInport', this.triggerAutolayout)
+    graph.removeListener('removeInport', this.triggerAutolayout)
+    graph.removeListener('addOutport', this.triggerAutolayout)
+    graph.removeListener('removeOutport', this.triggerAutolayout)
+    graph.removeListener('addEdge', this.triggerAutolayout)
+    graph.removeListener('removeEdge', this.triggerAutolayout)
+  }
+
   // TODO
   autolayoutChanged () {
     const {graph} = this.props
@@ -122,23 +144,9 @@ export default class TheGraphApp extends Component {
 
     // Only listen to changes that affect layout
     if (this.autolayout) {
-      graph.on('addNode', this.triggerAutolayout)
-      graph.on('removeNode', this.triggerAutolayout)
-      graph.on('addInport', this.triggerAutolayout)
-      graph.on('removeInport', this.triggerAutolayout)
-      graph.on('addOutport', this.triggerAutolayout)
-      graph.on('removeOutport', this.triggerAutolayout)
-      graph.on('addEdge', this.triggerAutolayout)
-      graph.on('removeEdge', this.triggerAutolayout)
+      this.addGraphListeners(graph)
     } else {
-      graph.removeListener('addNode', this.triggerAutolayout)
-      graph.removeListener('removeNode', this.triggerAutolayout)
-      graph.removeListener('addInport', this.triggerAutolayout)
-      graph.removeListener('removeInport', this.triggerAutolayout)
-      graph.removeListener('addOutport', this.triggerAutolayout)
-      graph.removeListener('removeOutport', this.triggerAutolayout)
-      graph.removeListener('addEdge', this.triggerAutolayout)
-      graph.removeListener('removeEdge', this.triggerAutolayout)
+      this.removeGraphListeners(graph)
     }
   }
 
@@ -570,9 +578,11 @@ export default class TheGraphApp extends Component {
 
   componentWillUnmount () {
     let hammertime
-    const {onNodeSelection} = this.props
+    const {onNodeSelection, graph} = this.props
 
     const domNode = findDOMNode(this)
+
+    this.removeGraphListeners(graph)
 
     // Unselect edges and nodes
     if (onNodeSelection) {
