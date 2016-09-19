@@ -15,10 +15,7 @@ import {graph as graphJson, library} from './fixtures'
 
 require('../utils/shims/rAF')
 
-import nofloGraph from '../graph/noflo'
 import fromJSON from '../utils/fromJSON'
-
-console.log(nofloGraph)
 
 document
   .getElementById('root')
@@ -37,6 +34,20 @@ const node = {
     y: 10
   }
 }
+
+const menu = {
+  n4: {
+    label: 'outport'
+  },
+  s4: {
+    icon: 'trash-o',
+    iconLabel: 'delete',
+    action: function (graph, itemKey, item) {
+      alert('DELETE')
+    }
+  }
+}
+
 const app = {}
 const graphView = {}
 
@@ -91,18 +102,6 @@ storiesOf('Welcome', module)
     <Welcome showApp={linkTo('Button')} />
   ))
 
-/*
- {
- graph: this.props.graph, // is het network, dus niet de json.. graph.on() etc.
- scale: this.state.scale,
- app: this,  << see what this is used for
- library: this.props.library,
- onNodeSelection: this.props.onNodeSelection,
- onEdgeSelection: this.props.onEdgeSelection,
- showContext: this.showContext
- };
- */
-
 storiesOf('App', module)
   .add('App', () => {
     const graph = fromJSON(graphJson)
@@ -128,6 +127,48 @@ storiesOf('App', module)
     />)
   })
 
+storiesOf('NodeMenu', module)
+  .add('NodeMenu', () => {
+    const graph = fromJSON(graphJson)
+
+    const options = {
+      graph,
+      itemKey: {},
+      item: {}
+    }
+
+    const nodeMenuOptions = {
+      node: {
+        props: {
+          app: {
+            state: {
+             scale: 1
+            }
+          }
+        }
+      },
+      ports,
+      processKey: 'somekey',
+      menu,
+      options,
+      triggerHideContext: true,
+      icon: 'cog',
+      label: 'The Label',
+      nodeWidth: 100,
+      nodeHeight: 100,
+      highlightPort: true,
+      deltaX: 10,
+      deltaY: 10,
+      x: 300,
+      y: 150
+    }
+
+    return (
+      <svg className='the-graph-dark'>
+        <NodeMenu {...nodeMenuOptions} />
+      </svg>)
+  })
+
 /*
 storiesOf('Graph', module)
   .add('The Graph', () => {
@@ -140,67 +181,39 @@ storiesOf('Graph', module)
   })
 */
 
-/*
-{
-  app,
-    graph,
-    node,
-    key: `${nodeID}.${type}.${info.label}`,
-  label: info.label,
-  processKey: nodeID,
-  isIn: type === 'in',
-  isExport,
-  nodeX: x,
-  nodeY: y,
-  nodeWidth: width,
-  nodeHeight: height,
-  x: info.x,
-  y: info.y,
-  port: {
-  process: nodeID,
-    port: info.label,
-    type: info.type
-},
-  highlightPort,
-    route: info.route,
-  showContext
-}
-*/
-
-var portProps = {
-  // neede for current state of scale
-  app: {
-    state: {
-      scale: 5
-    }
-  },
-  // needed for embedded showContext
-  // showContext is a function which sets the state on the entire app
-  // see App#showContext
-  graph: {},
-
-  // is never used
-  // node: node,
-  // key: processKey + '.in.' + info.label, || '.out.'
-  label: 'INPUT',
-  isIn: true,
-  port: {
-    process: 'someProcess',
-    port: 'IN',
-    type: 'any'
-  },
-  processKey: 'someProcess',
-  route: 5,
-  x: 30,
-  y: 30,
-  // normally is a function which sets the state for the App
-  showContext: () => alert('Show context'),
-  isExport: false,
-  highlightPort: false
-};
 
 storiesOf('Port', module)
   .add('IN', () => {
+    const portProps = {
+      app: {
+        state: {
+          scale: 5
+        }
+      },
+      // needed for embedded showContext
+      // showContext is a function which sets the state on the entire app
+      // see App#showContext
+      graph: {},
+
+      // is never used
+      // node: node,
+      // key: processKey + '.in.' + info.label, || '.out.'
+      label: 'INPUT',
+      isIn: true,
+      port: {
+        process: 'someProcess',
+        port: 'IN',
+        type: 'any'
+      },
+      processKey: 'someProcess',
+      route: 5,
+      x: 30,
+      y: 30,
+      // normally is a function which sets the state for the App
+      showContext: () => alert('Show context'),
+      isExport: false,
+      highlightPort: false
+    };
     const svgProps = {
       className: 'the-graph-dark big'
     }
@@ -214,8 +227,6 @@ storiesOf('Port', module)
 
 storiesOf('MenuSlice', module)
   .add('The Slice', () => {
-
-    // Too much goes in
     const menu = {
       n4: {
         label: 'outport'
@@ -309,18 +320,6 @@ storiesOf('Menu', module)
      deltaY: 0,
      highlightPort: false
      */
-    const menu = {
-      n4: {
-        label: 'outport'
-      },
-      s4: {
-        icon: 'trash-o',
-        iconLabel: 'delete',
-        action: function (graph, itemKey, item) {
-          alert('DELETE')
-        }
-      }
-    }
 
     const menuOptions = {
       icon: 'sign-out',
@@ -342,31 +341,6 @@ storiesOf('Menu', module)
       </svg>
     )
   })
-
-/* Node Options
- {
- key: key,
- nodeID: key,
- x: node.metadata.x,
- y: node.metadata.y,
- label: node.metadata.label,
- sublabel: node.metadata.sublabel || node.component,
- width: node.metadata.width,
- height: node.metadata.height,
- app: self.props.app,
- graphView: self,
- graph: graph,
- node: node,
- icon: icon,
- iconsvg: iconsvg,
- ports: self.getPorts(graph, key, node.component),
- onNodeSelection: self.props.onNodeSelection,
- selected: selected,
- error: (self.state.errorNodes[key] === true),
- showContext: self.props.showContext,
- highlightPort: highlightPort
- };
- */
 
 storiesOf('Node', module)
   .add('Node', () => {
@@ -402,124 +376,3 @@ storiesOf('Node', module)
       </svg>
     )
   })
-
-/* Node Menu Options
- {
- menu: menu,
- options: options,
- triggerHideContext: hide,
- label: this.props.label,
- graph: this.props.graph,
- graphView: this.props.graphView,
- node: this,
- icon: this.props.icon,
- ports: ports,
- process: this.props.node,
- processKey: processKey,
- x: x,
- y: y,
- nodeWidth: this.props.width,
- nodeHeight: this.props.height,
- deltaX: deltaX,
- deltaY: deltaY,
- highlightPort: highlightPort
- }
- */
-
-/* Node Menu Ports
- {
- ports: ports.inports, || outports
- triggerHideContext: hide,
- isIn: true,
- scale: scale,
- processKey: processKey,
- deltaX: deltaX,
- deltaY: deltaY,
- translateX: x,
- translateY: y,
- nodeWidth: this.props.width,
- nodeHeight: this.props.height,
- highlightPort: highlightPort
- }
- */
-
-/*
-storiesOf('NodeMenuPorts', module)
-  .add('IN', () => (
-    <svg className='the-graph-dark'>
-      <NodeMenuPorts ports={ports} nodeWidth={100} nodeHeight={100} label='IN' />
-    </svg>
-  ))
-*/
-
-/*
- {
- menu: PropTypes.object.isRequired,
- options: PropTypes.object.isRequired,
- x: PropTypes.number,
- y: PropTypes.number,
- label: PropTypes.string,
- icon: PropTypes.string,
- iconColor: PropTypes.string
- }
- */
-
-/*
-storiesOf('Menu', module)
-  .add('Menu', () => (
-    <svg>
-      <Menu
-        menu={menu}
-        options={menuOptions}
-        x={100}
-        y={100}
-        label='The Menu'
-        icon='code'
-        iconColor='green'
-      />
-    </svg>
-  ))
-*/
-
-/*
- {
- graph: this.graph,
- width: this.width,
- minZoom: this.minZoom,
- maxZoom: this.maxZoom,
- height: this.height,
- library: this.library,
- menus: this.menus,
- editable: this.editable,
- onEdgeSelection: this.onEdgeSelection.bind(this),
- onNodeSelection: this.onNodeSelection.bind(this),
- onPanScale: this.onPanScale.bind(this),
- getMenuDef: this.getMenuDef,
- displaySelectionGroup: this.displaySelectionGroup,
- forceSelection: this.forceSelection,
- offsetY: this.offsetY,
- offsetX: this.offsetX
- }
- */
-
-/* App
- {
- graph: this.graph,
- width: this.width,
- minZoom: this.minZoom,
- maxZoom: this.maxZoom,
- height: this.height,
- library: this.library,
- menus: this.menus,
- editable: this.editable,
- onEdgeSelection: this.onEdgeSelection.bind(this),
- onNodeSelection: this.onNodeSelection.bind(this),
- onPanScale: this.onPanScale.bind(this),
- getMenuDef: this.getMenuDef,
- displaySelectionGroup: this.displaySelectionGroup,
- forceSelection: this.forceSelection,
- offsetY: this.offsetY,
- offsetX: this.offsetX
- }
- */
-

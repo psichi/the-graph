@@ -1,15 +1,33 @@
-import React, {Component} from 'react'
+import React, {Component, PropTypes} from 'react'
 import {findDOMNode} from 'react-dom'
 import Config from './Config'
 import {
-  createNodeMenuGroup,
-  createNodeMenuInports,
-  createNodeMenuMenu,
-  createNodeMenuOutports
+  NodeMenuGroup,
+  NodeMenuInports,
+  NodeMenuMenu,
+  NodeMenuOutports
 } from './factories/nodeMenu'
 
 export default class TheGraphNodeMenu extends Component {
   radius = 72
+
+  static propTypes = {
+    node: PropTypes.object,
+    ports: PropTypes.object,
+    processKey: PropTypes.string,
+    menu: PropTypes.object,
+    options: PropTypes.object,
+    triggerHideContext: PropTypes.bool,
+    icon: PropTypes.string,
+    label: PropTypes.string,
+    nodeWidth: PropTypes.number,
+    nodeHeight: PropTypes.number,
+    highlightPort: PropTypes.bool,
+    deltaX: PropTypes.number,
+    deltaY: PropTypes.number,
+    x: PropTypes.number,
+    y: PropTypes.number
+  }
 
   stopPropagation (event) {
     // Don't drag graph
@@ -25,7 +43,6 @@ export default class TheGraphNodeMenu extends Component {
   }
 
   render () {
-
     const {
       node: {
         props: {
@@ -65,8 +82,6 @@ export default class TheGraphNodeMenu extends Component {
       highlightPort
     }
 
-    const inports = createNodeMenuInports(inportsOptions)
-
     const outportsOptions = {
       ...Config.nodeMenu.outports,
       ports: ports.outports,
@@ -80,8 +95,6 @@ export default class TheGraphNodeMenu extends Component {
       highlightPort
     }
 
-    const outports = createNodeMenuOutports(outportsOptions)
-
     const menuOptions = {
       ...Config.nodeMenu.menu,
       menu,
@@ -91,18 +104,17 @@ export default class TheGraphNodeMenu extends Component {
       label
     }
 
-    const nodeMenu = createNodeMenuMenu(menuOptions)
-
-    const children = [
-      inports, outports, nodeMenu
-    ]
-
     const containerOptions = {
       ...Config.nodeMenu.container,
-      transform: `translate(${x},${y})`,
-      children: children
+      transform: `translate(${x},${y})`
     }
 
-    return createNodeMenuGroup(containerOptions)
+    return (
+      <NodeMenuGroup {...containerOptions}>
+        <NodeMenuInports {...inportsOptions} />
+        <NodeMenuOutports {...outportsOptions} />
+        <NodeMenuMenu {...menuOptions} />
+      </NodeMenuGroup>
+    )
   }
 }

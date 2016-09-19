@@ -1,8 +1,7 @@
-'create index'
+' index'
 
-export createNodeMenuGroup from './createNodeMenuGroup.js'
-export createNodeMenuInports from './createNodeMenuInports.js'
-export createNodeMenuMenu from './createNodeMenuMenu.js'
-export createNodeMenuOutports from './createNodeMenuOutports.js'
-export createNodeMenuPorts from './createNodeMenuPorts.js'
+export NodeMenuGroup from './NodeMenuGroup.js'
+export NodeMenuInports from './NodeMenuInports.js'
+export NodeMenuMenu from './NodeMenuMenu.js'
+export NodeMenuOutports from './NodeMenuOutports.js'
 
