@@ -1,6 +1,16 @@
-import React, {Component} from 'react'
+import React, {Component, PropTypes} from 'react'
 
 export default class TheGraphTextBG extends Component {
+  static propTypes = {
+    text: PropTypes.string,
+    height: PropTypes.number,
+    x: PropTypes.number,
+    y: PropTypes.number,
+    halign: PropTypes.string,
+    className: PropTypes.string,
+    textClassName: PropTypes.string
+  }
+
   render () {
     const {height, x: propX, y: propY, halign, className, textClassName} = this.props
     let {text} = this.props
@@ -40,38 +50,16 @@ export default class TheGraphTextBG extends Component {
     const bgTextOptions = {
       className: (textClassName ? textClassName : 'text-bg-text'),
       x: propX,
-      y: propY,
-      children: text
+      y: propY
     }
 
     return (
       <g {...bgOptions} >
         <rect {...bgRectOptions} />
-        <text {...bgTextOptions} />
+        <text {...bgTextOptions}>
+          {text}
+        </text>
       </g>
     )
-
-    /*
-     return ReactDOM.g(
-     {
-     className: (this.props.className ? this.props.className : 'text-bg'),
-     },
-     ReactDOM.rect({
-     className: 'text-bg-rect',
-     x: x,
-     y: y,
-     rx: radius,
-     ry: radius,
-     height: height * 1.1,
-     width: width
-     }),
-     ReactDOM.text({
-     className: (this.props.textClassName ? this.props.textClassName : 'text-bg-text'),
-     x: this.props.x,
-     y: this.props.y,
-     children: text
-     })
-     );
-     */
   }
 }

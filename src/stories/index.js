@@ -14,6 +14,7 @@ import MenuSlice from '../factories/menu/MenuSlice'
 import Graph from '../Graph'
 import Group from '../Group'
 import Tooltip from '../Tooltip'
+import TextBG from '../common/TextBG'
 import fromJSON from '../utils/fromJSON'
 import {
   graph as graphJson,
@@ -502,6 +503,27 @@ storiesOf('Node', module)
               onNodeSelection={action('onNodeSelection')}
             />
           </g>
+        </g>
+      </svg>
+    )
+  })
+
+storiesOf('TextBG', module)
+  .add('TextBG', () => {
+    const options = {
+      text: 'Text',
+      height: 100,
+      x: 300,
+      y: 100,
+      halign: 'right',
+      className: 'iip-info',
+      // textClassName: ''
+    }
+
+    return (
+      <svg className='the-graph-dark'>
+        <g className='graph'>
+          <TextBG {...options} />
         </g>
       </svg>
     )
