@@ -339,6 +339,32 @@ storiesOf('Menu', module)
     )
   })
 
+storiesOf('IIP', module)
+  .add('IIP', () => {
+    const graph = fromJSON(graphJson)
+
+    const iipOptions = {
+      label: 'IN1',
+      x: 150,
+      y: 100
+    }
+
+    const iipOptions2 = {
+      label: 'IN2',
+      x: 150,
+      y: 200
+    }
+
+    return (
+      <svg className='the-graph-light'>
+        <g className='graph big'>
+          <IIP {...iipOptions}/>
+          <IIP {...iipOptions2}/>
+        </g>
+      </svg>
+    )
+  })
+
 storiesOf('Edge', module)
   .add('Edge', () => {
     const graph = fromJSON(graphJson)
