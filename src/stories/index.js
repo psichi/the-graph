@@ -69,7 +69,7 @@ storiesOf('NodeMenu', module)
         props: {
           app: {
             state: {
-             scale: 1
+              scale: 1
             }
           }
         }
@@ -174,7 +174,7 @@ storiesOf('MenuSlice', module)
       }
     }
 
-    const menuSliceOptions = {
+    const menuSliceOptions1 = {
       menu,
       direction: 's4',
       tappable: true,
@@ -187,9 +187,25 @@ storiesOf('MenuSlice', module)
       }
     }
 
+    const menuSliceOptions2 = {
+      menu,
+      direction: 'n4',
+      tappable: true,
+      onTap: action('On Tap'),
+      positions: {
+        IconX: 0,
+        IconY: -52,
+        LabelX: 0,
+        LabelY: -35
+      }
+    }
+
     return (
       <svg className='the-graph-dark'>
-        <MenuSlice {...menuSliceOptions} />
+        <g transform="translate(120,85)">
+          <MenuSlice {...menuSliceOptions1} />
+          <MenuSlice {...menuSliceOptions2} />
+        </g>
       </svg>
     )
   })
