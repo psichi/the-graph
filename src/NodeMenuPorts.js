@@ -1,22 +1,26 @@
 import React, {Component, PropTypes} from 'react'
 import Config from './Config'
 import {
-  createNodeMenuPortsGroup,
-  createNodeMenuPortsLinesGroup,
-  createNodeMenuPortsNodeMenuPort,
-  createNodeMenuPortsPortPath
+  NodeMenuPortsGroup,
+  NodeMenuPortsLinesGroup,
+  NodeMenuPortsNodeMenuPort,
+  NodeMenuPortsPortPath
 } from './factories/nodeMenuPorts'
 
 export default class TheGraphNodeMenuPorts extends Component {
   static propTypes = {
-    ports: PropTypes.object.isRequired,
-    nodeWidth: PropTypes.number.isRequired,
-    nodeHeight: PropTypes.number.isRequired,
-    isIn: PropTypes.bool,
-    processKey: PropTypes.string,
-    highlightPort: PropTypes.bool,
     translateX: PropTypes.number,
-    translateY: PropTypes.number
+    translateY: PropTypes.number,
+    highlightPort: PropTypes.bool,
+    isIn: PropTypes.bool,
+    scale: PropTypes.number,
+    processKey: PropTypes.string,
+    ports: PropTypes.object.isRequired,
+    route: PropTypes.number.isRequired,
+    deltaX: PropTypes.number.isRequired,
+    deltaY: PropTypes.number.isRequired,
+    nodeWidth: PropTypes.number.isRequired,
+    nodeHeight: PropTypes.number.isRequired
   }
 
   render () {
@@ -42,6 +46,7 @@ export default class TheGraphNodeMenuPorts extends Component {
     const h = keys.length * Config.base.contextPortSize
     const len = keys.length
 
+    // creates both lines and portViews..
     let i
     for (i = 0; i < len; i++) {
       const key = keys[i]
@@ -58,7 +63,7 @@ export default class TheGraphNodeMenuPorts extends Component {
         d: [ 'M', ox, oy, 'L', x, y ].join(' ')
       }
 
-      const line = createNodeMenuPortsPortPath(lineOptions)
+      const line = <NodeMenuPortsPortPath {...lineOptions} />
 
       const portViewOptions = {
         ...Config.nodeMenuPorts.nodeMenuPort,
@@ -72,7 +77,7 @@ export default class TheGraphNodeMenuPorts extends Component {
         highlightPort
       }
 
-      const portView = createNodeMenuPortsNodeMenuPort(portViewOptions)
+      const portView = <NodeMenuPortsNodeMenuPort {...portViewOptions} />
 
       lines.push(line)
 
@@ -91,22 +96,22 @@ export default class TheGraphNodeMenuPorts extends Component {
       children: lines
     }
 
-    const linesGroup = createNodeMenuPortsLinesGroup(linesGroupOptions)
-
     const portsGroupOptions = {
       ...Config.nodeMenuPorts.portsGroup,
       children: portViews
     }
 
-    const portsGroup = createNodeMenuPortsGroup(portsGroupOptions)
-
-    const containerContents = [linesGroup, portsGroup]
     const containerOptions = {
       ...Config.nodeMenuPorts.container,
       className: `context-ports context-ports-${(isIn ? 'in' : 'out')}`,
       transform
     }
 
-    return createNodeMenuPortsGroup(containerOptions, containerContents)
+    return (
+      <NodeMenuPortsGroup {...containerOptions}>
+        <NodeMenuPortsLinesGroup {...linesGroupOptions} />
+        <NodeMenuPortsGroup {...portsGroupOptions} />
+      </NodeMenuPortsGroup>
+    )
   }
 }

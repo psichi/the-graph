@@ -67,15 +67,21 @@ const ports = {
   outports: {
     'out0': {
       'label': 'OUT0',
-      'type': 'all'
+      'type': 'all',
+      x: 10,
+      y: 15
     },
     'out1': {
       'label': 'OUT1',
-      'type': 'all'
+      'type': 'all',
+      x: 10,
+      y: 15
     },
     'out2': {
       'label': 'OUT2',
-      'type': 'all'
+      'type': 'all',
+      x: 10,
+      y: 15
     }
   }
 }
@@ -238,6 +244,46 @@ storiesOf('MenuSlice', module)
     return (
       <svg className='the-graph-dark'>
         <MenuSlice {...menuSliceOptions} />
+      </svg>
+    )
+  })
+
+storiesOf('NodeMenuPorts', module)
+  .add('Normal', () => {
+    const inportOptions = {
+      translateX: 300,
+      translateY: 100,
+      highlightPort: true,
+      isIn: true,
+      scale: 1,
+      processKey: 'someKey',
+      ports: ports.inports,
+      route: 2,
+      deltaX: 10,
+      deltaY: 10,
+      nodeWidth: 100,
+      nodeHeight: 100
+    }
+
+    const outportOptions = {
+      translateX: 320,
+      translateY: 100,
+      highlightPort: true,
+      isIn: false,
+      scale: 1,
+      processKey: 'someKey',
+      ports: ports.outports,
+      route: 4,
+      deltaX: 10,
+      deltaY: 10,
+      nodeWidth: 100,
+      nodeHeight: 100
+    }
+
+    return (
+      <svg className='the-graph-dark'>
+        <NodeMenuPorts {...inportOptions} />
+        <NodeMenuPorts {...outportOptions} />
       </svg>
     )
   })

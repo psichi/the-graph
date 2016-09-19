@@ -1,14 +1,32 @@
-import React, {Component} from 'react'
+import React, {Component, PropTypes} from 'react'
 import {findDOMNode} from 'react-dom'
 import Config from './Config'
 import {
-  createNodeMenuBackgroundRect,
-  createNodeMenuPortCircle,
-  createNodeMenuPortGroup,
-  createNodeMenuPortText
+  NodeMenuBackgroundRect,
+  NodeMenuPortCircle,
+  NodeMenuPortGroup,
+  NodeMenuPortText
 } from './factories/nodeMenuPort'
 
 export default class TheGraphNodeMenuPort extends Component {
+  static defaultProps = {
+    label: PropTypes.string,
+    processKey: PropTypes.shape({
+      process: PropTypes.object
+    }),
+    port: PropTypes.shape({
+      type: PropTypes.string
+    }),
+    highlightPort: PropTypes.shape({
+      type: PropTypes.string,
+      isIn: PropTypes.bool
+    }),
+    isIn: PropTypes.bool,
+    route: PropTypes.number,
+    x: PropTypes.number,
+    y: PropTypes.number
+  }
+
   constructor (props, context) {
     super(props, context)
 
@@ -51,6 +69,7 @@ export default class TheGraphNodeMenuPort extends Component {
     const {isIn, label, port, highlightPort, x, y, route} = this.props
     const labelLen = label.length
     const bgWidth = (labelLen > 12 ? labelLen * 8 + 40 : 120)
+
     // Highlight compatible port
     const highlight = (highlightPort && highlightPort.isIn === isIn && highlightPort.type === port.type)
 
@@ -62,8 +81,6 @@ export default class TheGraphNodeMenuPort extends Component {
       width: bgWidth
     }
 
-    const rect = createNodeMenuBackgroundRect(rectOptions)
-
     const circleOptions = {
       ...Config.nodeMenuPort.circle,
       className: `context-port-hole stroke route${route}`,
@@ -71,25 +88,28 @@ export default class TheGraphNodeMenuPort extends Component {
       cy: y
     }
 
-    const circle = createNodeMenuPortCircle(circleOptions)
-
     const textOptions = {
       ...Config.nodeMenuPort.text,
       className: `context-port-label fill route${route}`,
       x: x + (isIn ? -20 : 20),
-      y: y,
-      children: label.replace(/(.*)\/(.*)(_.*)\.(.*)/, '$2.$4')
+      y: y
     }
 
-    const text = createNodeMenuPortText(textOptions)
-
-    const containerContents = [rect, circle, text]
+    const menuPortText = label.replace(/(.*)\/(.*)(_.*)\.(.*)/, '$2.$4')
 
     const containerOptions = {
       ...Config.nodeMenuPort.container,
       className: `context-port click context-port-${(isIn ? 'in' : 'out')}`
     }
 
-    return createNodeMenuPortGroup(containerOptions, containerContents)
+    return (
+      <NodeMenuPortGroup {...containerOptions}>
+        <NodeMenuBackgroundRect {...rectOptions} />
+        <NodeMenuPortCircle {...circleOptions} />
+        <NodeMenuPortText {...textOptions}>
+          {menuPortText}
+        </NodeMenuPortText>
+      </NodeMenuPortGroup>
+    )
   }
 }
