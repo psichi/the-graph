@@ -3,10 +3,10 @@ import {findDOMNode} from 'react-dom'
 import Menu from './Menu'
 import Config from './Config'
 import {
-  createGroupBoxRect,
-  createGroupLabelText,
-  createGroupDescriptionText,
-  createGroupGroup
+  GroupBoxRect,
+  GroupLabelText,
+  GroupDescriptionText,
+  GroupGroup
 } from './factories/group'
 
 // Group view
@@ -163,36 +163,32 @@ export default class TheGraphGroup extends Component {
       className: 'group-box color' + color + selection
     }
 
-    const boxRect = createGroupBoxRect(boxRectOptions)
-
     const labelTextOptions = {
       ...Config.group.labelText,
       x: x + Config.base.config.nodeRadius,
-      y: y + 9,
-      children: label
+      y: y + 9
     }
-
-    const labelText = createGroupLabelText(labelTextOptions)
 
     const descriptionTextOptions = {
       ...Config.group.descriptionText,
       x: x + Config.base.nodeRadius,
-      y: y + 24,
-      children: description
+      y: y + 24
     }
-
-    const descriptionText = createGroupDescriptionText(descriptionTextOptions)
-
-    const groupContents = [
-      boxRect,
-      labelText,
-      descriptionText
-    ]
 
     const containerOptions = {
       ...Config.group.container
     }
 
-    return createGroupGroup(containerOptions, groupContents)
+    return (
+      <GroupGroup {...containerOptions}>
+        <GroupBoxRect {...boxRectOptions} />
+        <GroupLabelText {...labelTextOptions}>
+          {label}
+        </GroupLabelText>
+        <GroupDescriptionText {...descriptionTextOptions}>
+          {description}
+        </GroupDescriptionText>
+      </GroupGroup>
+    )
   }
 }

@@ -2,8 +2,8 @@ import React, {Component} from 'react'
 import {findDOMNode} from 'react-dom'
 import Config from './Config'
 import {
-  createModalBackgroundGroup,
-  createModalBackgroundRect
+  ModalBackgroundGroup,
+  ModalBackgroundRect
 } from './factories/modalBG'
 
 export default class TheGraphModalBG extends Component {
@@ -45,10 +45,11 @@ export default class TheGraphModalBG extends Component {
       ...Config.modalBG.container
     }
 
-    const rect = createModalBackgroundRect(rectOptions)
-
-    const containerContents = [rect, children]
-
-    return createModalBackgroundGroup(containerOptions, containerContents)
+    return (
+      <ModalBackgroundGroup {...containerOptions}>
+        <ModalBackgroundRect {...rectOptions} />
+        {children}
+      </ModalBackgroundGroup>
+    )
   }
 };

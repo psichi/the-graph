@@ -120,7 +120,7 @@ storiesOf('App', module)
       onNodeSelection={() => alert('node selected')}
       onPanScale={() => console.log('scaling')}
       getMenuDef={() => {}}
-      displaySelectionGroup={() => {}}
+      displaySelectionGroup={true}
       forceSelection={false}
       offsetY={10}
       offsetX={10}
@@ -169,17 +169,22 @@ storiesOf('NodeMenu', module)
       </svg>)
   })
 
-/*
 storiesOf('Graph', module)
   .add('The Graph', () => {
     const graph = fromJSON(graphJson)
 
+    const graphOptions = {
+      graph,
+      library,
+      app: {},
+      scale: 1
+    }
+
     return (
       <svg className='the-graph-dark'>
-        <Graph app={{}} graph={graph} library={library} scale={1} />
+        <Graph {...graphOptions} />
       </svg>)
   })
-*/
 
 
 storiesOf('Port', module)

@@ -1,5 +1,8 @@
+import React, {Component} from 'react'
 import Tooltip from '../../Tooltip'
 
-export default function AppTooltip (options) {
-  return new Tooltip(options)
+export default class AppTooltip extends Component {
+  render () {
+    return <Tooltip {...this.props} />
+  }
 }

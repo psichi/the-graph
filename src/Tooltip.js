@@ -1,12 +1,11 @@
 import React, {Component} from 'react'
 import Config from './Config'
 import {
-  createTooltipGroup,
-  createTooltipRect,
-  createTooltipText
+  TooltipGroup,
+  TooltipRect,
+  TooltipText
 } from './factories/tooltip'
 
-// Port view
 export default class TheGraphTooltip extends Component {
   render () {
     const {label, visible, x, y} = this.props
@@ -16,24 +15,23 @@ export default class TheGraphTooltip extends Component {
       width: label.length * 6
     }
 
-    const rect = createTooltipRect(rectOptions)
-
     const textOptions = {
-      ...Config.tooltip.text,
-      children: label
+      ...Config.tooltip.text
     }
-
-    const text = createTooltipText(textOptions)
-
-    const containerContents = [rect, text]
 
     const containerOptions = {
       ...Config.tooltip.container,
       className: `tooltip${(visible ? '' : ' hidden')}`,
       transform: `translate(${x},${y})`
-
     }
 
-    return createTooltipGroup(containerOptions, containerContents)
+    return (
+      <TooltipGroup {...containerOptions}>
+        <TooltipRect {...rectOptions} />
+        <TooltipText {...textOptions}>
+          {label}
+        </TooltipText>
+      </TooltipGroup>
+    )
   }
 }

@@ -1,5 +1,5 @@
 'create index'
 
-export createModalBackgroundGroup from './createModalBackgroundGroup.js'
-export createModalBackgroundRect from './createModalBackgroundRect.js'
+export ModalBackgroundGroup from './ModalBackgroundGroup.js'
+export ModalBackgroundRect from './ModalBackgroundRect.js'
 

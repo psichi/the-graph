@@ -21,7 +21,7 @@ export default class TheGraphMenu extends Component {
     y: PropTypes.number,
     label: PropTypes.string,
     icon: PropTypes.string,
-    iconColor: PropTypes.string
+    iconColor: PropTypes.number
   }
 
   constructor (props, context) {
@@ -29,10 +29,10 @@ export default class TheGraphMenu extends Component {
 
     // Use these in CSS for cursor and hover, and to attach listeners
     this.state = {
-      n4tappable: (this.props.menu.n4 && this.props.menu.n4.action),
-      s4tappable: (this.props.menu.s4 && this.props.menu.s4.action),
-      e4tappable: (this.props.menu.e4 && this.props.menu.e4.action),
-      w4tappable: (this.props.menu.w4 && this.props.menu.w4.action)
+      n4tappable: Boolean(this.props.menu.n4 && this.props.menu.n4.action),
+      s4tappable: Boolean(this.props.menu.s4 && this.props.menu.s4.action),
+      e4tappable: Boolean(this.props.menu.e4 && this.props.menu.e4.action),
+      w4tappable: Boolean(this.props.menu.w4 && this.props.menu.w4.action)
     }
 
     this.onTap.bind(this)

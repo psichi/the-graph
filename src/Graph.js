@@ -35,7 +35,7 @@ export default class TheGraphGraph extends Component {
     library: PropTypes.object,
     onNodeSelection: PropTypes.func,
     onEdgeSelection: PropTypes.func,
-    showContext: PropTypes.bool
+    showContext: PropTypes.func
   }
 
   constructor (props, context) {
@@ -67,17 +67,19 @@ export default class TheGraphGraph extends Component {
   }
 
   componentDidMount () {
+    const {graph} = this.props
+
     // To change port colors
-    this.props.graph.on('addEdge', this.resetPortRoute)
-    this.props.graph.on('changeEdge', this.resetPortRoute)
-    this.props.graph.on('removeEdge', this.resetPortRoute)
-    this.props.graph.on('removeInitial', this.resetPortRoute)
+    graph.on('addEdge', this.resetPortRoute)
+    graph.on('changeEdge', this.resetPortRoute)
+    graph.on('removeEdge', this.resetPortRoute)
+    graph.on('removeInitial', this.resetPortRoute)
 
     // Listen to noflo graph object's events
-    this.props.graph.on('changeNode', this.markDirty)
-    this.props.graph.on('changeInport', this.markDirty)
-    this.props.graph.on('changeOutport', this.markDirty)
-    this.props.graph.on('endTransaction', this.markDirty)
+    graph.on('changeNode', this.markDirty)
+    graph.on('changeInport', this.markDirty)
+    graph.on('changeOutport', this.markDirty)
+    graph.on('endTransaction', this.markDirty)
 
     // not sure where removeNode should come from, probably was always undefined.
     // findDOMNode(this).addEventListener('the-graph-node-remove', this.removeNode);
@@ -203,6 +205,7 @@ export default class TheGraphGraph extends Component {
 
   getPorts (graph, processName, componentName) {
     let ports
+    const {library} = this.props
     const node = graph.getNode(processName)
 
     ports = this.portInfo[processName]
@@ -211,7 +214,7 @@ export default class TheGraphGraph extends Component {
       const inports = {}
       const outports = {}
 
-      if (componentName && this.props.library) {
+      if (componentName && library) {
         // Copy ports from library object
         const component = this.getComponentInfo(componentName)
 

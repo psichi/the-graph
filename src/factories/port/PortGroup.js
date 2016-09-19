@@ -1,7 +1,5 @@
-import React, {Component} from 'react'
+import React from 'react'
 
-export default class PortGroup extends Component {
-  render () {
-    return <g {...this.props} />
-  }
+export default function PortGroup (props) {
+  return <g {...props} />
 }

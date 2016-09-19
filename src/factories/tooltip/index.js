@@ -1,6 +1,6 @@
 'create index'
 
-export createTooltipGroup from './createTooltipGroup.js'
-export createTooltipRect from './createTooltipRect.js'
-export createTooltipText from './createTooltipText.js'
+export TooltipGroup from './TooltipGroup.js'
+export TooltipRect from './TooltipRect.js'
+export TooltipText from './TooltipText.js'
 

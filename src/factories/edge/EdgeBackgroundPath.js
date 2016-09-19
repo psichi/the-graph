@@ -1,7 +1,5 @@
-import React, {Component} from 'react'
+import React from 'react'
 
-export default class EdgeBackgroundPath extends Component {
-  render () {
-    return <path {...this.props} />
-  }
+export default function EdgeBackgroundPath (props) {
+  return <path {...props} />
 }

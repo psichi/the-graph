@@ -1,5 +1,5 @@
 import React from 'react'
 
-export default function MenuGroup (props) {
+export default function ModalBackgroundGroup (props) {
   return <g {...props} />
 }

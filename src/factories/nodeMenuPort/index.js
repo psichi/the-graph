@@ -1,4 +1,4 @@
-' index'
+'create index'
 
 export NodeMenuBackgroundRect from './NodeMenuBackgroundRect.js'
 export NodeMenuPortCircle from './NodeMenuPortCircle.js'

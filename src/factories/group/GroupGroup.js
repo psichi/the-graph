@@ -1,5 +1,5 @@
 import React from 'react'
 
-export default function MenuGroup (props) {
+export default function GroupGroup (props) {
   return <g {...props} />
 }

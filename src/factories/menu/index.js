@@ -1,4 +1,4 @@
-' index'
+'create index'
 
 export MenuCircleXPath from './MenuCircleXPath.js'
 export MenuGroup from './MenuGroup.js'

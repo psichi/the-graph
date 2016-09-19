@@ -1,4 +1,4 @@
-' index'
+'create index'
 
 export NodeMenuPortsNodeMenuPort from './NodeMenuPortsNodeMenuPort.js'
 export NodeMenuPortsGroup from './NodeMenuPortsGroup.js'

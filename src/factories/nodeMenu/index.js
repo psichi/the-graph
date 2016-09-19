@@ -1,4 +1,4 @@
-' index'
+'create index'
 
 export NodeMenuGroup from './NodeMenuGroup.js'
 export NodeMenuInports from './NodeMenuInports.js'

@@ -16,15 +16,19 @@ export default class MenuSlice extends Component {
     this.onTap = this.onTap.bind(this)
   }
 
+  static defaultProps = {
+    tappable: false
+  }
+
   static propTypes = {
     menu: PropTypes.object.isRequired,
     direction: PropTypes.string.isRequired,
-    tappable: PropTypes.bool.isRequired,
+    tappable: PropTypes.bool,
     onTap: PropTypes.func.isRequired,
 
-    icon: PropTypes.string.isRequired,
-    label: PropTypes.string.isRequired,
-    iconLabel: PropTypes.string.isRequired,
+    icon: PropTypes.string,
+    label: PropTypes.string,
+    iconLabel: PropTypes.string,
 
     positions: PropTypes.shape({
       IconX: PropTypes.number.isRequired,

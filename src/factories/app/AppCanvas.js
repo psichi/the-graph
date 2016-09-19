@@ -1,7 +1,5 @@
-import React, {Component} from 'react'
+import React from 'react'
 
-export default class AppCanvas extends Component {
-  render () {
-    return <canvas {...this.props} />
-  }
+export default function AppCanvas (props) {
+  return <canvas {...props} />
 }

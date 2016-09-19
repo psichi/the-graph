@@ -36,7 +36,6 @@ export default class TheGraphApp extends Component {
     klayjs: 'klayjs/klay.js'
   }
 
-
   static propTypes = {
     graph: PropTypes.object.isRequired,
     width: PropTypes.number,
@@ -49,7 +48,7 @@ export default class TheGraphApp extends Component {
     snap: PropTypes.number,
     klayjs: PropTypes.string,
     library: PropTypes.object,
-    menus: PropTypes.array,
+    menus: PropTypes.object,
     editable: PropTypes.bool,
     onEdgeSelection: PropTypes.func,
     onNodeSelection: PropTypes.func,
