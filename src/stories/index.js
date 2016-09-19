@@ -10,88 +10,21 @@ import Node from '../Node'
 import Menu from '../Menu'
 import MenuSlice from '../factories/menu/MenuSlice'
 import Graph from '../Graph'
-import Canvas from './Canvas'
-import {graph as graphJson, library, menus} from './fixtures'
+import fromJSON from '../utils/fromJSON'
+import {
+  graph as graphJson,
+  library,
+  node,
+  menu,
+  menus,
+  ports
+} from './fixtures'
 
 require('../utils/shims/rAF')
 
-import fromJSON from '../utils/fromJSON'
-
-document
-  .getElementById('root')
-  .classList.add('the-graph-dark')
-
 const {svg} = React.DOM
-
-const node = {
-  component: 'console/log',
-  id: 'console/log_1',
-  metadata: {
-    height: 72,
-    width: 72,
-    label: 'console/log',
-    x: 10,
-    y: 10
-  }
-}
-
-const menu = {
-  n4: {
-    label: 'outport'
-  },
-  s4: {
-    icon: 'trash-o',
-    iconLabel: 'delete',
-    action: action('delete')
-  }
-}
-
 const app = {}
 const graphView = {}
-
-const ports = {
-  inports: {
-    'in0': {
-      'label': 'IN0',
-      'type': 'all',
-      x: 10,
-      y: 10
-    },
-    'in1': {
-      'label': 'IN1',
-      'type': 'all',
-      x: 10,
-      y: 15
-    },
-    'in2': {
-      'label': 'IN2',
-      'type': 'all',
-      x: 10,
-      y: 20,
-      route: 1
-    }
-  },
-  outports: {
-    'out0': {
-      'label': 'OUT0',
-      'type': 'all',
-      x: 10,
-      y: 15
-    },
-    'out1': {
-      'label': 'OUT1',
-      'type': 'all',
-      x: 10,
-      y: 15
-    },
-    'out2': {
-      'label': 'OUT2',
-      'type': 'all',
-      x: 10,
-      y: 15
-    }
-  }
-}
 
 storiesOf('Welcome', module)
   .add('to Storybook', () => (
@@ -179,7 +112,8 @@ storiesOf('Graph', module)
     return (
       <svg className='the-graph-dark'>
         <Graph {...graphOptions} />
-      </svg>)
+      </svg>
+    )
   })
 
 
@@ -221,7 +155,11 @@ storiesOf('Port', module)
 
     return (
       <svg {...svgProps}>
-        <Port {...portProps} />
+        <g className='graph'>
+          <g className='nodes'>
+            <Port {...portProps} />
+          </g>
+        </g>
       </svg>
     )
   })
