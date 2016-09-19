@@ -11,7 +11,7 @@ import Menu from '../Menu'
 import MenuSlice from '../factories/menu/MenuSlice'
 import Graph from '../Graph'
 import Canvas from './Canvas'
-import {graph as graphJson, library} from './fixtures'
+import {graph as graphJson, library, menus} from './fixtures'
 
 require('../utils/shims/rAF')
 
@@ -42,16 +42,12 @@ const menu = {
   s4: {
     icon: 'trash-o',
     iconLabel: 'delete',
-    action: function (graph, itemKey, item) {
-      alert('DELETE')
-    }
+    action: action('delete')
   }
 }
 
 const app = {}
 const graphView = {}
-
-const menus = {}
 
 const ports = {
   inports: {
@@ -116,10 +112,10 @@ storiesOf('App', module)
       menus={menus}
       theme="the-graph-light"
       editable
-      onEdgeSelection={() => alert('edge selected')}
-      onNodeSelection={() => alert('node selected')}
-      onPanScale={() => console.log('scaling')}
-      getMenuDef={() => {}}
+      onEdgeSelection={action('On Edge Selection')}
+      onNodeSelection={action('On Node Selection')}
+      onPanScale={action('On Pan Scale')}
+      getMenuDef={action('Get Menu Def')}
       displaySelectionGroup={true}
       forceSelection={false}
       offsetY={10}
@@ -215,7 +211,7 @@ storiesOf('Port', module)
       x: 30,
       y: 30,
       // normally is a function which sets the state for the App
-      showContext: () => alert('Show context'),
+      showContext: action('Show Context'),
       isExport: false,
       highlightPort: false
     };
@@ -246,9 +242,7 @@ storiesOf('MenuSlice', module)
       menu,
       direction: 's4',
       tappable: true,
-      onTap: function (direction) {
-        alert(`Tapped ${direction}`)
-      },
+      onTap: action('On Tap'),
       positions: {
         IconX: 0,
         IconY: 52,
@@ -374,7 +368,7 @@ storiesOf('Node', module)
               error={false}
               selected={false}
               highlightPort={false}
-              onNodeSelection={function () { alert('onNodeSelection') }}
+              onNodeSelection={action('onNodeSelection')}
             />
           </g>
         </g>
