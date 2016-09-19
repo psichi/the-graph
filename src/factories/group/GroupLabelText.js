@@ -1,5 +1,7 @@
-import React from 'react'
+import React, {Component} from 'react'
 
-export default function GroupLabelText (props) {
-  return <text {...props} />
+export default class GroupLabelText extends Component {
+  render () {
+    return <text {...this.props} />
+  }
 }

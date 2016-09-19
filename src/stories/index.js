@@ -12,6 +12,8 @@ import Node from '../Node'
 import Menu from '../Menu'
 import MenuSlice from '../factories/menu/MenuSlice'
 import Graph from '../Graph'
+import Group from '../Group'
+import Tooltip from '../Tooltip'
 import fromJSON from '../utils/fromJSON'
 import {
   graph as graphJson,
@@ -339,6 +341,26 @@ storiesOf('Menu', module)
     )
   })
 
+storiesOf('Tooltip', module)
+  .add('Tooltip', () => {
+    const graph = fromJSON(graphJson)
+
+    const tooltipOptions = {
+      label: 'IN1',
+      x: 150,
+      y: 100,
+      visible: true
+    }
+
+    return (
+      <svg className='the-graph-light'>
+        <g className='graph big'>
+          <Tooltip {...tooltipOptions}/>
+        </g>
+      </svg>
+    )
+  })
+
 storiesOf('IIP', module)
   .add('IIP', () => {
     const graph = fromJSON(graphJson)
@@ -360,6 +382,45 @@ storiesOf('IIP', module)
         <g className='graph big'>
           <IIP {...iipOptions}/>
           <IIP {...iipOptions2}/>
+        </g>
+      </svg>
+    )
+  })
+
+storiesOf('Group', module)
+  .add('Group', () => {
+    const graph = fromJSON(graphJson)
+
+    const groupOptions = {
+      app: {
+        menuShown: true
+      },
+      label: 'IN1',
+      graph,
+      item: {},
+      color: 2,
+      description: 'Group Description',
+      minX: 100,
+      maxX: 400,
+      minY: 100,
+      maxY: 250,
+      isSelectionGroup: false,
+      showContext: action('Show Context'),
+      triggerMoveGroup: false
+    }
+
+    const groupOptions2 = {
+      label: 'IN2',
+      ...groupOptions
+    }
+
+    return (
+      <svg className='the-graph-light'>
+        <g className='graph big'>
+          <g className='groups'>
+            <Group {...groupOptions}/>
+            <Group {...groupOptions2}/>
+          </g>
         </g>
       </svg>
     )

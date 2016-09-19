@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {Component, PropTypes} from 'react'
 import {findDOMNode} from 'react-dom'
 import Menu from './Menu'
 import Config from './Config'
@@ -11,6 +11,24 @@ import {
 
 // Group view
 export default class TheGraphGroup extends Component {
+  static propTypes = {
+    app: PropTypes.shape({
+      menuShown: PropTypes.bool
+    }),
+    label: PropTypes.string,
+    graph: PropTypes.object,
+    item: PropTypes.object,
+    color: PropTypes.number,
+    description: PropTypes.string,
+    minX: PropTypes.number,
+    maxX: PropTypes.number,
+    minY: PropTypes.number,
+    maxY: PropTypes.number,
+    isSelectionGroup: PropTypes.bool,
+    showContext: PropTypes.func,
+    triggerMoveGroup: PropTypes.bool
+  }
+
   constructor (props, context) {
     super(props, context)
 
@@ -22,9 +40,10 @@ export default class TheGraphGroup extends Component {
   }
   componentDidMount () {
     const {box: boxRef, label: labelRef} = this.refs
+    const {isSelectionGroup, showContext} = this.props
 
     // Move group
-    if (this.props.isSelectionGroup) {
+    if (isSelectionGroup) {
       // Drag selection by bg
       findDOMNode(boxRef).addEventListener('trackstart', this.onTrackStart)
     } else {
@@ -37,16 +56,17 @@ export default class TheGraphGroup extends Component {
     domNode.addEventListener('trackstart', this.dontPan)
 
     // Context menu
-    if (this.props.showContext) {
+    if (showContext) {
       domNode.addEventListener('contextmenu', this.showContext)
       domNode.addEventListener('hold', this.showContext)
     }
   }
 
   componentWillUnmount () {
+    const {showContext, isSelectionGroup} = this.props
     const {box: boxRef, label: labelRef} = this.refs
 
-    if (this.props.isSelectionGroup) {
+    if (isSelectionGroup) {
       findDOMNode(boxRef).removeEventListener('trackstart', this.onTrackStart)
     } else {
       findDOMNode(labelRef).removeEventListener('trackstart', this.onTrackStart)
@@ -56,7 +76,7 @@ export default class TheGraphGroup extends Component {
 
     domNode.removeEventListener('trackstart', this.dontPan)
 
-    if (this.props.showContext) {
+    if (showContext) {
       domNode.removeEventListener('contextmenu', this.showContext)
       domNode.removeEventListener('hold', this.showContext)
     }

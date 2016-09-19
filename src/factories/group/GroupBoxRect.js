@@ -1,5 +1,7 @@
-import React from 'react'
+import React, {Component} from 'react'
 
-export default function GroupBoxRect (props) {
-  return <g {...props} />
+export default class GroupBoxRect extends Component {
+  render () {
+    return <rect {...this.props} />
+  }
 }
