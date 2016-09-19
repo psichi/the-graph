@@ -22,7 +22,6 @@ import {
 
 require('../utils/shims/rAF')
 
-const {svg} = React.DOM
 const app = {}
 const graphView = {}
 
