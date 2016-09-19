@@ -58,6 +58,23 @@ export default class TheGraphPort extends Component {
     }
   }
 
+  componentWillUnmount () {
+    const {addEventListener} = findDOMNode(this)
+
+    // Preview edge start
+    removeEventListener('tap', this.edgeStart)
+    removeEventListener('trackstart', this.edgeStart)
+    // Make edge
+    removeEventListener('trackend', this.triggerDropOnTarget)
+    removeEventListener('the-graph-edge-drop', this.edgeStart)
+
+    // Show context menu
+    if (this.props.showContext) {
+      removeEventListener('contextmenu', this.showContext)
+      removeEventListener('hold', this.showContext)
+    }
+  }
+
   getTooltipTrigger () {
     return findDOMNode(this)
   }

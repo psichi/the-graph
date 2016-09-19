@@ -21,12 +21,14 @@ export default class TheGraphGroup extends Component {
     this.showContext = this.showContext.bind(this)
   }
   componentDidMount () {
+    const {box: boxRef, label: labelRef} = this.refs
+
     // Move group
     if (this.props.isSelectionGroup) {
       // Drag selection by bg
-      findDOMNode(this.refs.box).addEventListener('trackstart', this.onTrackStart)
+      findDOMNode(boxRef).addEventListener('trackstart', this.onTrackStart)
     } else {
-      findDOMNode(this.refs.label).addEventListener('trackstart', this.onTrackStart)
+      findDOMNode(labelRef).addEventListener('trackstart', this.onTrackStart)
     }
 
     const domNode = findDOMNode(this)
@@ -40,6 +42,26 @@ export default class TheGraphGroup extends Component {
       domNode.addEventListener('hold', this.showContext)
     }
   }
+
+  componentWillUnmount () {
+    const {box: boxRef, label: labelRef} = this.refs
+
+    if (this.props.isSelectionGroup) {
+      findDOMNode(boxRef).removeEventListener('trackstart', this.onTrackStart)
+    } else {
+      findDOMNode(labelRef).removeEventListener('trackstart', this.onTrackStart)
+    }
+
+    const domNode = findDOMNode(this)
+
+    domNode.removeEventListener('trackstart', this.dontPan)
+
+    if (this.props.showContext) {
+      domNode.removeEventListener('contextmenu', this.showContext)
+      domNode.removeEventListener('hold', this.showContext)
+    }
+  }
+
   showContext (event) {
     // Don't show native context menu
     event.preventDefault()
@@ -127,7 +149,7 @@ export default class TheGraphGroup extends Component {
     // Don't tap graph (deselect)
     event.preventTap()
 
-    const {isSelectionGroup, triggerMoveGroup, item: {nodes}} = this.props
+    const {graph, isSelectionGroup, triggerMoveGroup, item: {nodes}} = this.props
     const {box, label} = this.refs
 
     // Snap to grid
@@ -145,7 +167,7 @@ export default class TheGraphGroup extends Component {
       labelEL.removeEventListener('trackend', this.onTrackEnd)
     }
 
-    this.props.graph.endTransaction('movegroup')
+    graph.endTransaction('movegroup')
   }
   render () {
     const {isSelectionGroup, color: colorProp, description, label, minX, maxX, minY, maxY} = this.props

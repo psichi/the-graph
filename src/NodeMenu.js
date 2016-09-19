@@ -11,6 +11,15 @@ import {
 export default class TheGraphNodeMenu extends Component {
   radius = 72
 
+  constructor (props, context) {
+    super(props, context)
+
+    this.onContextMenu = (event) => {
+      event.stopPropagation()
+      event.preventDefault()
+    }
+  }
+
   static propTypes = {
     node: PropTypes.object,
     ports: PropTypes.object,
@@ -36,10 +45,15 @@ export default class TheGraphNodeMenu extends Component {
 
   componentDidMount () {
     // Prevent context menu
-    findDOMNode(this).addEventListener('contextmenu', function (event) {
-      event.stopPropagation()
-      event.preventDefault()
-    }, false)
+    const domNode = findDOMNode(this)
+
+    domNode.addEventListener('contextmenu', this.onContextMenu)
+  }
+
+  componentWillUnmount () {
+    const domNode = findDOMNode(this)
+
+    domNode.removeEventListener('contextmenu', this.onContextMenu)
   }
 
   render () {

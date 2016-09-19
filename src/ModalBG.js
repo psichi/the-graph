@@ -19,6 +19,12 @@ export default class TheGraphModalBG extends Component {
     domNode.addEventListener('down', this.onDown)
   }
 
+  componentWillUnmount () {
+    const domNode = findDOMNode(this)
+
+    domNode.removeEventListener('down', this.onDown)
+  }
+
   onDown (event) {
     const {rect} = this.refs
 

@@ -72,6 +72,21 @@ export default class TheGraphEdge extends Component {
     }
   }
 
+  componentWillUnmount () {
+    const domNode = findDOMNode(this)
+
+    domNode.removeEventListener('trackstart', this.dontPan)
+
+    if (this.props.onEdgeSelection) {
+      domNode.removeEventListener('tap', this.onEdgeSelection)
+    }
+
+    if (this.props.showContext) {
+      domNode.removeEventListener('contextmenu', this.showContext)
+      domNode.removeEventListener('hold', this.showContext)
+    }
+  }
+
   dontPan (event) {
     // Don't drag under menu
     if (this.props.app.menuShown) {

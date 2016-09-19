@@ -84,6 +84,25 @@ export default class TheGraphNode extends Component {
     }
   }
 
+  componentWillUnmount () {
+    const {onNodeSelection, showContext} = this.props
+    const domNode = findDOMNode(this)
+
+    // Dragging
+    domNode.removeEventListener('trackstart', this.onTrackStart)
+
+    // Tap to select
+    if (onNodeSelection) {
+      domNode.removeEventListener('tap', this.onNodeSelection, true)
+    }
+
+    // Context menu
+    if (showContext) {
+      findDOMNode(this).removeEventListener('contextmenu', this.showContext)
+      findDOMNode(this).removeEventListener('hold', this.showContext)
+    }
+  }
+
   onNodeSelection (event) {
     // Don't tap app (unselect)
     event.stopPropagation()
