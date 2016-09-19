@@ -9,14 +9,10 @@ import {
 } from './factories/nodeMenuPort'
 
 export default class TheGraphNodeMenuPort extends Component {
-  static defaultProps = {
-    label: PropTypes.string,
-    processKey: PropTypes.shape({
-      process: PropTypes.object
-    }),
-    port: PropTypes.shape({
-      type: PropTypes.string
-    }),
+  static propTypes = {
+    label: PropTypes.string.isRequired,
+    processKey: PropTypes.string,
+    port: PropTypes.string,
     highlightPort: PropTypes.shape({
       type: PropTypes.string,
       isIn: PropTypes.bool
@@ -34,11 +30,15 @@ export default class TheGraphNodeMenuPort extends Component {
   }
 
   componentDidMount () {
-    findDOMNode(this).addEventListener('up', this.edgeStart)
+    const domNode = findDOMNode(this)
+
+    domNode.addEventListener('up', this.edgeStart)
   }
 
   componentWillUnmount () {
-    findDOMNode(this).removeEventListener('up', this.edgeStart)
+    const domNode = findDOMNode(this)
+
+    domNode.removeEventListener('up', this.edgeStart)
   }
 
   edgeStart (event) {

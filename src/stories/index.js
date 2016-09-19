@@ -2,6 +2,7 @@ import React from 'react'
 import { storiesOf, action, linkTo } from '@kadira/storybook'
 import Welcome from './Welcome'
 import NodeMenu from '../NodeMenu'
+import NodeMenuPort from '../NodeMenuPort'
 import NodeMenuPorts from '../NodeMenuPorts'
 import App from '../App'
 import Port from '../Port'
@@ -113,7 +114,6 @@ storiesOf('Graph', module)
       </svg>
     )
   })
-
 
 storiesOf('Port', module)
   .add('IN', () => {
@@ -250,27 +250,71 @@ storiesOf('NodeMenuPorts', module)
     )
   })
 
+storiesOf('NodeMenuPort', module)
+  .add('Normal', () => {
+    const inportOptions = {
+      label: 'IN1',
+      isIn: true,
+      processKey: 'process1',
+      port: ports.inports.in0,
+      route: 2,
+      x: 200,
+      y: 100
+    }
+
+    const outportOptions = {
+      label: 'OUT1',
+      isIn: false,
+      processKey: 'process2',
+      port: ports.outports.out0,
+      route: 4,
+      x: 350,
+      y: 100
+    }
+
+    const highlightPortInOptions = {
+      label: 'IN2',
+      highlightPort: {
+        isIn: true,
+        type: 'all',
+      },
+      isIn: true,
+      type: 'all',
+      processKey: 'process3',
+      port: ports.inports.in1,
+      route: 3,
+      x: 200,
+      y: 180
+    }
+
+    const highlightPortOutOptions = {
+      label: 'OUT2',
+      highlightPort: {
+        isIn: false,
+        type: 'all',
+      },
+      isIn: false,
+      type: 'all',
+      processKey: 'process3',
+      port: ports.outports.out2,
+      route: 3,
+      x: 350,
+      y: 180
+    }
+
+    return (
+      <svg className='the-graph-dark'>
+        <NodeMenuPort {...inportOptions} />
+        <NodeMenuPort {...outportOptions} />
+        <NodeMenuPort {...highlightPortInOptions} />
+        <NodeMenuPort {...highlightPortOutOptions} />
+      </svg>
+    )
+  })
+
 storiesOf('Menu', module)
   .add('Normal', () => {
     const graph = fromJSON(graphJson)
-    /* passes more options the now defined in Menu
-     menu,
-     options,
-     graph,
-     x,
-     y,
-     nodeWidth,
-     nodeHeight,
-     triggerHideContext,
-     label: 'Hello',
-     node: this,
-     ports: [],
-     process: [],
-     processKey: null,
-     deltaX: 0,
-     deltaY: 0,
-     highlightPort: false
-     */
 
     const menuOptions = {
       icon: 'sign-out',
