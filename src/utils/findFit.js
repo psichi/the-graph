@@ -1,9 +1,6 @@
 import findMinMax from './findMinMax'
-import Config from '../Config'
 
-const {base: {nodeSize}} = Config
-
-export default function findFit (graph, width, height) {
+export default function findFit (graph, nodeSize, width, height) {
   const limits = findMinMax(graph)
 
   if (!limits) {

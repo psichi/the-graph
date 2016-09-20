@@ -445,7 +445,7 @@ export default class TheGraphApp extends Component {
   triggerFit (event) {
     const {graph, width, height} = this.props
 
-    const {x, y, scale} = findFit(graph, width, height)
+    const {x, y, scale} = findFit(graph, Config.base.nodeSize, width, height)
 
     this.setState({
       x,
@@ -459,7 +459,7 @@ export default class TheGraphApp extends Component {
 
     const duration = Config.focusAnimationDuration
 
-    const fit = findNodeFit(node, width, height)
+    const fit = findNodeFit(node, Config.base.nodeSize, width, height)
 
     const start_point = {
       x: -(currentX - width / 2) / scale,
@@ -471,7 +471,7 @@ export default class TheGraphApp extends Component {
       y: node.metadata.y
     }
 
-    const graphfit = findAreaFit(start_point, end_point, width, height)
+    const graphfit = findAreaFit(Config.base.nodeSize, start_point, end_point, width, height)
 
     const scale_ratio_1 = Math.abs(graphfit.scale - scale)
     const scale_ratio_2 = Math.abs(fit.scale - graphfit.scale)
@@ -504,7 +504,7 @@ export default class TheGraphApp extends Component {
     const {graph, width, height, onNodeSelection} = this.props
 
     // Autofit (not sure whether this is the correct location to do it
-    var {x, y, scale} = findFit(graph, width, height)
+    var {x, y, scale} = findFit(graph, Config.base.nodeSize, width, height)
 
     this.setState({
       x,

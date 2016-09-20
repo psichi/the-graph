@@ -1,11 +1,9 @@
-import Config from '../Config'
-
-export default function findNodeFit (node, width, height) {
+export default function findNodeFit (node, nodeSize, width, height) {
   var limits = {
-    minX: node.metadata.x - Config.base.config.nodeSize,
-    minY: node.metadata.y - Config.base.config.nodeSize,
-    maxX: node.metadata.x + Config.base.config.nodeSize * 2,
-    maxY: node.metadata.y + Config.base.config.nodeSize * 2
+    minX: node.metadata.x - nodeSize,
+    minY: node.metadata.y - nodeSize,
+    maxX: node.metadata.x + nodeSize * 2,
+    maxY: node.metadata.y + nodeSize * 2
   }
 
   const gWidth = limits.maxX - limits.minX
