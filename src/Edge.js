@@ -17,14 +17,15 @@ import {
   EdgeGroup
 } from './factories/edge'
 
-// Const
-const CURVE = Config.edge.curve
-
 // Edge view
 export default class TheGraphEdge extends Component {
   mixins = [
     Tooltip
   ]
+
+  static defaultProps = {
+    curve: Config.edge.curve
+  }
 
   static propTypes = {
     onEdgeSelection: PropTypes.func,
@@ -43,7 +44,8 @@ export default class TheGraphEdge extends Component {
     tX: PropTypes.number,
     tY: PropTypes.number,
     selected: PropTypes.bool,
-    animated: PropTypes.bool
+    animated: PropTypes.bool,
+    curve: PropTypes.number
   }
 
   constructor (props, context) {
@@ -166,13 +168,13 @@ export default class TheGraphEdge extends Component {
   }
 
   render () {
-    const {sX: sourceX, sY: sourceY, tX: targetX, tY: targetY, route, selected, animated, label} = this.props
+    const {curve, sX: sourceX, sY: sourceY, tX: targetX, tY: targetY, route, selected, animated, label} = this.props
 
     // Organic / curved edge
     let c1X, c1Y, c2X, c2Y
 
     if (targetX - 5 < sourceX) {
-      const curveFactor = (sourceX - targetX) * CURVE / 200
+      const curveFactor = (sourceX - targetX) * curve / 200
       if (Math.abs(targetY - sourceY) < Config.base.nodeSize / 2) {
         // Loopback
         c1X = sourceX + curveFactor

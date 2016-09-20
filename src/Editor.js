@@ -1,5 +1,6 @@
 // what was originally web component the-graph.html
 import React, {Component, PropTypes} from 'react'
+import App from './App'
 
 /*
 // not sure yet, the editor probably must be about 1 graph.
@@ -15,6 +16,14 @@ the Graph is meant for displaying a graph.
 The editor adds the in-graph functionality.
 
 Basically we do not fire, we will just receive updates from outside.
+
+Not sure what this code is doing.
+Most is Polymer wrapping.
+
+I want to convert it to an easy entry point to just mount the editor @root
+It also dives into the Graph view to manually call methods.
+In able to bring the code to life, there needs to be a nav equivalent in react.
+Which is already out of the scope of this React Component.
 */
 export default class TheEditor extends Component {
   appView = null
@@ -131,7 +140,7 @@ export default class TheEditor extends Component {
     this.$.svgcontainer.innerHTML = "";
 
     this.appView = ReactDOM.render(
-      window.TheGraph.App({
+      App({
         graph: this.graph,
         width: this.width,
         minZoom: this.minZoom,
