@@ -6,6 +6,8 @@ module.exports = (config, configType) => {
   console.log('Override config %s', configType);
 
   const defConf = defaultConfig(config);
+  // defConf.devtool = '#cheap-module-eval-source-map'
+  defConf.devtool = 'eval-source-map'
   defConf.module.loaders = config.module.loaders.concat([
       // the url-loader uses DataUrls.
       // the file-loader emits files.
