@@ -4,7 +4,7 @@
   "description": "flow-based programming graph editing",
   "author": "Forrest Oliphant, the Grid",
   "license": "MIT",
-  "main": "src/index.js",
+  "main": "build/index.js",
   "dependencies": {
     "fbp": "^1.5.0",
     "font-awesome": "^4.6.3",
@@ -41,6 +41,7 @@
     "worker-loader": "^0.7.1"
   },
   "scripts": {
+    "build:babel": "babel ./src --out-dir ./build",
     "lint": "standard 'src/**/*.js' | snazzy",
     "postversion": "git push && git push --tags",
     "storybook": "start-storybook -p 9009 -s ./node_modules/",
