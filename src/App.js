@@ -108,10 +108,6 @@ export default class TheGraphApp extends Component {
     })
   }
 
-  componentWillUnmount () {
-    this.autolayouter.destroy()
-  }
-
   addGraphListeners (graph) {
     graph.on('addNode', this.triggerAutolayout)
     graph.on('removeNode', this.triggerAutolayout)
@@ -579,6 +575,8 @@ export default class TheGraphApp extends Component {
   componentWillUnmount () {
     let hammertime
     const {onNodeSelection, graph} = this.props
+
+    this.autolayouter.destroy()
 
     const domNode = findDOMNode(this)
 
