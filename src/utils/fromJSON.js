@@ -1,29 +1,34 @@
 import Graph from '../graph/noflo'
+import clone from './cloneObject'
 
 export default function fromJSON (definition, metadata) {
-  let caseSensitive, conn, def, exported, graph, group, i, id, j, k, len, len1, len2, portId, priv, processId, properties, property, pub, ref, ref1, ref2, ref3, ref4, ref5, ref6, split, value
+  let caseSensitive, conn, def, _definition, exported, graph, group, i, id, j, k, len, len1, len2, _metadata, portId, priv, processId, properties, property, pub, ref, ref1, ref2, ref3, ref4, ref5, ref6, split, value
   if (metadata == null) {
-    metadata = {}
+    _metadata = {}
+  } else {
+    _definition = clone(metadata)
   }
   if (typeof definition === 'string') {
-    definition = JSON.parse(definition)
+    _definition = JSON.parse(definition)
+  } else {
+    _definition = clone(definition)
   }
-  if (!definition.properties) {
-    definition.properties = {}
+  if (!_definition.properties) {
+    _definition.properties = {}
   }
-  if (!definition.processes) {
-    definition.processes = {}
+  if (!_definition.processes) {
+    _definition.processes = {}
   }
-  if (!definition.connections) {
-    definition.connections = []
+  if (!_definition.connections) {
+    _definition.connections = []
   }
-  caseSensitive = definition.caseSensitive || false
-  graph = new Graph(definition.properties.name, {
+  caseSensitive = _definition.caseSensitive || false
+  graph = new Graph(_definition.properties.name, {
     caseSensitive: caseSensitive
   })
   graph.startTransaction('loadJSON', metadata)
   properties = {}
-  ref = definition.properties
+  ref = _definition.properties
   for (property in ref) {
     value = ref[property]
     if (property === 'name') {
@@ -33,7 +38,7 @@ export default function fromJSON (definition, metadata) {
   }
 
   graph.setProperties(properties)
-  ref1 = definition.processes
+  ref1 = _definition.processes
   for (id in ref1) {
     def = ref1[id]
     if (!def.metadata) {
@@ -42,7 +47,7 @@ export default function fromJSON (definition, metadata) {
 
     graph.addNode(id, def.component, def.metadata)
   }
-  ref2 = definition.connections
+  ref2 = _definition.connections
 
   for (i = 0, len = ref2.length; i < len; i++) {
     conn = ref2[i]
@@ -62,8 +67,8 @@ export default function fromJSON (definition, metadata) {
     graph.addEdge(conn.src.process, graph.getPortName(conn.src.port), conn.tgt.process, graph.getPortName(conn.tgt.port), metadata)
   }
 
-  if (definition.exports && definition.exports.length) {
-    ref3 = definition.exports
+  if (_definition.exports && _definition.exports.length) {
+    ref3 = _definition.exports
     for (j = 0, len1 = ref3.length; j < len1; j++) {
       exported = ref3[j]
       if (exported['private']) {
@@ -73,7 +78,7 @@ export default function fromJSON (definition, metadata) {
         }
         processId = split[0]
         portId = split[1]
-        for (id in definition.processes) {
+        for (id in _definition.processes) {
           if (graph.getPortName(id) === graph.getPortName(processId)) {
             processId = id
           }
@@ -86,24 +91,24 @@ export default function fromJSON (definition, metadata) {
     }
   }
 
-  if (definition.inports) {
-    ref4 = definition.inports
+  if (_definition.inports) {
+    ref4 = _definition.inports
     for (pub in ref4) {
       priv = ref4[pub]
       graph.addInport(pub, priv.process, graph.getPortName(priv.port), priv.metadata)
     }
   }
 
-  if (definition.outports) {
-    ref5 = definition.outports
+  if (_definition.outports) {
+    ref5 = _definition.outports
     for (pub in ref5) {
       priv = ref5[pub]
       graph.addOutport(pub, priv.process, graph.getPortName(priv.port), priv.metadata)
     }
   }
 
-  if (definition.groups) {
-    ref6 = definition.groups
+  if (_definition.groups) {
+    ref6 = _definition.groups
     for (k = 0, len2 = ref6.length; k < len2; k++) {
       group = ref6[k]
       graph.addGroup(group.name, group.nodes, group.metadata || {})
