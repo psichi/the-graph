@@ -15,5 +15,3 @@ export nodeMenuPort from './nodeMenuPort.js'
 export nodeMenuPorts from './nodeMenuPorts.js'
 export port from './port.js'
 export tooltip from './tooltip.js'
-
-export default config
