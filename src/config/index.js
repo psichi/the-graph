@@ -1,6 +1,5 @@
 'create index'
 
-/*
 export FONT_AWESOME from './FONT_AWESOME.js'
 export app from './app.js'
 export base from './base.js'
@@ -16,7 +15,5 @@ export nodeMenuPort from './nodeMenuPort.js'
 export nodeMenuPorts from './nodeMenuPorts.js'
 export port from './port.js'
 export tooltip from './tooltip.js'
-*/
-import config from '../../circular'
 
 export default config
