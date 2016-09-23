@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react'
+import React, { Component, PropTypes } from 'react'
 import Config from './Config'
 import {
   IIPPath,
@@ -14,8 +14,8 @@ export default class TheGraphIIP extends Component {
     label: PropTypes.string
   }
 
-  shouldComponentUpdate (nextProps) {
-    const {x, y, label} = this.props
+  shouldComponentUpdate(nextProps) {
+    const { x, y, label } = this.props
 
     // Only re-render if changed
     return (
@@ -25,8 +25,8 @@ export default class TheGraphIIP extends Component {
     )
   }
 
-  render () {
-    const {x, y, label: title} = this.props
+  render() {
+    const { x, y, label: title } = this.props
 
     const path = [
       'M', x, y,
@@ -50,7 +50,7 @@ export default class TheGraphIIP extends Component {
     const textOptions = {
       ...Config.iip.text,
       x: x - 10,
-      y: y,
+      y,
       text
     }
 

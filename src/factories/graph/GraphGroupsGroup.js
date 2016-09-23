@@ -1,5 +1,5 @@
 import React from 'react'
 
-export default function GraphGroupsGroup (props) {
+export default function GraphGroupsGroup(props) {
   return <g {...props} />
 }

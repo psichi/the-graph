@@ -1,9 +1,9 @@
-export default function findMinMax (graph, nodes) {
+export default function findMinMax(graph, nodes) {
   let inports
   let outports
 
   if (nodes === undefined) {
-    nodes = graph.nodes.map(function (node) {
+    nodes = graph.nodes.map((node) => {
       return node.id
     })
     // Only look at exports when calculating the whole graph
@@ -21,7 +21,7 @@ export default function findMinMax (graph, nodes) {
   let maxY = -Infinity
 
   // Loop through nodes
-  let len = nodes.length
+  const len = nodes.length
 
   let i
   for (i = 0; i < len; i++) {

@@ -1,5 +1,5 @@
 import React from 'react'
 
-export default function GraphNodesGroup (props) {
+export default function GraphNodesGroup(props) {
   return <g {...props} />
 }

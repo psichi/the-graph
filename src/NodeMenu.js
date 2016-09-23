@@ -1,5 +1,5 @@
-import React, {Component, PropTypes} from 'react'
-import {findDOMNode} from 'react-dom'
+import React, { Component, PropTypes } from 'react'
+import { findDOMNode } from 'react-dom'
 import Config from './Config'
 import {
   NodeMenuGroup,
@@ -11,7 +11,7 @@ import {
 export default class TheGraphNodeMenu extends Component {
   radius = 72
 
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
 
     this.onContextMenu = (event) => {
@@ -38,25 +38,25 @@ export default class TheGraphNodeMenu extends Component {
     y: PropTypes.number
   }
 
-  stopPropagation (event) {
+  stopPropagation(event) {
     // Don't drag graph
     event.stopPropagation()
   }
 
-  componentDidMount () {
+  componentDidMount() {
     // Prevent context menu
     const domNode = findDOMNode(this)
 
     domNode.addEventListener('contextmenu', this.onContextMenu)
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     const domNode = findDOMNode(this)
 
     domNode.removeEventListener('contextmenu', this.onContextMenu)
   }
 
-  render () {
+  render() {
     const {
       node: {
         props: {

@@ -1,5 +1,5 @@
 import React from 'react'
 
-export default function NodeMenuPortText (props) {
+export default function NodeMenuPortText(props) {
   return <text {...props} />
 }

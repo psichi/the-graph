@@ -1,7 +1,7 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 
 export default class NodeIconText extends Component {
-  render () {
+  render() {
     return <text {...this.props} />
   }
 }

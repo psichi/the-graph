@@ -1,5 +1,5 @@
 import React from 'react'
 
-export default function MenuMiddleIconRect (props) {
+export default function MenuMiddleIconRect(props) {
   return <rect {...props} />
 }

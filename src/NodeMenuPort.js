@@ -1,5 +1,5 @@
-import React, {Component, PropTypes} from 'react'
-import {findDOMNode} from 'react-dom'
+import React, { Component, PropTypes } from 'react'
+import { findDOMNode } from 'react-dom'
 import Config from './Config'
 import {
   NodeMenuBackgroundRect,
@@ -23,29 +23,29 @@ export default class TheGraphNodeMenuPort extends Component {
     y: PropTypes.number
   }
 
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
 
     this.edgeStart = this.edgeStart.bind(this)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const domNode = findDOMNode(this)
 
     domNode.addEventListener('up', this.edgeStart)
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     const domNode = findDOMNode(this)
 
     domNode.removeEventListener('up', this.edgeStart)
   }
 
-  edgeStart (event) {
+  edgeStart(event) {
     // Don't tap graph
     event.stopPropagation()
 
-    const {processKey: process, label, port: {type}, isIn, route} = this.props
+    const { processKey: process, label, port: { type }, isIn, route } = this.props
 
     const port = {
       process,
@@ -65,8 +65,8 @@ export default class TheGraphNodeMenuPort extends Component {
     findDOMNode(this).dispatchEvent(edgeStartEvent)
   }
 
-  render () {
-    const {isIn, label, port, highlightPort, x, y, route} = this.props
+  render() {
+    const { isIn, label, port, highlightPort, x, y, route } = this.props
     const labelLen = label.length
     const bgWidth = (labelLen > 12 ? labelLen * 8 + 40 : 120)
 
@@ -92,7 +92,7 @@ export default class TheGraphNodeMenuPort extends Component {
       ...Config.nodeMenuPort.text,
       className: `context-port-label fill route${route}`,
       x: x + (isIn ? -20 : 20),
-      y: y
+      y
     }
 
     const menuPortText = label.replace(/(.*)\/(.*)(_.*)\.(.*)/, '$2.$4')

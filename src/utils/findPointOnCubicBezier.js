@@ -1,6 +1,6 @@
 // Point along cubic bezier curve
 // See http://en.wikipedia.org/wiki/File:Bezier_3_big.gif
-export default function findPointOnCubicBezier (p, sx, sy, c1x, c1y, c2x, c2y, ex, ey) {
+export default function findPointOnCubicBezier(p, sx, sy, c1x, c1y, c2x, c2y, ex, ey) {
   // p is percentage from 0 to 1
   const op = 1 - p
 

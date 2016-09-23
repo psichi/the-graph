@@ -1,3 +1,5 @@
+/* global window */
+
 // rAF shim
 window.requestAnimationFrame = window.requestAnimationFrame ||
   window.webkitRequestAnimationFrame ||

@@ -53,7 +53,7 @@ storiesOf('App', module)
       onNodeSelection={action('On Node Selection')}
       onPanScale={action('On Pan Scale')}
       getMenuDef={action('Get Menu Def')}
-      displaySelectionGroup={true}
+      displaySelectionGroup
       forceSelection={false}
       offsetY={10}
       offsetX={10}
@@ -97,7 +97,7 @@ storiesOf('NodeMenu', module)
     }
 
     return (
-      <svg className='the-graph-dark'>
+      <svg className="the-graph-dark">
         <NodeMenu {...nodeMenuOptions} />
       </svg>)
   })
@@ -114,7 +114,7 @@ storiesOf('Graph', module)
     }
 
     return (
-      <svg className='the-graph-dark'>
+      <svg className="the-graph-dark">
         <Graph {...graphOptions} />
       </svg>
     )
@@ -151,15 +151,15 @@ storiesOf('Port', module)
       showContext: action('Show Context'),
       isExport: false,
       highlightPort: false
-    };
+    }
     const svgProps = {
       className: 'the-graph-dark big'
     }
 
     return (
       <svg {...svgProps}>
-        <g className='graph'>
-          <g className='nodes'>
+        <g className="graph">
+          <g className="nodes">
             <Port {...portProps} />
           </g>
         </g>
@@ -175,7 +175,7 @@ storiesOf('MenuSlice', module)
       },
       s4: {
         icon: 'trash-o',
-        iconLabel: 'delete',
+        iconLabel: 'delete'
       }
     }
 
@@ -206,7 +206,7 @@ storiesOf('MenuSlice', module)
     }
 
     return (
-      <svg className='the-graph-dark'>
+      <svg className="the-graph-dark">
         <g transform="translate(120,85)">
           <MenuSlice {...menuSliceOptions1} />
           <MenuSlice {...menuSliceOptions2} />
@@ -248,7 +248,7 @@ storiesOf('NodeMenuPorts', module)
     }
 
     return (
-      <svg className='the-graph-dark'>
+      <svg className="the-graph-dark">
         <NodeMenuPorts {...inportOptions} />
         <NodeMenuPorts {...outportOptions} />
       </svg>
@@ -281,7 +281,7 @@ storiesOf('NodeMenuPort', module)
       label: 'IN2',
       highlightPort: {
         isIn: true,
-        type: 'all',
+        type: 'all'
       },
       isIn: true,
       type: 'all',
@@ -296,7 +296,7 @@ storiesOf('NodeMenuPort', module)
       label: 'OUT2',
       highlightPort: {
         isIn: false,
-        type: 'all',
+        type: 'all'
       },
       isIn: false,
       type: 'all',
@@ -308,7 +308,7 @@ storiesOf('NodeMenuPort', module)
     }
 
     return (
-      <svg className='the-graph-dark'>
+      <svg className="the-graph-dark">
         <NodeMenuPort {...inportOptions} />
         <NodeMenuPort {...outportOptions} />
         <NodeMenuPort {...highlightPortInOptions} />
@@ -336,7 +336,7 @@ storiesOf('Menu', module)
     }
 
     return (
-      <svg className='the-graph-dark'>
+      <svg className="the-graph-dark">
         <Menu {...menuOptions} />
       </svg>
     )
@@ -354,9 +354,9 @@ storiesOf('Tooltip', module)
     }
 
     return (
-      <svg className='the-graph-light'>
-        <g className='graph big'>
-          <Tooltip {...tooltipOptions}/>
+      <svg className="the-graph-light">
+        <g className="graph big">
+          <Tooltip {...tooltipOptions} />
         </g>
       </svg>
     )
@@ -379,10 +379,10 @@ storiesOf('IIP', module)
     }
 
     return (
-      <svg className='the-graph-light'>
-        <g className='graph big'>
-          <IIP {...iipOptions}/>
-          <IIP {...iipOptions2}/>
+      <svg className="the-graph-light">
+        <g className="graph big">
+          <IIP {...iipOptions} />
+          <IIP {...iipOptions2} />
         </g>
       </svg>
     )
@@ -416,11 +416,11 @@ storiesOf('Group', module)
     }
 
     return (
-      <svg className='the-graph-light'>
-        <g className='graph big'>
-          <g className='groups'>
-            <Group {...groupOptions}/>
-            <Group {...groupOptions2}/>
+      <svg className="the-graph-light">
+        <g className="graph big">
+          <g className="groups">
+            <Group {...groupOptions} />
+            <Group {...groupOptions2} />
           </g>
         </g>
       </svg>
@@ -464,10 +464,10 @@ storiesOf('Edge', module)
     }
 
     return (
-      <svg className='the-graph-dark'>
-        <g className='graph'>
-          <Edge {...edgeOptions}/>
-          <Edge {...edgeOptions2}/>
+      <svg className="the-graph-dark">
+        <g className="graph">
+          <Edge {...edgeOptions} />
+          <Edge {...edgeOptions2} />
         </g>
       </svg>
     )
@@ -479,20 +479,20 @@ storiesOf('Node', module)
     const graph = fromJSON(graphJson)
 
     return (
-      <svg className='the-graph-dark'>
-        <g className='graph'>
-          <g className='nodes'>
+      <svg className="the-graph-dark">
+        <g className="graph">
+          <g className="nodes">
             <Node
               app={app}
               graph={graph}
               graphView={graphView}
               node={node}
-              icon='cog'
-              iconsvg=''
-              nodeID='console/log_1'
+              icon="cog"
+              iconsvg=""
+              nodeID="console/log_1"
               ports={ports}
-              label='Console Log'
-              sublabel='console/log'
+              label="Console Log"
+              sublabel="console/log"
               width={200}
               height={100}
               x={0}
@@ -516,13 +516,13 @@ storiesOf('TextBG', module)
       x: 300,
       y: 100,
       halign: 'right',
-      className: 'iip-info',
+      className: 'iip-info'
       // textClassName: ''
     }
 
     return (
-      <svg className='the-graph-dark'>
-        <g className='graph'>
+      <svg className="the-graph-dark">
+        <g className="graph">
           <TextBG {...options} />
         </g>
       </svg>

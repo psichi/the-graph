@@ -1,5 +1,5 @@
 // what was originally web component the-graph.html
-import React, {Component, PropTypes} from 'react'
+import React, { Component, PropTypes } from 'react'
 import App from './App'
 
 /*
@@ -80,12 +80,12 @@ export default class TheEditor extends Component {
     editable: true,
     autolayout: false,
     library: {},
-    pan: [0,0],
+    pan: [0, 0],
     scale: 1,
     'touch-action': 'none'
   }
 
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
 
     this.invokeEdgeSelection = this.invokeEdgeSelection.bind(this)
@@ -94,7 +94,7 @@ export default class TheEditor extends Component {
   }
 
   // note is now in graph where it probably belongs.
-  componentDidMount () {
+  componentDidMount() {
     /*
      // Initializes the autolayouter
      this.autolayouter = klayNoflo.init({
@@ -112,32 +112,32 @@ export default class TheEditor extends Component {
   // if a graph changes the whole editor is removed and a new graph editor will be added.
   // so only make sure these events are installed when mounted.
   // and remove the events when unmounted, easy..
-  graphChanged (oldGraph, newGraph) {
+  graphChanged(oldGraph, newGraph) {
     if (oldGraph && oldGraph.removeListener) {
-      oldGraph.removeListener("endTransaction", this.fireChanged);
+      oldGraph.removeListener('endTransaction', this.fireChanged)
     }
     // Listen for graph changes
-    this.graph.on("endTransaction", this.fireChanged.bind(this));
+    this.graph.on('endTransaction', this.fireChanged.bind(this))
 
     // Listen for autolayout changes
     if (this.autolayout) {
-      this.graph.on('addNode', this.triggerAutolayout.bind(this));
-      this.graph.on('removeNode', this.triggerAutolayout.bind(this));
-      this.graph.on('addInport', this.triggerAutolayout.bind(this));
-      this.graph.on('removeInport', this.triggerAutolayout.bind(this));
-      this.graph.on('addOutport', this.triggerAutolayout.bind(this));
-      this.graph.on('removeOutport', this.triggerAutolayout.bind(this));
-      this.graph.on('addEdge', this.triggerAutolayout.bind(this));
-      this.graph.on('removeEdge', this.triggerAutolayout.bind(this));
+      this.graph.on('addNode', this.triggerAutolayout.bind(this))
+      this.graph.on('removeNode', this.triggerAutolayout.bind(this))
+      this.graph.on('addInport', this.triggerAutolayout.bind(this))
+      this.graph.on('removeInport', this.triggerAutolayout.bind(this))
+      this.graph.on('addOutport', this.triggerAutolayout.bind(this))
+      this.graph.on('removeOutport', this.triggerAutolayout.bind(this))
+      this.graph.on('addEdge', this.triggerAutolayout.bind(this))
+      this.graph.on('removeEdge', this.triggerAutolayout.bind(this))
     }
 
     if (this.appView) {
       // Remove previous instance
-      ReactDOM.unmountComponentAtNode(this.$.svgcontainer);
+      ReactDOM.unmountComponentAtNode(this.$.svgcontainer)
     }
 
     // Setup app
-    this.$.svgcontainer.innerHTML = "";
+    this.$.svgcontainer.innerHTML = ''
 
     this.appView = ReactDOM.render(
       App({
@@ -159,20 +159,20 @@ export default class TheEditor extends Component {
         offsetX: this.offsetX
       }),
       this.$.svgcontainer
-    );
-    this.graphView = this.appView.refs.graph;
+    )
+    this.graphView = this.appView.refs.graph
   }
 
   // this should update and be within state
-  invokePanScale (x, y, scale) {
-    const {onPanScale} = this.props
+  invokePanScale(x, y, scale) {
+    const { onPanScale } = this.props
 
-    this.pan[0] = x;
-    this.pan[1] = y;
-    this.scale = scale;
+    this.pan[0] = x
+    this.pan[1] = y
+    this.scale = scale
 
     if (onPanScale) {
-      onPanScale({x, y, scale})
+      onPanScale({ x, y, scale })
     }
   }
 
@@ -183,29 +183,29 @@ export default class TheEditor extends Component {
   // we can make another onEdgeSelection going into editor.
   // which will receive what fire receives.
   // then the outcomponent can choose to send them as redux action. (solved)
-  invokeEdgeSelection (itemKey, item, toggle) {
-    const {onEdgeSelection} = this.props
+  invokeEdgeSelection(itemKey, item, toggle) {
+    const { onEdgeSelection } = this.props
 
     if (itemKey === undefined) {
-      if (this.selectedEdges.length>0) {
-        this.selectedEdges = [];
+      if (this.selectedEdges.length > 0) {
+        this.selectedEdges = []
       }
-      this.fire('edges', this.selectedEdges);
-      return;
+      this.fire('edges', this.selectedEdges)
+      return
     }
     if (toggle) {
-      var index = this.selectedEdges.indexOf(item);
-      var isSelected = (index !== -1);
-      var shallowClone = this.selectedEdges.slice();
+      const index = this.selectedEdges.indexOf(item)
+      const isSelected = (index !== -1)
+      const shallowClone = this.selectedEdges.slice()
       if (isSelected) {
-        shallowClone.splice(index, 1);
-        this.selectedEdges = shallowClone;
+        shallowClone.splice(index, 1)
+        this.selectedEdges = shallowClone
       } else {
-        shallowClone.push(item);
-        this.selectedEdges = shallowClone;
+        shallowClone.push(item)
+        this.selectedEdges = shallowClone
       }
     } else {
-      this.selectedEdges = [item];
+      this.selectedEdges = [item]
     }
 
     if (onEdgeSelection) {
@@ -214,21 +214,21 @@ export default class TheEditor extends Component {
     // this.fire('edges', this.selectedEdges);
   }
 
-  invokeNodeSelection (itemKey, item, toggle) {
-    const {onNodeSelection} = this.props
+  invokeNodeSelection(itemKey, item, toggle) {
+    const { onNodeSelection } = this.props
 
     if (itemKey === undefined) {
-      this.selectedNodes = [];
+      this.selectedNodes = []
     } else if (toggle) {
-      var index = this.selectedNodes.indexOf(item);
-      var isSelected = (index !== -1);
+      const index = this.selectedNodes.indexOf(item)
+      const isSelected = (index !== -1)
       if (isSelected) {
-        this.selectedNodes.splice(index, 1);
+        this.selectedNodes.splice(index, 1)
       } else {
-        this.selectedNodes.push(item);
+        this.selectedNodes.push(item)
       }
     } else {
-      this.selectedNodes = [item];
+      this.selectedNodes = [item]
     }
 
     this.selectedNodesChanged()
@@ -239,113 +239,113 @@ export default class TheEditor extends Component {
     // this.fire('nodes', this.selectedNodes);
   }
 
-  selectedNodesChanged () {
-    var selectedNodesHash = {};
-    for (var i=0, len = this.selectedNodes.length; i<len; i++) {
-      selectedNodesHash[this.selectedNodes[i].id] = true;
+  selectedNodesChanged() {
+    const selectedNodesHash = {}
+    for (let i = 0, len = this.selectedNodes.length; i < len; i++) {
+      selectedNodesHash[this.selectedNodes[i].id] = true
     }
-    this.selectedNodesHash = selectedNodesHash;
+    this.selectedNodesHash = selectedNodesHash
 
     this.selectedNodesHashChanged()
     // this.fire('nodes', this.selectedNodes);
   }
 
-  selectedNodesHashChanged () {
-    if (!this.graphView) { return; }
-    this.graphView.setSelectedNodes(this.selectedNodesHash);
+  selectedNodesHashChanged() {
+    if (!this.graphView) { return }
+    this.graphView.setSelectedNodes(this.selectedNodesHash)
   }
 
-  errorNodesChanged () {
-    if (!this.graphView) { return; }
-    this.graphView.setErrorNodes(this.errorNodes);
+  errorNodesChanged() {
+    if (!this.graphView) { return }
+    this.graphView.setErrorNodes(this.errorNodes)
   }
 
-  selectedEdgesChanged () {
-    if (!this.graphView) { return; }
-    this.graphView.setSelectedEdges(this.selectedEdges);
-    this.fire('edges', this.selectedEdges);
+  selectedEdgesChanged() {
+    if (!this.graphView) { return }
+    this.graphView.setSelectedEdges(this.selectedEdges)
+    this.fire('edges', this.selectedEdges)
   }
 
-  animatedEdgesChanged () {
-    if (!this.graphView) { return; }
-    this.graphView.setAnimatedEdges(this.animatedEdges);
+  animatedEdgesChanged() {
+    if (!this.graphView) { return }
+    this.graphView.setAnimatedEdges(this.animatedEdges)
   }
 
-  fireChanged (event) {
-    this.fire("changed", this);
+  fireChanged(event) {
+    this.fire('changed', this)
   }
 
-  autolayoutChanged () {
-    if (!this.graph) { return; }
+  autolayoutChanged() {
+    if (!this.graph) { return }
     // Only listen to changes that affect layout
     if (this.autolayout) {
-      this.graph.on('addNode', this.triggerAutolayout.bind(this));
-      this.graph.on('removeNode', this.triggerAutolayout.bind(this));
-      this.graph.on('addInport', this.triggerAutolayout.bind(this));
-      this.graph.on('removeInport', this.triggerAutolayout.bind(this));
-      this.graph.on('addOutport', this.triggerAutolayout.bind(this));
-      this.graph.on('removeOutport', this.triggerAutolayout.bind(this));
-      this.graph.on('addEdge', this.triggerAutolayout.bind(this));
-      this.graph.on('removeEdge', this.triggerAutolayout.bind(this));
+      this.graph.on('addNode', this.triggerAutolayout.bind(this))
+      this.graph.on('removeNode', this.triggerAutolayout.bind(this))
+      this.graph.on('addInport', this.triggerAutolayout.bind(this))
+      this.graph.on('removeInport', this.triggerAutolayout.bind(this))
+      this.graph.on('addOutport', this.triggerAutolayout.bind(this))
+      this.graph.on('removeOutport', this.triggerAutolayout.bind(this))
+      this.graph.on('addEdge', this.triggerAutolayout.bind(this))
+      this.graph.on('removeEdge', this.triggerAutolayout.bind(this))
     } else {
-      this.graph.removeListener('addNode', this.triggerAutolayout);
-      this.graph.removeListener('removeNode', this.triggerAutolayout);
-      this.graph.removeListener('addInport', this.triggerAutolayout);
-      this.graph.removeListener('removeInport', this.triggerAutolayout);
-      this.graph.removeListener('addOutport', this.triggerAutolayout);
-      this.graph.removeListener('removeOutport', this.triggerAutolayout);
-      this.graph.removeListener('addEdge', this.triggerAutolayout);
-      this.graph.removeListener('removeEdge', this.triggerAutolayout);
+      this.graph.removeListener('addNode', this.triggerAutolayout)
+      this.graph.removeListener('removeNode', this.triggerAutolayout)
+      this.graph.removeListener('addInport', this.triggerAutolayout)
+      this.graph.removeListener('removeInport', this.triggerAutolayout)
+      this.graph.removeListener('addOutport', this.triggerAutolayout)
+      this.graph.removeListener('removeOutport', this.triggerAutolayout)
+      this.graph.removeListener('addEdge', this.triggerAutolayout)
+      this.graph.removeListener('removeEdge', this.triggerAutolayout)
     }
   }
 
-  triggerAutolayout (event) {
-    var graph = this.graph;
-    var portInfo = this.graphView ? this.graphView.portInfo : null;
+  triggerAutolayout(event) {
+    const graph = this.graph
+    const portInfo = this.graphView ? this.graphView.portInfo : null
     // Calls the autolayouter
     this.autolayouter.layout({
-      "graph": graph,
-      "portInfo": portInfo,
-      "direction": "RIGHT",
-      "options": {
-        "intCoordinates": true,
-        "algorithm": "de.cau.cs.kieler.klay.layered",
-        "layoutHierarchy": true,
-        "spacing": 36,
-        "borderSpacing": 20,
-        "edgeSpacingFactor": 0.2,
-        "inLayerSpacingFactor": 2.0,
-        "nodePlace": "BRANDES_KOEPF",
-        "nodeLayering": "NETWORK_SIMPLEX",
-        "edgeRouting": "POLYLINE",
-        "crossMin": "LAYER_SWEEP",
-        "direction": "RIGHT"
+      'graph': graph,
+      'portInfo': portInfo,
+      'direction': 'RIGHT',
+      'options': {
+        'intCoordinates': true,
+        'algorithm': 'de.cau.cs.kieler.klay.layered',
+        'layoutHierarchy': true,
+        'spacing': 36,
+        'borderSpacing': 20,
+        'edgeSpacingFactor': 0.2,
+        'inLayerSpacingFactor': 2.0,
+        'nodePlace': 'BRANDES_KOEPF',
+        'nodeLayering': 'NETWORK_SIMPLEX',
+        'edgeRouting': 'POLYLINE',
+        'crossMin': 'LAYER_SWEEP',
+        'direction': 'RIGHT'
       }
-    });
+    })
   }
 
-  applyAutolayout (layoutedKGraph) {
-    this.graph.startTransaction("autolayout");
+  applyAutolayout(layoutedKGraph) {
+    this.graph.startTransaction('autolayout')
 
     // Update original graph nodes with the new coordinates from KIELER graph
-    var children = layoutedKGraph.children.slice();
+    const children = layoutedKGraph.children.slice()
 
-    var i, len;
-    for (i=0, len = children.length; i<len; i++) {
-      var klayNode = children[i];
-      var nofloNode = this.graph.getNode(klayNode.id);
+    let i, len
+    for (i = 0, len = children.length; i < len; i++) {
+      const klayNode = children[i]
+      const nofloNode = this.graph.getNode(klayNode.id)
 
       // Encode nodes inside groups
       if (klayNode.children) {
-        var klayChildren = klayNode.children;
-        var idx;
+        const klayChildren = klayNode.children
+        let idx
         for (idx in klayChildren) {
-          var klayChild = klayChildren[idx];
+          const klayChild = klayChildren[idx]
           if (klayChild.id) {
             this.graph.setNodeMetadata(klayChild.id, {
-              x: Math.round((klayNode.x + klayChild.x)/this.snap)*this.snap,
-              y: Math.round((klayNode.y + klayChild.y)/this.snap)*this.snap
-            });
+              x: Math.round((klayNode.x + klayChild.x) / this.snap) * this.snap,
+              y: Math.round((klayNode.y + klayChild.y) / this.snap) * this.snap
+            })
           }
         }
       }
@@ -353,133 +353,133 @@ export default class TheEditor extends Component {
       // Encode nodes outside groups
       if (nofloNode) {
         this.graph.setNodeMetadata(klayNode.id, {
-          x: Math.round(klayNode.x/this.snap)*this.snap,
-          y: Math.round(klayNode.y/this.snap)*this.snap
-        });
+          x: Math.round(klayNode.x / this.snap) * this.snap,
+          y: Math.round(klayNode.y / this.snap) * this.snap
+        })
       } else {
         // Find inport or outport
-        var idSplit = klayNode.id.split(":::");
-        var expDirection = idSplit[0];
-        var expKey = idSplit[1];
-        if (expDirection==="inport" && this.graph.inports[expKey]) {
+        const idSplit = klayNode.id.split(':::')
+        const expDirection = idSplit[0]
+        const expKey = idSplit[1]
+        if (expDirection === 'inport' && this.graph.inports[expKey]) {
           this.graph.setInportMetadata(expKey, {
-            x: Math.round(klayNode.x/this.snap)*this.snap,
-            y: Math.round(klayNode.y/this.snap)*this.snap
-          });
-        } else if (expDirection==="outport" && this.graph.outports[expKey]) {
+            x: Math.round(klayNode.x / this.snap) * this.snap,
+            y: Math.round(klayNode.y / this.snap) * this.snap
+          })
+        } else if (expDirection === 'outport' && this.graph.outports[expKey]) {
           this.graph.setOutportMetadata(expKey, {
-            x: Math.round(klayNode.x/this.snap)*this.snap,
-            y: Math.round(klayNode.y/this.snap)*this.snap
-          });
+            x: Math.round(klayNode.x / this.snap) * this.snap,
+            y: Math.round(klayNode.y / this.snap) * this.snap
+          })
         }
       }
     }
 
-    this.graph.endTransaction("autolayout");
+    this.graph.endTransaction('autolayout')
 
     // Fit to window
-    this.triggerFit();
+    this.triggerFit()
   }
 
-  triggerFit () {
+  triggerFit() {
     if (this.appView) {
-      this.appView.triggerFit();
+      this.appView.triggerFit()
     }
   }
 
-  widthChanged () {
-    if (!this.appView) { return; }
+  widthChanged() {
+    if (!this.appView) { return }
     this.appView.setState({
       width: this.width
-    });
+    })
   }
 
-  heightChanged () {
-    if (!this.appView) { return; }
+  heightChanged() {
+    if (!this.appView) { return }
     this.appView.setState({
       height: this.height
-    });
+    })
   }
 
-  updateIcon (nodeId, icon) {
-    if (!this.graphView) { return; }
-    this.graphView.updateIcon(nodeId, icon);
+  updateIcon(nodeId, icon) {
+    if (!this.graphView) { return }
+    this.graphView.updateIcon(nodeId, icon)
   }
 
-  rerender (options) {
+  rerender(options) {
     // This is throttled with rAF internally
-    if (!this.graphView) { return; }
-    this.graphView.markDirty(options);
+    if (!this.graphView) { return }
+    this.graphView.markDirty(options)
   }
 
-  addNode (id, component, metadata) {
-    if (!this.graph) { return; }
-    this.graph.addNode(id, component, metadata);
+  addNode(id, component, metadata) {
+    if (!this.graph) { return }
+    this.graph.addNode(id, component, metadata)
   }
 
-  getPan () {
+  getPan() {
     if (!this.appView) {
-      return [0, 0];
+      return [0, 0]
     }
-    return [this.appView.state.x, this.appView.state.y];
+    return [this.appView.state.x, this.appView.state.y]
   }
 
-  panChanged () {
+  panChanged() {
     // Send pan back to React
-    if (!this.appView) { return; }
+    if (!this.appView) { return }
     this.appView.setState({
       x: this.pan[0],
       y: this.pan[1]
-    });
+    })
   }
 
-  getScale () {
+  getScale() {
     if (!this.appView) {
-      return 1;
+      return 1
     }
-    return this.appView.state.scale;
+    return this.appView.state.scale
   }
 
-  displaySelectionGroupChanged () {
-    if (!this.graphView) { return; }
+  displaySelectionGroupChanged() {
+    if (!this.graphView) { return }
     this.graphView.setState({
       displaySelectionGroup: this.displaySelectionGroup
-    });
+    })
   }
 
-  forceSelectionChanged () {
-    if (!this.graphView) { return; }
+  forceSelectionChanged() {
+    if (!this.graphView) { return }
     this.graphView.setState({
       forceSelection: this.forceSelection
-    });
+    })
   }
 
-  focusNode (node) {
-    this.appView.focusNode(node);
+  focusNode(node) {
+    this.appView.focusNode(node)
   }
 
-  menusChanged () {
+  menusChanged() {
     // Only if the object itself changes,
     // otherwise builds menu from reference every time menu shown
-    if (!this.appView) { return; }
-    this.appView.setProps({menus: this.menus});
+    if (!this.appView) { return }
+    this.appView.setProps({ menus: this.menus })
   }
 
-  debounceLibraryRefesh () {
+  debounceLibraryRefesh() {
     // Breaking the "no debounce" rule, this fixes #76 for subgraphs
     if (this.debounceLibraryRefeshTimer) {
-      clearTimeout(this.debounceLibraryRefeshTimer);
+      clearTimeout(this.debounceLibraryRefeshTimer)
     }
-    this.debounceLibraryRefeshTimer = setTimeout(function () {
-      this.rerender({libraryDirty:true});
-    }.bind(this), 200);
+    this.debounceLibraryRefeshTimer = setTimeout(() => {
+      this.rerender({ libraryDirty: true })
+    }, 200)
   }
 
-  getComponent (name) {
-    return this.library[name];
+  getComponent(name) {
+    return this.library[name]
   }
 
-  render () {
+  render() {
     const {
       graph,
       width,

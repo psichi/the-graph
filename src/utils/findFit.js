@@ -1,10 +1,10 @@
 import findMinMax from './findMinMax'
 
-export default function findFit (graph, nodeSize, width, height) {
+export default function findFit(graph, nodeSize, width, height) {
   const limits = findMinMax(graph)
 
   if (!limits) {
-    return {x: 0, y: 0, scale: 1}
+    return { x: 0, y: 0, scale: 1 }
   }
 
   limits.minX -= nodeSize

@@ -1,5 +1,5 @@
 import React from 'react'
 
-export default function NodeLabelText (props) {
+export default function NodeLabelText(props) {
   return <text {...props} />
 }

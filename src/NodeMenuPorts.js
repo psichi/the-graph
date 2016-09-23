@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react'
+import React, { Component, PropTypes } from 'react'
 import Config from './Config'
 import {
   NodeMenuPortsGroup,
@@ -23,7 +23,7 @@ export default class TheGraphNodeMenuPorts extends Component {
     nodeHeight: PropTypes.number.isRequired
   }
 
-  render () {
+  render() {
     const portViews = []
     const lines = []
 
@@ -60,7 +60,7 @@ export default class TheGraphNodeMenuPorts extends Component {
       // Make path from graph port to menu port
       const lineOptions = {
         ...Config.nodeMenuPorts.portPath,
-        d: [ 'M', ox, oy, 'L', x, y ].join(' ')
+        d: ['M', ox, oy, 'L', x, y].join(' ')
       }
 
       const line = <NodeMenuPortsPortPath {...lineOptions} />

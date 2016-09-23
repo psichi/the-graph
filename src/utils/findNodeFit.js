@@ -1,5 +1,5 @@
-export default function findNodeFit (node, nodeSize, width, height) {
-  var limits = {
+export default function findNodeFit(node, nodeSize, width, height) {
+  const limits = {
     minX: node.metadata.x - nodeSize,
     minY: node.metadata.y - nodeSize,
     maxX: node.metadata.x + nodeSize * 2,

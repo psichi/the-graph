@@ -1,5 +1,5 @@
-import React, {Component, PropTypes} from 'react'
-import {findDOMNode} from 'react-dom'
+import React, { Component, PropTypes } from 'react'
+import { findDOMNode } from 'react-dom'
 import Menu from './Menu'
 import Config from './Config'
 import {
@@ -29,7 +29,7 @@ export default class TheGraphGroup extends Component {
     triggerMoveGroup: PropTypes.bool
   }
 
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
 
     this.onTrack = this.onTrack.bind(this)
@@ -38,9 +38,9 @@ export default class TheGraphGroup extends Component {
     this.dontPan = this.dontPan.bind(this)
     this.showContext = this.showContext.bind(this)
   }
-  componentDidMount () {
-    const {box: boxRef, label: labelRef} = this.refs
-    const {isSelectionGroup, showContext} = this.props
+  componentDidMount() {
+    const { box: boxRef, label: labelRef } = this.refs
+    const { isSelectionGroup, showContext } = this.props
 
     // Move group
     if (isSelectionGroup) {
@@ -62,9 +62,9 @@ export default class TheGraphGroup extends Component {
     }
   }
 
-  componentWillUnmount () {
-    const {showContext, isSelectionGroup} = this.props
-    const {box: boxRef, label: labelRef} = this.refs
+  componentWillUnmount() {
+    const { showContext, isSelectionGroup } = this.props
+    const { box: boxRef, label: labelRef } = this.refs
 
     if (isSelectionGroup) {
       findDOMNode(boxRef).removeEventListener('trackstart', this.onTrackStart)
@@ -82,7 +82,7 @@ export default class TheGraphGroup extends Component {
     }
   }
 
-  showContext (event) {
+  showContext(event) {
     // Don't show native context menu
     event.preventDefault()
 
@@ -90,7 +90,7 @@ export default class TheGraphGroup extends Component {
     event.stopPropagation()
     if (event.preventTap) { event.preventTap() }
 
-    const {graph, label: itemKey, item, isSelectionGroup, showContext} = this.props
+    const { graph, label: itemKey, item, isSelectionGroup, showContext } = this.props
 
     // Get mouse position
     const x = event.x || event.clientX || 0
@@ -107,8 +107,8 @@ export default class TheGraphGroup extends Component {
       item
     })
   }
-  getContext (menu, options, triggerHideContext) {
-    const {label} = this.props
+  getContext(menu, options, triggerHideContext) {
+    const { label } = this.props
 
     const menuOptions = {
       menu,
@@ -120,20 +120,20 @@ export default class TheGraphGroup extends Component {
     return <Menu {...menuOptions} />
   }
 
-  dontPan (event) {
-    const {app: {menuShown}} = this.props
+  dontPan(event) {
+    const { app: { menuShown } } = this.props
     // Don't drag under menu
     if (menuShown) {
       event.stopPropagation()
     }
   }
 
-  onTrackStart (event) {
+  onTrackStart(event) {
     // Don't drag graph
     event.stopPropagation()
 
-    const {graph, isSelectionGroup} = this.props
-    const {box, label} = this.refs
+    const { graph, isSelectionGroup } = this.props
+    const { box, label } = this.refs
 
     if (isSelectionGroup) {
       const boxEl = findDOMNode(box)
@@ -150,11 +150,11 @@ export default class TheGraphGroup extends Component {
     graph.startTransaction('movegroup')
   }
 
-  onTrack (event) {
+  onTrack(event) {
     // Don't fire on graph
     event.stopPropagation()
 
-    const {scale, triggerMoveGroup, item: {nodes}} = this.props
+    const { scale, triggerMoveGroup, item: { nodes } } = this.props
 
     const deltaX = Math.round(event.ddx / scale)
     const deltaY = Math.round(event.ddy / scale)
@@ -162,15 +162,15 @@ export default class TheGraphGroup extends Component {
     triggerMoveGroup(nodes, deltaX, deltaY)
   }
 
-  onTrackEnd (event) {
+  onTrackEnd(event) {
     // Don't fire on graph
     event.stopPropagation()
 
     // Don't tap graph (deselect)
     event.preventTap()
 
-    const {graph, isSelectionGroup, triggerMoveGroup, item: {nodes}} = this.props
-    const {box, label} = this.refs
+    const { graph, isSelectionGroup, triggerMoveGroup, item: { nodes } } = this.props
+    const { box, label } = this.refs
 
     // Snap to grid
     triggerMoveGroup(nodes)
@@ -189,8 +189,8 @@ export default class TheGraphGroup extends Component {
 
     graph.endTransaction('movegroup')
   }
-  render () {
-    const {isSelectionGroup, color: colorProp, description, label, minX, maxX, minY, maxY} = this.props
+  render() {
+    const { isSelectionGroup, color: colorProp, description, label, minX, maxX, minY, maxY } = this.props
 
     const x = minX - Config.base.config.nodeWidth / 2
     const y = minY - Config.base.config.nodeHeight / 2

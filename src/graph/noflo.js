@@ -1,6 +1,13 @@
 import EventEmitter from 'events'
 import clone from 'lodash.clone'
 
+const cleanID = (id) => {
+  return id.replace(/\s*/g, '')
+}
+const cleanPort = (port) => {
+  return port.replace(/\./g, '')
+}
+
 export default class Graph extends EventEmitter {
   name = '';
   caseSensitive = false;
@@ -13,7 +20,7 @@ export default class Graph extends EventEmitter {
   outports = {};
   groups = [];
 
-  constructor (name = '', options = {}) {
+  constructor(name = '', options = {}) {
     super()
 
     this.name = name
@@ -32,24 +39,25 @@ export default class Graph extends EventEmitter {
     this.caseSensitive = options.caseSensitive || false
   }
 
-  getPortName (port) {
+  getPortName(port) {
     if (this.caseSensitive) {
       return port
-    } else {
-      return port.toLowerCase()
     }
+
+    return port.toLowerCase()
   }
 
-  startTransaction (id, metadata) {
+  startTransaction(id, metadata) {
     if (this.transaction.id) {
       throw Error('Nested transactions not supported')
     }
     this.transaction.id = id
     this.transaction.depth = 1
+
     return this.emit('startTransaction', id, metadata)
   }
 
-  endTransaction (id, metadata) {
+  endTransaction(id, metadata) {
     if (!this.transaction.id) {
       throw Error('Attempted to end non-existing transaction')
     }
@@ -58,7 +66,7 @@ export default class Graph extends EventEmitter {
     return this.emit('endTransaction', id, metadata)
   }
 
-  checkTransactionStart () {
+  checkTransactionStart() {
     if (!this.transaction.id) {
       return this.startTransaction('implicit')
     } else if (this.transaction.id === 'implicit') {
@@ -66,7 +74,7 @@ export default class Graph extends EventEmitter {
     }
   }
 
-  checkTransactionEnd () {
+  checkTransactionEnd() {
     if (this.transaction.id === 'implicit') {
       this.transaction.depth -= 1
     }
@@ -75,20 +83,27 @@ export default class Graph extends EventEmitter {
     }
   }
 
-  setProperties (properties) {
-    var before, item, val
+  setProperties(properties) {
+    let before
+    let item
+    let val
+
     this.checkTransactionStart()
+
     before = clone(this.properties)
+
     for (item in properties) {
-      val = properties[ item ]
-      this.properties[ item ] = val
+      val = properties[item]
+      this.properties[item] = val
     }
+
     this.emit('changeProperties', this.properties, before)
+
     return this.checkTransactionEnd()
   }
 
-  addExport (publicPort, nodeKey, portKey, metadata) {
-    var exported
+  addExport(publicPort, nodeKey, portKey, metadata) {
+    let exported
     if (metadata == null) {
       metadata = {
         x: 0,
@@ -104,22 +119,28 @@ export default class Graph extends EventEmitter {
       'public': this.getPortName(publicPort),
       process: nodeKey,
       port: this.getPortName(portKey),
-      metadata: metadata
+      metadata
     }
     this.exports.push(exported)
     this.emit('addExport', exported)
     return this.checkTransactionEnd()
   }
 
-  removeExport (publicPort) {
-    var exported, found, i, idx, len, ref
+  removeExport(publicPort) {
+    let exported
+    let found
+    let i
+    let idx
+    let len
+    let ref
+
     platform.deprecated('noflo.Graph exports is deprecated: please use specific inport or outport instead')
     publicPort = this.getPortName(publicPort)
     found = null
     ref = this.exports
     for (idx = i = 0, len = ref.length; i < len; idx = ++i) {
-      exported = ref[ idx ]
-      if (exported[ 'public' ] === publicPort) {
+      exported = ref[idx]
+      if (exported.public === publicPort) {
         found = exported
       }
     }
@@ -132,155 +153,155 @@ export default class Graph extends EventEmitter {
     return this.checkTransactionEnd()
   }
 
-  addInport (publicPort, nodeKey, portKey, metadata) {
+  addInport(publicPort, nodeKey, portKey, metadata) {
     if (!this.getNode(nodeKey)) {
       return
     }
     publicPort = this.getPortName(publicPort)
     this.checkTransactionStart()
-    this.inports[ publicPort ] = {
+    this.inports[publicPort] = {
       process: nodeKey,
       port: this.getPortName(portKey),
-      metadata: metadata
+      metadata
     }
-    this.emit('addInport', publicPort, this.inports[ publicPort ])
+    this.emit('addInport', publicPort, this.inports[publicPort])
     return this.checkTransactionEnd()
   }
 
-  removeInport (publicPort) {
-    var port
+  removeInport(publicPort) {
+    let port
     publicPort = this.getPortName(publicPort)
-    if (!this.inports[ publicPort ]) {
+    if (!this.inports[publicPort]) {
       return
     }
     this.checkTransactionStart()
-    port = this.inports[ publicPort ]
+    port = this.inports[publicPort]
     this.setInportMetadata(publicPort, {})
-    delete this.inports[ publicPort ]
+    delete this.inports[publicPort]
     this.emit('removeInport', publicPort, port)
     return this.checkTransactionEnd()
   }
 
-  renameInport (oldPort, newPort) {
+  renameInport(oldPort, newPort) {
     oldPort = this.getPortName(oldPort)
     newPort = this.getPortName(newPort)
-    if (!this.inports[ oldPort ]) {
+    if (!this.inports[oldPort]) {
       return
     }
     this.checkTransactionStart()
-    this.inports[ newPort ] = this.inports[ oldPort ]
-    delete this.inports[ oldPort ]
+    this.inports[newPort] = this.inports[oldPort]
+    delete this.inports[oldPort]
     this.emit('renameInport', oldPort, newPort)
     return this.checkTransactionEnd()
   }
 
-  setInportMetadata (publicPort, metadata) {
-    var before, item, val
+  setInportMetadata(publicPort, metadata) {
+    let before, item, val
     publicPort = this.getPortName(publicPort)
-    if (!this.inports[ publicPort ]) {
+    if (!this.inports[publicPort]) {
       return
     }
     this.checkTransactionStart()
-    before = clone(this.inports[ publicPort ].metadata)
-    if (!this.inports[ publicPort ].metadata) {
-      this.inports[ publicPort ].metadata = {}
+    before = clone(this.inports[publicPort].metadata)
+    if (!this.inports[publicPort].metadata) {
+      this.inports[publicPort].metadata = {}
     }
     for (item in metadata) {
-      val = metadata[ item ]
+      val = metadata[item]
       if (val != null) {
-        this.inports[ publicPort ].metadata[ item ] = val
+        this.inports[publicPort].metadata[item] = val
       } else {
-        delete this.inports[ publicPort ].metadata[ item ]
+        delete this.inports[publicPort].metadata[item]
       }
     }
-    this.emit('changeInport', publicPort, this.inports[ publicPort ], before)
+    this.emit('changeInport', publicPort, this.inports[publicPort], before)
     return this.checkTransactionEnd()
   }
 
-  addOutport (publicPort, nodeKey, portKey, metadata) {
+  addOutport(publicPort, nodeKey, portKey, metadata) {
     if (!this.getNode(nodeKey)) {
       return
     }
     publicPort = this.getPortName(publicPort)
     this.checkTransactionStart()
-    this.outports[ publicPort ] = {
+    this.outports[publicPort] = {
       process: nodeKey,
       port: this.getPortName(portKey),
-      metadata: metadata
+      metadata
     }
-    this.emit('addOutport', publicPort, this.outports[ publicPort ])
+    this.emit('addOutport', publicPort, this.outports[publicPort])
     return this.checkTransactionEnd()
   }
 
-  removeOutport (publicPort) {
-    var port
+  removeOutport(publicPort) {
+    let port
     publicPort = this.getPortName(publicPort)
-    if (!this.outports[ publicPort ]) {
+    if (!this.outports[publicPort]) {
       return
     }
     this.checkTransactionStart()
-    port = this.outports[ publicPort ]
+    port = this.outports[publicPort]
     this.setOutportMetadata(publicPort, {})
-    delete this.outports[ publicPort ]
+    delete this.outports[publicPort]
     this.emit('removeOutport', publicPort, port)
     return this.checkTransactionEnd()
   }
 
-  renameOutport (oldPort, newPort) {
+  renameOutport(oldPort, newPort) {
     oldPort = this.getPortName(oldPort)
     newPort = this.getPortName(newPort)
-    if (!this.outports[ oldPort ]) {
+    if (!this.outports[oldPort]) {
       return
     }
     this.checkTransactionStart()
-    this.outports[ newPort ] = this.outports[ oldPort ]
-    delete this.outports[ oldPort ]
+    this.outports[newPort] = this.outports[oldPort]
+    delete this.outports[oldPort]
     this.emit('renameOutport', oldPort, newPort)
     return this.checkTransactionEnd()
   }
 
-  setOutportMetadata (publicPort, metadata) {
-    var before, item, val
+  setOutportMetadata(publicPort, metadata) {
+    let before, item, val
     publicPort = this.getPortName(publicPort)
-    if (!this.outports[ publicPort ]) {
+    if (!this.outports[publicPort]) {
       return
     }
     this.checkTransactionStart()
-    before = clone(this.outports[ publicPort ].metadata)
-    if (!this.outports[ publicPort ].metadata) {
-      this.outports[ publicPort ].metadata = {}
+    before = clone(this.outports[publicPort].metadata)
+    if (!this.outports[publicPort].metadata) {
+      this.outports[publicPort].metadata = {}
     }
     for (item in metadata) {
-      val = metadata[ item ]
+      val = metadata[item]
       if (val != null) {
-        this.outports[ publicPort ].metadata[ item ] = val
+        this.outports[publicPort].metadata[item] = val
       } else {
-        delete this.outports[ publicPort ].metadata[ item ]
+        delete this.outports[publicPort].metadata[item]
       }
     }
-    this.emit('changeOutport', publicPort, this.outports[ publicPort ], before)
+    this.emit('changeOutport', publicPort, this.outports[publicPort], before)
     return this.checkTransactionEnd()
   }
 
-  addGroup (group, nodes, metadata) {
-    var g
+  addGroup(group, nodes, metadata) {
+    let g
     this.checkTransactionStart()
     g = {
       name: group,
-      nodes: nodes,
-      metadata: metadata
+      nodes,
+      metadata
     }
     this.groups.push(g)
     this.emit('addGroup', g)
     return this.checkTransactionEnd()
   }
 
-  renameGroup (oldName, newName) {
-    var group, i, len, ref
+  renameGroup(oldName, newName) {
+    let group, i, len, ref
     this.checkTransactionStart()
     ref = this.groups
     for (i = 0, len = ref.length; i < len; i++) {
-      group = ref[ i ]
+      group = ref[i]
       if (!group) {
         continue
       }
@@ -293,12 +314,12 @@ export default class Graph extends EventEmitter {
     return this.checkTransactionEnd()
   }
 
-  removeGroup (groupName) {
-    var group, i, len, ref
+  removeGroup(groupName) {
+    let group, i, len, ref
     this.checkTransactionStart()
     ref = this.groups
     for (i = 0, len = ref.length; i < len; i++) {
-      group = ref[ i ]
+      group = ref[i]
       if (!group) {
         continue
       }
@@ -312,12 +333,12 @@ export default class Graph extends EventEmitter {
     return this.checkTransactionEnd()
   }
 
-  setGroupMetadata (groupName, metadata) {
-    var before, group, i, item, len, ref, val
+  setGroupMetadata(groupName, metadata) {
+    let before, group, i, item, len, ref, val
     this.checkTransactionStart()
     ref = this.groups
     for (i = 0, len = ref.length; i < len; i++) {
-      group = ref[ i ]
+      group = ref[i]
       if (!group) {
         continue
       }
@@ -326,11 +347,11 @@ export default class Graph extends EventEmitter {
       }
       before = clone(group.metadata)
       for (item in metadata) {
-        val = metadata[ item ]
+        val = metadata[item]
         if (val != null) {
-          group.metadata[ item ] = val
+          group.metadata[item] = val
         } else {
-          delete group.metadata[ item ]
+          delete group.metadata[item]
         }
       }
       this.emit('changeGroup', group, before)
@@ -338,16 +359,16 @@ export default class Graph extends EventEmitter {
     return this.checkTransactionEnd()
   }
 
-  addNode (id, component, metadata) {
-    var node
+  addNode(id, component, metadata) {
+    let node
     this.checkTransactionStart()
     if (!metadata) {
       metadata = {}
     }
     node = {
-      id: id,
-      component: component,
-      metadata: metadata
+      id,
+      component,
+      metadata
     }
     this.nodes.push(node)
     this.emit('addNode', node)
@@ -355,8 +376,40 @@ export default class Graph extends EventEmitter {
     return node
   }
 
-  removeNode (id) {
-    var edge, exported, group, i, index, initializer, j, k, l, len, len1, len2, len3, len4, len5, len6, len7, len8, m, n, node, o, p, priv, pub, q, ref, ref1, ref2, ref3, ref4, ref5, toRemove
+  removeNode(id) {
+    let edge
+    let exported
+    let group
+    let i
+    let index
+    let initializer
+    let j
+    let k
+    let l
+    let len
+    let len1
+    let len2
+    let len3
+    let len4
+    let len5
+    let len6
+    let len7
+    let len8
+    let m
+    let n
+    let node
+    let o
+    let p
+    let priv
+    let pub
+    let q
+    let ref
+    let ref1
+    let ref2
+    let ref3
+    let ref4
+    let ref5
+    let toRemove
     node = this.getNode(id)
     if (!node) {
       return
@@ -365,66 +418,66 @@ export default class Graph extends EventEmitter {
     toRemove = []
     ref = this.edges
     for (i = 0, len = ref.length; i < len; i++) {
-      edge = ref[ i ]
+      edge = ref[i]
       if ((edge.from.node === node.id) || (edge.to.node === node.id)) {
         toRemove.push(edge)
       }
     }
     for (j = 0, len1 = toRemove.length; j < len1; j++) {
-      edge = toRemove[ j ]
+      edge = toRemove[j]
       this.removeEdge(edge.from.node, edge.from.port, edge.to.node, edge.to.port)
     }
     toRemove = []
     ref1 = this.initializers
     for (k = 0, len2 = ref1.length; k < len2; k++) {
-      initializer = ref1[ k ]
+      initializer = ref1[k]
       if (initializer.to.node === node.id) {
         toRemove.push(initializer)
       }
     }
     for (l = 0, len3 = toRemove.length; l < len3; l++) {
-      initializer = toRemove[ l ]
+      initializer = toRemove[l]
       this.removeInitial(initializer.to.node, initializer.to.port)
     }
     toRemove = []
     ref2 = this.exports
     for (m = 0, len4 = ref2.length; m < len4; m++) {
-      exported = ref2[ m ]
+      exported = ref2[m]
       if (this.getPortName(id) === exported.process) {
         toRemove.push(exported)
       }
     }
     for (n = 0, len5 = toRemove.length; n < len5; n++) {
-      exported = toRemove[ n ]
-      this.removeExport(exported[ 'public' ])
+      exported = toRemove[n]
+      this.removeExport(exported.public)
     }
     toRemove = []
     ref3 = this.inports
     for (pub in ref3) {
-      priv = ref3[ pub ]
+      priv = ref3[pub]
       if (priv.process === id) {
         toRemove.push(pub)
       }
     }
     for (o = 0, len6 = toRemove.length; o < len6; o++) {
-      pub = toRemove[ o ]
+      pub = toRemove[o]
       this.removeInport(pub)
     }
     toRemove = []
     ref4 = this.outports
     for (pub in ref4) {
-      priv = ref4[ pub ]
+      priv = ref4[pub]
       if (priv.process === id) {
         toRemove.push(pub)
       }
     }
     for (p = 0, len7 = toRemove.length; p < len7; p++) {
-      pub = toRemove[ p ]
+      pub = toRemove[p]
       this.removeOutport(pub)
     }
     ref5 = this.groups
     for (q = 0, len8 = ref5.length; q < len8; q++) {
-      group = ref5[ q ]
+      group = ref5[q]
       if (!group) {
         continue
       }
@@ -442,11 +495,15 @@ export default class Graph extends EventEmitter {
     return this.checkTransactionEnd()
   }
 
-  getNode (id) {
-    var i, len, node, ref
+  getNode(id) {
+    let i
+    let len
+    let node
+    let ref
+
     ref = this.nodes
     for (i = 0, len = ref.length; i < len; i++) {
-      node = ref[ i ]
+      node = ref[i]
       if (!node) {
         continue
       }
@@ -457,8 +514,29 @@ export default class Graph extends EventEmitter {
     return null
   }
 
-  renameNode (oldId, newId) {
-    var edge, exported, group, i, iip, index, j, k, l, len, len1, len2, len3, node, priv, pub, ref, ref1, ref2, ref3, ref4, ref5
+  renameNode(oldId, newId) {
+    let edge
+    let exported
+    let group
+    let i
+    let iip
+    let index
+    let j
+    let k
+    let l
+    let len
+    let len1
+    let len2
+    let len3
+    let node
+    let priv
+    let pub
+    let ref
+    let ref1
+    let ref2
+    let ref3
+    let ref4
+    let ref5
     this.checkTransactionStart()
     node = this.getNode(oldId)
     if (!node) {
@@ -467,7 +545,7 @@ export default class Graph extends EventEmitter {
     node.id = newId
     ref = this.edges
     for (i = 0, len = ref.length; i < len; i++) {
-      edge = ref[ i ]
+      edge = ref[i]
       if (!edge) {
         continue
       }
@@ -480,7 +558,7 @@ export default class Graph extends EventEmitter {
     }
     ref1 = this.initializers
     for (j = 0, len1 = ref1.length; j < len1; j++) {
-      iip = ref1[ j ]
+      iip = ref1[j]
       if (!iip) {
         continue
       }
@@ -490,28 +568,28 @@ export default class Graph extends EventEmitter {
     }
     ref2 = this.inports
     for (pub in ref2) {
-      priv = ref2[ pub ]
+      priv = ref2[pub]
       if (priv.process === oldId) {
         priv.process = newId
       }
     }
     ref3 = this.outports
     for (pub in ref3) {
-      priv = ref3[ pub ]
+      priv = ref3[pub]
       if (priv.process === oldId) {
         priv.process = newId
       }
     }
     ref4 = this.exports
     for (k = 0, len2 = ref4.length; k < len2; k++) {
-      exported = ref4[ k ]
+      exported = ref4[k]
       if (exported.process === oldId) {
         exported.process = newId
       }
     }
     ref5 = this.groups
     for (l = 0, len3 = ref5.length; l < len3; l++) {
-      group = ref5[ l ]
+      group = ref5[l]
       if (!group) {
         continue
       }
@@ -519,14 +597,18 @@ export default class Graph extends EventEmitter {
       if (index === -1) {
         continue
       }
-      group.nodes[ index ] = newId
+      group.nodes[index] = newId
     }
     this.emit('renameNode', oldId, newId)
     return this.checkTransactionEnd()
   }
 
-  setNodeMetadata (id, metadata) {
-    var before, item, node, val
+  setNodeMetadata(id, metadata) {
+    let before
+    let item
+    let node
+    let val
+
     node = this.getNode(id)
     if (!node) {
       return
@@ -537,19 +619,23 @@ export default class Graph extends EventEmitter {
       node.metadata = {}
     }
     for (item in metadata) {
-      val = metadata[ item ]
+      val = metadata[item]
       if (val != null) {
-        node.metadata[ item ] = val
+        node.metadata[item] = val
       } else {
-        delete node.metadata[ item ]
+        delete node.metadata[item]
       }
     }
     this.emit('changeNode', node, before)
     return this.checkTransactionEnd()
   }
 
-  addEdge (outNode, outPort, inNode, inPort, metadata) {
-    var edge, i, len, ref
+  addEdge(outNode, outPort, inNode, inPort, metadata) {
+    let edge
+    let i
+    let len
+    let ref
+
     if (metadata == null) {
       metadata = {}
     }
@@ -557,7 +643,7 @@ export default class Graph extends EventEmitter {
     inPort = this.getPortName(inPort)
     ref = this.edges
     for (i = 0, len = ref.length; i < len; i++) {
-      edge = ref[ i ]
+      edge = ref[i]
       if (edge.from.node === outNode && edge.from.port === outPort && edge.to.node === inNode && edge.to.port === inPort) {
         return
       }
@@ -578,7 +664,7 @@ export default class Graph extends EventEmitter {
         node: inNode,
         port: inPort
       },
-      metadata: metadata
+      metadata
     }
     this.edges.push(edge)
     this.emit('addEdge', edge)
@@ -586,8 +672,9 @@ export default class Graph extends EventEmitter {
     return edge
   }
 
-  addEdgeIndex (outNode, outPort, outIndex, inNode, inPort, inIndex, metadata) {
-    var edge
+  addEdgeIndex(outNode, outPort, outIndex, inNode, inPort, inIndex, metadata) {
+    let edge
+
     if (metadata == null) {
       metadata = {}
     }
@@ -620,7 +707,7 @@ export default class Graph extends EventEmitter {
         port: inPort,
         index: inIndex
       },
-      metadata: metadata
+      metadata
     }
     this.edges.push(edge)
     this.emit('addEdge', edge)
@@ -628,8 +715,20 @@ export default class Graph extends EventEmitter {
     return edge
   }
 
-  removeEdge (node, port, node2, port2) {
-    var edge, i, index, j, k, len, len1, len2, ref, ref1, toKeep, toRemove
+  removeEdge(node, port, node2, port2) {
+    let edge
+    let i
+    let index
+    let j
+    let k
+    let len
+    let len1
+    let len2
+    let ref
+    let ref1
+    let toKeep
+    let toRemove
+
     this.checkTransactionStart()
     port = this.getPortName(port)
     port2 = this.getPortName(port2)
@@ -638,7 +737,7 @@ export default class Graph extends EventEmitter {
     if (node2 && port2) {
       ref = this.edges
       for (index = i = 0, len = ref.length; i < len; index = ++i) {
-        edge = ref[ index ]
+        edge = ref[index]
         if (edge.from.node === node && edge.from.port === port && edge.to.node === node2 && edge.to.port === port2) {
           this.setEdgeMetadata(edge.from.node, edge.from.port, edge.to.node, edge.to.port, {})
           toRemove.push(edge)
@@ -649,7 +748,7 @@ export default class Graph extends EventEmitter {
     } else {
       ref1 = this.edges
       for (index = j = 0, len1 = ref1.length; j < len1; index = ++j) {
-        edge = ref1[ index ]
+        edge = ref1[index]
         if ((edge.from.node === node && edge.from.port === port) || (edge.to.node === node && edge.to.port === port)) {
           this.setEdgeMetadata(edge.from.node, edge.from.port, edge.to.node, edge.to.port, {})
           toRemove.push(edge)
@@ -660,19 +759,24 @@ export default class Graph extends EventEmitter {
     }
     this.edges = toKeep
     for (k = 0, len2 = toRemove.length; k < len2; k++) {
-      edge = toRemove[ k ]
+      edge = toRemove[k]
       this.emit('removeEdge', edge)
     }
     return this.checkTransactionEnd()
   }
 
-  getEdge (node, port, node2, port2) {
-    var edge, i, index, len, ref
+  getEdge(node, port, node2, port2) {
+    let edge
+    let i
+    let index
+    let len
+    let ref
+
     port = this.getPortName(port)
     port2 = this.getPortName(port2)
     ref = this.edges
     for (index = i = 0, len = ref.length; i < len; index = ++i) {
-      edge = ref[ index ]
+      edge = ref[index]
       if (!edge) {
         continue
       }
@@ -685,8 +789,12 @@ export default class Graph extends EventEmitter {
     return null
   }
 
-  setEdgeMetadata (node, port, node2, port2, metadata) {
-    var before, edge, item, val
+  setEdgeMetadata(node, port, node2, port2, metadata) {
+    let before
+    let edge
+    let item
+    let val
+
     edge = this.getEdge(node, port, node2, port2)
     if (!edge) {
       return
@@ -697,19 +805,20 @@ export default class Graph extends EventEmitter {
       edge.metadata = {}
     }
     for (item in metadata) {
-      val = metadata[ item ]
+      val = metadata[item]
       if (val != null) {
-        edge.metadata[ item ] = val
+        edge.metadata[item] = val
       } else {
-        delete edge.metadata[ item ]
+        delete edge.metadata[item]
       }
     }
     this.emit('changeEdge', edge, before)
     return this.checkTransactionEnd()
   }
 
-  addInitial (data, node, port, metadata) {
-    var initializer
+  addInitial(data, node, port, metadata) {
+    let initializer
+
     if (!this.getNode(node)) {
       return
     }
@@ -717,13 +826,13 @@ export default class Graph extends EventEmitter {
     this.checkTransactionStart()
     initializer = {
       from: {
-        data: data
+        data
       },
       to: {
-        node: node,
-        port: port
+        node,
+        port
       },
-      metadata: metadata
+      metadata
     }
     this.initializers.push(initializer)
     this.emit('addInitial', initializer)
@@ -731,8 +840,9 @@ export default class Graph extends EventEmitter {
     return initializer
   }
 
-  addInitialIndex (data, node, port, index, metadata) {
-    var initializer
+  addInitialIndex(data, node, port, index, metadata) {
+    let initializer
+
     if (!this.getNode(node)) {
       return
     }
@@ -743,14 +853,14 @@ export default class Graph extends EventEmitter {
     this.checkTransactionStart()
     initializer = {
       from: {
-        data: data
+        data
       },
       to: {
-        node: node,
-        port: port,
-        index: index
+        node,
+        port,
+        index
       },
-      metadata: metadata
+      metadata
     }
     this.initializers.push(initializer)
     this.emit('addInitial', initializer)
@@ -758,33 +868,42 @@ export default class Graph extends EventEmitter {
     return initializer
   }
 
-  addGraphInitial (data, node, metadata) {
-    var inport
-    inport = this.inports[ node ]
+  addGraphInitial(data, node, metadata) {
+    let inport
+    inport = this.inports[node]
     if (!inport) {
       return
     }
     return this.addInitial(data, inport.process, inport.port, metadata)
   }
 
-  addGraphInitialIndex (data, node, index, metadata) {
-    var inport
-    inport = this.inports[ node ]
+  addGraphInitialIndex(data, node, index, metadata) {
+    let inport
+    inport = this.inports[node]
     if (!inport) {
       return
     }
     return this.addInitialIndex(data, inport.process, inport.port, index, metadata)
   }
 
-  removeInitial (node, port) {
-    var edge, i, index, j, len, len1, ref, toKeep, toRemove
+  removeInitial(node, port) {
+    let edge
+    let i
+    let index
+    let j
+    let len
+    let len1
+    let ref
+    let toKeep
+    let toRemove
+
     port = this.getPortName(port)
     this.checkTransactionStart()
     toRemove = []
     toKeep = []
     ref = this.initializers
     for (index = i = 0, len = ref.length; i < len; index = ++i) {
-      edge = ref[ index ]
+      edge = ref[index]
       if (edge.to.node === node && edge.to.port === port) {
         toRemove.push(edge)
       } else {
@@ -793,38 +912,48 @@ export default class Graph extends EventEmitter {
     }
     this.initializers = toKeep
     for (j = 0, len1 = toRemove.length; j < len1; j++) {
-      edge = toRemove[ j ]
+      edge = toRemove[j]
       this.emit('removeInitial', edge)
     }
     return this.checkTransactionEnd()
   }
 
-  removeGraphInitial (node) {
-    var inport
-    inport = this.inports[ node ]
+  removeGraphInitial(node) {
+    let inport
+    inport = this.inports[node]
     if (!inport) {
       return
     }
     return this.removeInitial(inport.process, inport.port)
   }
 
-  toDOT () {
-    var cleanID, cleanPort, data, dot, edge, i, id, initializer, j, k, len, len1, len2, node, ref, ref1, ref2
-    cleanID = function (id) {
-      return id.replace(/\s*/g, '')
-    }
-    cleanPort = function (port) {
-      return port.replace(/\./g, '')
-    }
+  toDOT() {
+    let cleanID
+    let cleanPort
+    let data
+    let dot
+    let edge
+    let i
+    let id
+    let initializer
+    let j
+    let k
+    let len
+    let len1
+    let len2
+    let node
+    let ref
+    let ref1
+    let ref2
     dot = 'digraph {\n'
     ref = this.nodes
     for (i = 0, len = ref.length; i < len; i++) {
-      node = ref[ i ]
+      node = ref[i]
       dot += '    ' + (cleanID(node.id)) + ' [label=' + node.id + ' shape=box]\n'
     }
     ref1 = this.initializers
     for (id = j = 0, len1 = ref1.length; j < len1; id = ++j) {
-      initializer = ref1[ id ]
+      initializer = ref1[id]
       if (typeof initializer.from.data === 'function') {
         data = 'Function'
       } else {
@@ -835,31 +964,69 @@ export default class Graph extends EventEmitter {
     }
     ref2 = this.edges
     for (k = 0, len2 = ref2.length; k < len2; k++) {
-      edge = ref2[ k ]
+      edge = ref2[k]
       dot += '    ' + (cleanID(edge.from.node)) + ' -> ' + (cleanID(edge.to.node)) + '[taillabel=' + (cleanPort(edge.from.port)) + ' headlabel=' + (cleanPort(edge.to.port)) + ' labelfontcolor=blue labelfontsize=8.0]\n'
     }
     dot += '}'
     return dot
   }
 
-  toYUML () {
-    var edge, i, initializer, j, len, len1, ref, ref1, yuml
+  toYUML() {
+    let edge
+    let i
+    let initializer
+    let j
+    let len
+    let len1
+    let ref
+    let ref1
+    let yuml
+
     yuml = []
     ref = this.initializers
     for (i = 0, len = ref.length; i < len; i++) {
-      initializer = ref[ i ]
+      initializer = ref[i]
       yuml.push('(start)[' + initializer.to.port + ']->(' + initializer.to.node + ')')
     }
     ref1 = this.edges
     for (j = 0, len1 = ref1.length; j < len1; j++) {
-      edge = ref1[ j ]
+      edge = ref1[j]
       yuml.push('(' + edge.from.node + ')[' + edge.from.port + ']->(' + edge.to.node + ')')
     }
     return yuml.join(',')
   }
 
-  toJSON () {
-    var connection, edge, exported, group, groupData, i, initializer, j, json, k, l, len, len1, len2, len3, len4, m, node, priv, property, pub, ref, ref1, ref2, ref3, ref4, ref5, ref6, ref7, value
+  toJSON() {
+    let connection
+    let edge
+    let exported
+    let group
+    let groupData
+    let i
+    let initializer
+    let j
+    let json
+    let k
+    let l
+    let len
+    let len1
+    let len2
+    let len3
+    let len4
+    let m
+    let node
+    let priv
+    let property
+    let pub
+    let ref
+    let ref1
+    let ref2
+    let ref3
+    let ref4
+    let ref5
+    let ref6
+    let ref7
+    let value
     json = {
       caseSensitive: this.caseSensitive,
       properties: {},
@@ -874,22 +1041,22 @@ export default class Graph extends EventEmitter {
     }
     ref = this.properties
     for (property in ref) {
-      value = ref[ property ]
-      json.properties[ property ] = value
+      value = ref[property]
+      json.properties[property] = value
     }
     ref1 = this.inports
     for (pub in ref1) {
-      priv = ref1[ pub ]
-      json.inports[ pub ] = priv
+      priv = ref1[pub]
+      json.inports[pub] = priv
     }
     ref2 = this.outports
     for (pub in ref2) {
-      priv = ref2[ pub ]
-      json.outports[ pub ] = priv
+      priv = ref2[pub]
+      json.outports[pub] = priv
     }
     ref3 = this.exports
     for (i = 0, len = ref3.length; i < len; i++) {
-      exported = ref3[ i ]
+      exported = ref3[i]
       if (!json.exports) {
         json.exports = []
       }
@@ -897,7 +1064,7 @@ export default class Graph extends EventEmitter {
     }
     ref4 = this.groups
     for (j = 0, len1 = ref4.length; j < len1; j++) {
-      group = ref4[ j ]
+      group = ref4[j]
       groupData = {
         name: group.name,
         nodes: group.nodes
@@ -909,17 +1076,17 @@ export default class Graph extends EventEmitter {
     }
     ref5 = this.nodes
     for (k = 0, len2 = ref5.length; k < len2; k++) {
-      node = ref5[ k ]
-      json.processes[ node.id ] = {
+      node = ref5[k]
+      json.processes[node.id] = {
         component: node.component
       }
       if (node.metadata) {
-        json.processes[ node.id ].metadata = node.metadata
+        json.processes[node.id].metadata = node.metadata
       }
     }
     ref6 = this.edges
     for (l = 0, len3 = ref6.length; l < len3; l++) {
-      edge = ref6[ l ]
+      edge = ref6[l]
       connection = {
         src: {
           process: edge.from.node,
@@ -939,7 +1106,7 @@ export default class Graph extends EventEmitter {
     }
     ref7 = this.initializers
     for (m = 0, len4 = ref7.length; m < len4; m++) {
-      initializer = ref7[ m ]
+      initializer = ref7[m]
       json.connections.push({
         data: initializer.from.data,
         tgt: {
@@ -952,7 +1119,7 @@ export default class Graph extends EventEmitter {
     return json
   }
 
-  static create (name, options) {
+  static create(name, options) {
     return new Graph(name, options)
   }
 }

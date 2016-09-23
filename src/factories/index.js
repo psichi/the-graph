@@ -1,7 +1,6 @@
 'create index'
 
 export app from './app'
-export createGroup from './createGroup.js'
 export createImg from './createImg.js'
 export edge from './edge'
 export graph from './graph'

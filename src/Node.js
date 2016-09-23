@@ -1,8 +1,8 @@
-import React, {Component, PropTypes} from 'react'
-import {findDOMNode} from 'react-dom'
-import {buildLabelRectOptions} from './utils'
+import React, { Component, PropTypes } from 'react'
+import { findDOMNode } from 'react-dom'
+import { buildLabelRectOptions } from './utils'
 import Config from './Config'
-import {Tooltip} from './mixins'
+import { Tooltip } from './mixins'
 import Menu from './Menu'
 import NodeMenuPorts from './NodeMenuPorts'
 import NodeMenu from './NodeMenu'
@@ -55,7 +55,7 @@ export default class TheGraphNode extends Component {
     error: PropTypes.bool
   }
 
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
 
     this.onTrackStart = this.onTrackStart.bind(this)
@@ -65,8 +65,8 @@ export default class TheGraphNode extends Component {
     this.onTrackEnd = this.onTrackEnd.bind(this)
   }
 
-  componentDidMount () {
-    const {onNodeSelection, showContext} = this.props
+  componentDidMount() {
+    const { onNodeSelection, showContext } = this.props
     const domNode = findDOMNode(this)
 
     // Dragging
@@ -84,8 +84,8 @@ export default class TheGraphNode extends Component {
     }
   }
 
-  componentWillUnmount () {
-    const {onNodeSelection, showContext} = this.props
+  componentWillUnmount() {
+    const { onNodeSelection, showContext } = this.props
     const domNode = findDOMNode(this)
 
     // Dragging
@@ -103,25 +103,25 @@ export default class TheGraphNode extends Component {
     }
   }
 
-  onNodeSelection (event) {
+  onNodeSelection(event) {
     // Don't tap app (unselect)
     event.stopPropagation()
 
-    const {nodeID, node} = this.props
+    const { nodeID, node } = this.props
 
     const toggle = (TheGraph.metaKeyPressed || event.pointerType === 'touch')
 
     this.props.onNodeSelection(nodeID, node, toggle)
   }
 
-  onTrackStart (event) {
+  onTrackStart(event) {
     // Don't drag graph
     event.stopPropagation()
 
     // Don't change selection
     event.preventTap()
 
-    const {app, graph} = this.props
+    const { app, graph } = this.props
 
     // Don't drag under menu
     if (app.menuShown) { return }
@@ -129,7 +129,7 @@ export default class TheGraphNode extends Component {
     // Don't drag while pinching
     if (app.pinching) { return }
 
-    var domNode = findDOMNode(this)
+    const domNode = findDOMNode(this)
     domNode.addEventListener('track', this.onTrack)
     domNode.addEventListener('trackend', this.onTrackEnd)
 
@@ -141,12 +141,12 @@ export default class TheGraphNode extends Component {
     }
   }
 
-  onTrack (event) {
+  onTrack(event) {
     // Don't fire on graph
     event.stopPropagation()
 
-    const {graph, exportKey, isIn, node: nodeMetadata, nodeID, scale} = this.props
-    const {metadata: exportMetadata} = this.props.export
+    const { graph, exportKey, isIn, node: nodeMetadata, nodeID, scale } = this.props
+    const { metadata: exportMetadata } = this.props.export
 
     const deltaX = Math.round(event.ddx / scale)
     const deltaY = Math.round(event.ddy / scale)
@@ -171,12 +171,12 @@ export default class TheGraphNode extends Component {
     }
   }
 
-  onTrackEnd (event) {
+  onTrackEnd(event) {
     // Don't fire on graph
     event.stopPropagation()
 
-    const {exportKey, graph, isIn, node: {metadata: nodeMetadata}, nodeID} = this.props
-    const {metadata: exportMetadata} = this.props.export
+    const { exportKey, graph, isIn, node: { metadata: nodeMetadata }, nodeID } = this.props
+    const { metadata: exportMetadata } = this.props.export
 
     const domNode = findDOMNode(this)
     domNode.removeEventListener('track', this.onTrack)
@@ -214,7 +214,7 @@ export default class TheGraphNode extends Component {
     }
   }
 
-  showContext (event) {
+  showContext(event) {
     // Don't show native context menu
     event.preventDefault()
 
@@ -222,7 +222,7 @@ export default class TheGraphNode extends Component {
     event.stopPropagation()
     if (event.preventTap) { event.preventTap() }
 
-    const {isIn, graph, exportKey, node, nodeID, showContext} = this.props
+    const { isIn, graph, exportKey, node, nodeID, showContext } = this.props
     const _export = this.props.export
 
     // Get mouse position
@@ -233,15 +233,15 @@ export default class TheGraphNode extends Component {
     showContext({
       element: this,
       type: (_export ? (isIn ? 'graphInport' : 'graphOutport') : 'node'),
-      x: x,
-      y: y,
+      x,
+      y,
       graph,
       itemKey: (_export ? exportKey : nodeID),
       item: (_export ? _export : node)
     })
   }
 
-  getContext (menu, options, triggerHideContext) {
+  getContext(menu, options, triggerHideContext) {
     const {
       app: {
         state: {
@@ -287,7 +287,7 @@ export default class TheGraphNode extends Component {
     // this relies on the state of the parent app.
 
     // Absolute position of node
-    const {x, y} = options
+    const { x, y } = options
     const nodeX = (xProp + width / 2) * scale + appX
     const nodeY = (yProp + height / 2) * scale + appY
     const deltaX = nodeX - x
@@ -295,7 +295,6 @@ export default class TheGraphNode extends Component {
 
     // If there is a preview edge started, only show connectable ports
     if (edgePreview) {
-
       if (edgePreview.isIn) {
         // Show outputs
         menuOptions = {
@@ -358,15 +357,15 @@ export default class TheGraphNode extends Component {
     return <NodeMenu {...menuOptions} />
   }
 
-  getTooltipTrigger () {
+  getTooltipTrigger() {
     return findDOMNode(this)
   }
 
-  shouldShowTooltip () {
+  shouldShowTooltip() {
     return (this.props.app.state.scale < Config.base.zbpNormal)
   }
 
-  shouldComponentUpdate (nextProps, nextState) {
+  shouldComponentUpdate(nextProps, nextState) {
     // Only rerender if changed
     return (
       nextProps.x !== this.props.x ||
@@ -383,14 +382,14 @@ export default class TheGraphNode extends Component {
   }
 
   // Ports
-  createPortViews (type, ports) {
+  createPortViews(type, ports) {
     const {
       app,
       graph,
       highlightPort,
       node,
       nodeID,
-      showContext,
+      showContext
     } = this.props
 
     const isExport = (this.props.export !== undefined)
@@ -425,19 +424,19 @@ export default class TheGraphNode extends Component {
     })
   }
 
-  createInportViews () {
+  createInportViews() {
     return this.createPortViews('in', this.props.ports.inports)
   }
 
-  createOutportViews () {
+  createOutportViews() {
     return this.createPortViews('out', this.props.ports.outports)
   }
 
-  createIconContent () {
-    const {iconsvg, width, height} = this.props
+  createIconContent() {
+    const { iconsvg, width, height } = this.props
 
     // Node Icon
-    let icon = Config.FONT_AWESOME[ this.props.icon ]
+    let icon = Config.FONT_AWESOME[this.props.icon]
 
     if (!icon) {
       icon = Config.FONT_AWESOME.cog
@@ -466,9 +465,9 @@ export default class TheGraphNode extends Component {
     }
   }
 
-  render () {
-    const {error, label, x, y, height, width, nodeID, selected} = this.props
-    let {sublabel} = this.props
+  render() {
+    const { error, label, x, y, height, width, nodeID, selected } = this.props
+    let { sublabel } = this.props
 
     if (this.props.ports.dirty) {
       // This tag is set when an edge or iip changes port colors

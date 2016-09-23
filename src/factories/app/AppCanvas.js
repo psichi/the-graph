@@ -1,5 +1,5 @@
 import React from 'react'
 
-export default function AppCanvas (props) {
+export default function AppCanvas(props) {
   return <canvas {...props} />
 }

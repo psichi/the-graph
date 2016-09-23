@@ -1,4 +1,4 @@
-export default function buildLabelRectOptions (height, x, y, len, className) {
+export default function buildLabelRectOptions(height, x, y, len, className) {
   const width = len * height * 2 / 3
   const radius = height / 2
 

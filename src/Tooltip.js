@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import Config from './Config'
 import {
   TooltipGroup,
@@ -7,8 +7,8 @@ import {
 } from './factories/tooltip'
 
 export default class TheGraphTooltip extends Component {
-  render () {
-    const {label, visible, x, y} = this.props
+  render() {
+    const { label, visible, x, y } = this.props
 
     const rectOptions = {
       ...Config.tooltip.rect,

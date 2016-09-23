@@ -1,4 +1,4 @@
-export default function createEdgePathArray (sourceX, sourceY, c1X, c1Y, c2X, c2Y, targetX, targetY) {
+function createEdgePathArray(sourceX, sourceY, c1X, c1Y, c2X, c2Y, targetX, targetY) {
   return [
     'M',
     sourceX, sourceY,
@@ -8,3 +8,5 @@ export default function createEdgePathArray (sourceX, sourceY, c1X, c1Y, c2X, c2
     targetX, targetY
   ]
 }
+
+export default createEdgePathArray

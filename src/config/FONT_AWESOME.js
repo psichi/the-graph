@@ -1,6 +1,4 @@
-/*
- this file should have been generated
- */
+/* eslint-disable quote-props */
 
 export default {
   '500px': '',

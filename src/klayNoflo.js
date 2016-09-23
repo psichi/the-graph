@@ -9,6 +9,8 @@ import {
   createGroupChildren
 } from './klayNoflo/index'
 
+// import KlayWorker from 'worker?!klayjs/klay.js'
+
 const defaultOptions = {
   'intCoordinates': true,
   'algorithm': 'de.cau.cs.kieler.klay.layered',
@@ -27,18 +29,18 @@ const defaultOptions = {
 export default class KlayNoflo {
   worker = null
 
-  constructor (params) {
+  constructor(params) {
     this.init(params)
   }
 
-  static create (params) {
+  static create(params) {
     return new KlayNoflo(params)
   }
 
   // Initialize the layouter as a WebWorker
-  init (params) {
+  init(params) {
     // Set up some properties
-    let {onSuccess, onError, workerScript} = params
+    let { onSuccess, onError, workerScript } = params
 
     if (!onSuccess) {
       onSuccess = console.log
@@ -59,7 +61,7 @@ export default class KlayNoflo {
 
     // Register a listener to default WebWorker event, calling
     // 'callback' when layout succeeds
-    this.worker.addEventListener('message', function (e) {
+    this.worker.addEventListener('message', (e) => {
       // test for error
       if (e.data) {
         return onSuccess(e.data)
@@ -69,16 +71,16 @@ export default class KlayNoflo {
     }, false)
   }
 
-  destroy () {
+  destroy() {
     this.worker.terminate()
   }
 
   // Layout a given graph, the result will be sent by the WebWorker
   // when done and will be made accessible by the callback defined
   // in init
-  layout (params) {
-    const {portInfo} = params
-    let {graph, options, direction} = params
+  layout(params) {
+    const { portInfo } = params
+    let { graph, options, direction } = params
 
     if (!graph) {
       return
@@ -103,7 +105,7 @@ export default class KlayNoflo {
   }
 
   // Default direction is left to right
-  nofloToKieler (graph, portInfo, direction = 'RIGHT') {
+  nofloToKieler(graph, portInfo, direction = 'RIGHT') {
     // Default port and node properties
     const portProperties = {
       inportSide: 'WEST',

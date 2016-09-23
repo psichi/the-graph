@@ -1,4 +1,6 @@
-export default function createNodeEdges (graph, currentEdge) {
+export default function createNodeEdges(graph, currentEdge) {
+  let edgeIndex = currentEdge
+
   return graph.edges.map((edge) => {
     if (edge.data !== undefined) {
       return
@@ -8,12 +10,16 @@ export default function createNodeEdges (graph, currentEdge) {
     const target = edge.to.node
     const targetPort = edge.to.port
 
-    return {
-      id: 'e' + currentEdge++,
-      source: source,
+    edgeIndex += 1
+
+    const nodeEdge = {
+      id: `e${edgeIndex}`,
+      source,
       sourcePort: source + '_' + sourcePort,
-      target: target,
+      target,
       targetPort: target + '_' + targetPort
     }
+
+    return nodeEdge
   })
 }

@@ -1,16 +1,16 @@
-import {findDOMNode} from 'react-dom'
+import { findDOMNode } from 'react-dom'
 
 /* global CustomEvent */
 
 // Show fake tooltip
 // Class must have getTooltipTrigger (dom node) and shouldShowTooltip (boolean)
 const Tooltip = {
-  showTooltip: function (event) {
+  showTooltip(event) {
     if (!this.shouldShowTooltip()) { return }
 
-    const {dispatchEvent} = findDOMNode(this)
-    const {label: tooltip} = this.props
-    const {clientX: x, clientY: y} = event
+    const { dispatchEvent } = findDOMNode(this)
+    const { label: tooltip } = this.props
+    const { clientX: x, clientY: y } = event
 
     const tooltipEvent = new CustomEvent('the-graph-tooltip', {
       detail: { tooltip, x, y },
@@ -19,10 +19,10 @@ const Tooltip = {
 
     dispatchEvent(tooltipEvent)
   },
-  hideTooltip: function (/* event */) {
+  hideTooltip(/* event */) {
     if (!this.shouldShowTooltip()) { return }
 
-    var tooltipEvent = new CustomEvent('the-graph-tooltip-hide', {
+    const tooltipEvent = new CustomEvent('the-graph-tooltip-hide', {
       bubbles: true
     })
 
@@ -30,7 +30,7 @@ const Tooltip = {
       findDOMNode(this).dispatchEvent(tooltipEvent)
     }
   },
-  componentDidMount: function () {
+  componentDidMount() {
     if (navigator && navigator.userAgent.indexOf('Firefox') !== -1) {
       // HACK Ff does native tooltips on svg elements
       return
@@ -39,7 +39,7 @@ const Tooltip = {
     const showTooltip = this.showTooltip.bind(this)
     const hideTooltip = this.hideTooltip.bind(this)
 
-    const {addEventListener} = this.getTooltipTrigger()
+    const { addEventListener } = this.getTooltipTrigger()
 
     addEventListener('tap', showTooltip)
     addEventListener('mouseenter', showTooltip)

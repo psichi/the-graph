@@ -1,5 +1,5 @@
-import React, {Component, PropTypes} from 'react'
-import {findDOMNode} from 'react-dom'
+import React, { Component, PropTypes } from 'react'
+import { findDOMNode } from 'react-dom'
 import Config from './Config'
 import {
   MenuSlice,
@@ -24,7 +24,7 @@ export default class TheGraphMenu extends Component {
     iconColor: PropTypes.number
   }
 
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
 
     // Use these in CSS for cursor and hover, and to attach listeners
@@ -40,8 +40,8 @@ export default class TheGraphMenu extends Component {
     this.onContextMenu = this.onContextMenu.bind(this)
   }
 
-  onTap (direction) {
-    const {options, menu, triggerHideContext} = this.props
+  onTap(direction) {
+    const { options, menu, triggerHideContext } = this.props
     const action = menu[direction]
 
     action(options.graph, options.itemKey, options.item)
@@ -49,28 +49,28 @@ export default class TheGraphMenu extends Component {
     triggerHideContext()
   }
 
-  componentDidMount () {
+  componentDidMount() {
     // Prevent context menu
-    const {addEventListener} = findDOMNode(this)
+    const { addEventListener } = findDOMNode(this)
 
     addEventListener('contextmenu', this.onContextMenu, false)
   }
 
-  componentWillUnmount () {
-    const {removeEventListener} = findDOMNode(this)
+  componentWillUnmount() {
+    const { removeEventListener } = findDOMNode(this)
 
     removeEventListener('contextmenu', this.onContextMenu)
   }
 
-  onContextMenu (event) {
+  onContextMenu(event) {
     if (event) {
       event.stopPropagation()
       event.preventDefault()
     }
   }
 
-  getPosition () {
-    const {x, y, options: {x: optionX, y: optionY}} = this.props
+  getPosition() {
+    const { x, y, options: { x: optionX, y: optionY } } = this.props
 
     return {
       x: isNaN(x) ? optionX || 0 : x,
@@ -78,7 +78,7 @@ export default class TheGraphMenu extends Component {
     }
   }
 
-  renderMenuLabelText (label, menu) {
+  renderMenuLabelText(label, menu) {
     if (label || menu.icon) {
       const labelTextOptions = {
         ...Config.menu.labelText,
@@ -98,9 +98,9 @@ export default class TheGraphMenu extends Component {
     return null
   }
 
-  renderMenuMiddleIcon (icon, menu) {
+  renderMenuMiddleIcon(icon, menu) {
     if (icon || menu.icon) {
-      const {iconColor: iconColorProp} = this.props
+      const { iconColor: iconColorProp } = this.props
       const iconColor = (iconColorProp !== undefined ? iconColorProp : menu.iconColor)
       let iconStyle
 
@@ -113,7 +113,6 @@ export default class TheGraphMenu extends Component {
       const middleIconRectOptions = {
         ...Config.menu.iconRect
       }
-
 
       const middleIconTextOptions = {
         ...Config.menu.iconText,
@@ -133,9 +132,9 @@ export default class TheGraphMenu extends Component {
     return null
   }
 
-  render () {
-    const {icon, label, menu} = this.props
-    const {n4tappable, s4tappable, e4tappable, w4tappable} = this.state
+  render() {
+    const { icon, label, menu } = this.props
+    const { n4tappable, s4tappable, e4tappable, w4tappable } = this.state
     const position = this.getPosition()
 
     const circleXOptions = {
@@ -147,7 +146,7 @@ export default class TheGraphMenu extends Component {
       r: this.radius
     }
 
-    const {menu: {positions}} = Config
+    const { menu: { positions } } = Config
 
     // Menu label
     const menuLabelText = this.renderMenuLabelText(label, menu)

@@ -1,7 +1,7 @@
-import React, {Component, PropTypes} from 'react'
-import {findDOMNode} from 'react-dom'
-import {FakeMouse} from './mixins'
-import {findMinMax} from './utils'
+import React, { Component, PropTypes } from 'react'
+import { findDOMNode } from 'react-dom'
+import { FakeMouse } from './mixins'
+import { findMinMax } from './utils'
 import Config from './Config'
 import {
   GraphNode,
@@ -38,10 +38,10 @@ export default class TheGraphGraph extends Component {
     showContext: PropTypes.func
   }
 
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
 
-    const {graph, offsetX, offsetY} = this.props
+    const { graph, offsetX, offsetY } = this.props
 
     this.state = {
       graph,
@@ -66,8 +66,8 @@ export default class TheGraphGraph extends Component {
     // this.removeNode = this.removeNode.bind(this)
   }
 
-  componentDidMount () {
-    const {graph} = this.props
+  componentDidMount() {
+    const { graph } = this.props
 
     // To change port colors
     graph.on('addEdge', this.resetPortRoute)
@@ -85,8 +85,8 @@ export default class TheGraphGraph extends Component {
     // findDOMNode(this).addEventListener('the-graph-node-remove', this.removeNode);
   }
 
-  componentWillUnmount () {
-    const {graph} = this.props
+  componentWillUnmount() {
+    const { graph } = this.props
 
     graph.removeListener('addEdge', this.resetPortRoute)
     graph.removeListener('changeEdge', this.resetPortRoute)
@@ -99,14 +99,14 @@ export default class TheGraphGraph extends Component {
     graph.removeListener('endTransaction', this.markDirty)
   }
 
-  edgeStart (event) {
+  edgeStart(event) {
     // Forwarded from App.edgeStart()
-    const {edgePreview} = this.state
-    const {app} = this.props
-    const {detail: eventDetail} = event
+    const { edgePreview } = this.state
+    const { app } = this.props
+    const { detail: eventDetail } = event
 
     // Port that triggered this
-    const {port} = eventDetail
+    const { port } = eventDetail
 
     // Complete edge if this is the second tap and ports are compatible
     if (edgePreview && edgePreview.isIn !== eventDetail.isIn) {
@@ -144,12 +144,12 @@ export default class TheGraphGraph extends Component {
     // TODO tap to add new node here
     appDomNode.addEventListener('tap', this.cancelPreviewEdge)
 
-    this.setState({edgePreview: edge})
+    this.setState({ edgePreview: edge })
   }
 
-  cancelPreviewEdge (event) {
-    const {edgePreview} = this.state
-    const {app} = this.props
+  cancelPreviewEdge(event) {
+    const { edgePreview } = this.state
+    const { app } = this.props
     const appDomNode = findDOMNode(app)
 
     appDomNode.removeEventListener('mousemove', this.renderPreviewEdge)
@@ -157,13 +157,13 @@ export default class TheGraphGraph extends Component {
     appDomNode.removeEventListener('tap', this.cancelPreviewEdge)
 
     if (edgePreview) {
-      this.setState({edgePreview: null})
+      this.setState({ edgePreview: null })
       this.markDirty()
     }
   }
 
-  renderPreviewEdge (event) {
-    const {app: {state: {offsetX, offsetY, scale, x: appX, y: appY} } } = this.props
+  renderPreviewEdge(event) {
+    const { app: { state: { offsetX, offsetY, scale, x: appX, y: appY } } } = this.props
 
     let x = event.x || event.clientX || 0
     let y = event.y || event.clientY || 0
@@ -179,12 +179,12 @@ export default class TheGraphGraph extends Component {
     this.markDirty()
   }
 
-  addEdge (edge) {
+  addEdge(edge) {
     this.state.graph.addEdge(edge.from.process, edge.from.port, edge.to.process, edge.to.port, edge.metadata)
   }
 
-  moveGroup (nodes, dx, dy) {
-    const {graph} = this.state
+  moveGroup(nodes, dx, dy) {
+    const { graph } = this.state
 
     // Move each group member
     const len = nodes.length
@@ -213,13 +213,13 @@ export default class TheGraphGraph extends Component {
     }
   }
 
-  getComponentInfo (componentName) {
+  getComponentInfo(componentName) {
     return this.props.library[componentName]
   }
 
-  getPorts (graph, processName, componentName) {
+  getPorts(graph, processName, componentName) {
     let ports
-    const {library} = this.props
+    const { library } = this.props
     const node = graph.getNode(processName)
 
     ports = this.portInfo[processName]
@@ -234,8 +234,8 @@ export default class TheGraphGraph extends Component {
 
         if (!component) {
           return {
-            inports: inports,
-            outports: outports
+            inports,
+            outports
           }
         }
 
@@ -267,8 +267,8 @@ export default class TheGraphGraph extends Component {
       }
 
       ports = {
-        inports: inports,
-        outports: outports
+        inports,
+        outports
       }
 
       this.portInfo[processName] = ports
@@ -277,7 +277,7 @@ export default class TheGraphGraph extends Component {
     return ports
   }
 
-  getNodeOutport (graph, processName, portName, route, componentName) {
+  getNodeOutport(graph, processName, portName, route, componentName) {
     const ports = this.getPorts(graph, processName, componentName)
 
     if (!ports.outports[portName]) {
@@ -300,7 +300,7 @@ export default class TheGraphGraph extends Component {
     return port
   }
 
-  getNodeInport (graph, processName, portName, route, componentName) {
+  getNodeInport(graph, processName, portName, route, componentName) {
     const ports = this.getPorts(graph, processName, componentName)
 
     if (!ports.inports[portName]) {
@@ -323,7 +323,7 @@ export default class TheGraphGraph extends Component {
     return port
   }
 
-  resetPortRoute (event) {
+  resetPortRoute(event) {
     // Trigger nodes with changed ports to rerender
     if (event.from && event.from.node) {
       const fromNode = this.portInfo[event.from.node]
@@ -353,13 +353,13 @@ export default class TheGraphGraph extends Component {
     }
   }
 
-  getGraphOutport (key) {
+  getGraphOutport(key) {
     let exp
 
     exp = this.graphOutports[key]
 
     if (!exp) {
-      exp = {inports: {}, outports: {}}
+      exp = { inports: {}, outports: {} }
       exp.inports[key] = {
         label: key,
         type: 'all',
@@ -372,11 +372,11 @@ export default class TheGraphGraph extends Component {
 
     return exp
   }
-  getGraphInport (key) {
+  getGraphInport(key) {
     let exp = this.graphInports[key]
 
     if (!exp) {
-      exp = {inports: {}, outports: {}}
+      exp = { inports: {}, outports: {} }
       exp.outports[key] = {
         label: key,
         type: 'all',
@@ -388,42 +388,42 @@ export default class TheGraphGraph extends Component {
     }
     return exp
   }
-  setSelectedNodes (selectedNodes) {
+  setSelectedNodes(selectedNodes) {
     this.setState({
       selectedNodes
     })
     this.markDirty()
   }
-  setErrorNodes (errorNodes) {
+  setErrorNodes(errorNodes) {
     this.setState({
       errorNodes
     })
     this.markDirty()
   }
-  setSelectedEdges (selectedEdges) {
+  setSelectedEdges(selectedEdges) {
     this.setState({
       selectedEdges
     })
     this.markDirty()
   }
-  setAnimatedEdges (animatedEdges) {
+  setAnimatedEdges(animatedEdges) {
     this.setState({
       animatedEdges
     })
     this.markDirty()
   }
-  updateIcon (nodeId, icon) {
+  updateIcon(nodeId, icon) {
     this.updatedIcons[nodeId] = icon
     this.markDirty()
   }
-  markDirty (event) {
+  markDirty(event) {
     if (event && event.libraryDirty) {
       this.libraryDirty = true
     }
     window.requestAnimationFrame(this.triggerRender)
   }
 
-  triggerRender (time) {
+  triggerRender(time) {
     console.log('TRIGGER', this)
     /*
      if (!this.isMounted()) {
@@ -437,13 +437,13 @@ export default class TheGraphGraph extends Component {
     this.forceUpdate()
   }
 
-  shouldComponentUpdate () {
+  shouldComponentUpdate() {
     // If ports change or nodes move, then edges need to rerender, so we do the whole graph
     return this.dirty
   }
 
-  createNodes (graph, selectedIds, highlightPort) {
-    const {app, onNodeSelection, showContext} = this.props
+  createNodes(graph, selectedIds, highlightPort) {
+    const { app, onNodeSelection, showContext } = this.props
 
     return graph.nodes.map((node) => {
       const componentInfo = this.getComponentInfo(node.component)
@@ -525,8 +525,8 @@ export default class TheGraphGraph extends Component {
     })
   }
 
-  createEdges (graph) {
-    const {app, onEdgeSelection, showContext} = this.props
+  createEdges(graph) {
+    const { app, onEdgeSelection, showContext } = this.props
 
     return graph.edges.map((edge) => {
       const source = graph.getNode(edge.from.node)
@@ -583,7 +583,7 @@ export default class TheGraphGraph extends Component {
     })
   }
 
-  createIIPs (graph) {
+  createIIPs(graph) {
     return graph.initializers.map((iip) => {
       const target = graph.getNode(iip.to.node)
 
@@ -609,8 +609,8 @@ export default class TheGraphGraph extends Component {
     })
   }
 
-  createInportExports (graph) {
-    const {app, showContext} = this.props
+  createInportExports(graph) {
+    const { app, showContext } = this.props
 
     const edges = Object.keys(graph.inports).map((key) => {
       const inport = graph.inports[key]
@@ -620,7 +620,7 @@ export default class TheGraphGraph extends Component {
       const portKey = inport.port
 
       if (!inport.metadata) {
-        inport.metadata = {x: 0, y: 0}
+        inport.metadata = { x: 0, y: 0 }
       }
 
       const metadata = inport.metadata
@@ -697,8 +697,8 @@ export default class TheGraphGraph extends Component {
     return edges
   }
 
-  createOutportExports (graph) {
-    const {app, showContext} = this.props
+  createOutportExports(graph) {
+    const { app, showContext } = this.props
 
     const edges = Object.keys(graph.outports).map((key) => {
       const outport = graph.outports[key]
@@ -708,7 +708,7 @@ export default class TheGraphGraph extends Component {
       const portKey = outport.port
 
       if (!outport.metadata) {
-        outport.metadata = {x: 0, y: 0}
+        outport.metadata = { x: 0, y: 0 }
       }
 
       const metadata = outport.metadata
@@ -762,7 +762,7 @@ export default class TheGraphGraph extends Component {
       }
 
       // Edge view
-      var expEdge = {
+      const expEdge = {
         ...Config.graph.outportEdge,
         key: `outport.edge.${key}`,
         export: outport,
@@ -788,8 +788,8 @@ export default class TheGraphGraph extends Component {
     return edges
   }
 
-  createGroups (graph) {
-    const {app, scale, showContext} = this.props
+  createGroups(graph) {
+    const { app, scale, showContext } = this.props
 
     return graph.groups.map((group) => {
       if (group.nodes.length < 1) {
@@ -825,7 +825,7 @@ export default class TheGraphGraph extends Component {
     })
   }
 
-  render () {
+  render() {
     this.dirty = false
 
     const {
@@ -837,7 +837,7 @@ export default class TheGraphGraph extends Component {
       edgePreviewY
     } = this.state
 
-    const {app, scale, showContext} = this.props
+    const { app, scale, showContext } = this.props
     const selectedIds = []
 
     // Reset ports if library has changed
@@ -882,7 +882,7 @@ export default class TheGraphGraph extends Component {
         const pseudoGroup = {
           name: 'selection',
           nodes: selectedIds,
-          metadata: {color: 1}
+          metadata: { color: 1 }
         }
 
         const selectionGroupOptions = {

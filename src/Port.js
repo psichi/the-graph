@@ -1,8 +1,8 @@
-import React, {Component, PropTypes} from 'react'
-import {findDOMNode} from 'react-dom'
-import {arcs} from './utils'
+import React, { Component, PropTypes } from 'react'
+import { findDOMNode } from 'react-dom'
+import { arcs } from './utils'
 import Config from './Config'
-import {Tooltip} from './mixins'
+import { Tooltip } from './mixins'
 import Menu from './Menu'
 import {
   PortArc,
@@ -32,7 +32,7 @@ export default class TheGraphPort extends Component {
     highlightPort: PropTypes.bool
   }
 
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
 
     this.edgeStart = this.edgeStart.bind(this)
@@ -41,8 +41,8 @@ export default class TheGraphPort extends Component {
     this.showContext = this.showContext.bind(this)
   }
 
-  componentDidMount () {
-    const {addEventListener} = findDOMNode(this)
+  componentDidMount() {
+    const { addEventListener } = findDOMNode(this)
 
     // Preview edge start
     addEventListener('tap', this.edgeStart)
@@ -58,8 +58,8 @@ export default class TheGraphPort extends Component {
     }
   }
 
-  componentWillUnmount () {
-    const {addEventListener} = findDOMNode(this)
+  componentWillUnmount() {
+    const { addEventListener } = findDOMNode(this)
 
     // Preview edge start
     removeEventListener('tap', this.edgeStart)
@@ -75,21 +75,21 @@ export default class TheGraphPort extends Component {
     }
   }
 
-  getTooltipTrigger () {
+  getTooltipTrigger() {
     return findDOMNode(this)
   }
 
-  shouldShowTooltip () {
-    const {label, app: {state: {scale}}} = this.props
+  shouldShowTooltip() {
+    const { label, app: { state: { scale } } } = this.props
 
     return (
       scale < Config.base.zbpBig || label.length > 8
     )
   }
 
-  showContext (event) {
-    const {isExport, isIn, graph, label: itemKey, port: item, showContext} = this.props
-    const {label: labelRef} = this.refs
+  showContext(event) {
+    const { isExport, isIn, graph, label: itemKey, port: item, showContext } = this.props
+    const { label: labelRef } = this.refs
 
     // Don't show port menu on export node port
     if (isExport) {
@@ -124,8 +124,8 @@ export default class TheGraphPort extends Component {
     })
   }
 
-  getContext (menu, options, triggerHideContext) {
-    const {label} = this.props
+  getContext(menu, options, triggerHideContext) {
+    const { label } = this.props
 
     const menuOptions = {
       menu,
@@ -137,10 +137,10 @@ export default class TheGraphPort extends Component {
     return <Menu {...menuOptions} />
   }
 
-  edgeStart (event) {
-    const {isExport, isIn, port, route} = this.props
-    const {label: labelRef} = this.refs
-    const {dispatchEvent} = findDOMNode(this)
+  edgeStart(event) {
+    const { isExport, isIn, port, route } = this.props
+    const { label: labelRef } = this.refs
+    const { dispatchEvent } = findDOMNode(this)
 
     // Don't start edge on export node port
     if (isExport) {
@@ -166,7 +166,7 @@ export default class TheGraphPort extends Component {
     dispatchEvent(edgeStartEvent)
   }
 
-  triggerDropOnTarget (event) {
+  triggerDropOnTarget(event) {
     // If dropped on a child element will bubble up to port
     if (!event.relatedTarget) { return }
 
@@ -178,10 +178,10 @@ export default class TheGraphPort extends Component {
     event.relatedTarget.dispatchEvent(dropEvent)
   }
 
-  render () {
+  render() {
     let style
 
-    const {label, highlightPort, isIn, port, route, x, y} = this.props
+    const { label, highlightPort, isIn, port, route, x, y } = this.props
 
     if (label.length > 7) {
       const fontSize = 6 * (30 / (4 * label.length))

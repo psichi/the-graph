@@ -1,22 +1,23 @@
-import React, {Component} from 'react'
+import React, { Component, PropTypes } from 'react'
 
 export default class TheGraphSVGImage extends Component {
-  render () {
-    const {className, src, x, y, width, height} = this.props
+  static propTypes = {
+    className: PropTypes.string,
+    src: PropTypes.string,
+    x: PropTypes.number,
+    y: PropTypes.number,
+    width: PropTypes.number,
+    height: PropTypes.number
+  }
 
-    let html
+  render() {
+    const { className, src, x, y, width, height } = this.props
 
-    html = '<image '
-    html = html + 'xlink:href="' + src + '"'
-    html = html + 'x="' + x + '"'
-    html = html + 'y="' + y + '"'
-    html = html + 'width="' + width + '"'
-    html = html + 'height="' + height + '"'
-    html = html + '/>'
+    const html = `<image xlink:href="${src}" x="${x}" y="${y}" width="${width}" height="${height}"/>`
 
     const groupOptions = {
       className,
-      dangerouslySetInnerHTML: {__html: html}
+      dangerouslySetInnerHTML: { __html: html }
     }
 
     return (

@@ -19,7 +19,7 @@ export default {
       IconX: 45,
       IconY: -5,
       LabelX: 45,
-      LabelY: 15,
+      LabelY: 15
     },
     w4: {
       IconX: -45,

@@ -1,7 +1,7 @@
-import loadJSON from './loadJSON'
 import fbp from 'fbp'
+import loadJSON from './loadJSON'
 
-export default function loadFBP (fbpData, callback, metadata = {}, caseSensitive: false) {
+export default function loadFBP(fbpData, callback, metadata = {}, caseSensitive: false) {
   let definition
 
   try {

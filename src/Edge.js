@@ -1,11 +1,11 @@
-import React, {Component, PropTypes} from 'react'
-import {findDOMNode} from 'react-dom'
+import React, { Component, PropTypes } from 'react'
+import { findDOMNode } from 'react-dom'
 import {
   findLinePoint,
   perpendicular,
-  findPointOnCubicBezier,
+  findPointOnCubicBezier
 } from './utils'
-import {Tooltip} from './mixins'
+import { Tooltip } from './mixins'
 import Menu from './Menu'
 import Config from './Config'
 import {
@@ -48,7 +48,7 @@ export default class TheGraphEdge extends Component {
     curve: PropTypes.number
   }
 
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
 
     this.dontPan = this.dontPan.bind(this)
@@ -56,7 +56,7 @@ export default class TheGraphEdge extends Component {
     this.showContext = this.showContext.bind(this)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const domNode = findDOMNode(this)
 
     // Dragging
@@ -74,7 +74,7 @@ export default class TheGraphEdge extends Component {
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     const domNode = findDOMNode(this)
 
     domNode.removeEventListener('trackstart', this.dontPan)
@@ -89,25 +89,25 @@ export default class TheGraphEdge extends Component {
     }
   }
 
-  dontPan (event) {
+  dontPan(event) {
     // Don't drag under menu
     if (this.props.app.menuShown) {
       event.stopPropagation()
     }
   }
 
-  onEdgeSelection (event) {
+  onEdgeSelection(event) {
     // Don't click app
     event.stopPropagation()
 
-    const {edgeID, edge, onEdgeSelection} = this.props
+    const { edgeID, edge, onEdgeSelection } = this.props
 
     const toggle = (TheGraph.metaKeyPressed || event.pointerType === 'touch')
 
     onEdgeSelection(edgeID, edge, toggle)
   }
 
-  showContext (event) {
+  showContext(event) {
     // Don't show native context menu
     event.preventDefault()
 
@@ -115,29 +115,29 @@ export default class TheGraphEdge extends Component {
     event.stopPropagation()
     if (event.preventTap) { event.preventTap() }
 
-    const {isIn, exportKey, edge, graph, showContext} = this.props
+    const { isIn, exportKey, edge, graph, showContext } = this.props
     const _export = this.props.export
 
     // Get mouse position
-    var x = event.x || event.clientX || 0
-    var y = event.y || event.clientY || 0
+    const x = event.x || event.clientX || 0
+    const y = event.y || event.clientY || 0
 
     // App.showContext
     showContext({
       element: this,
       type: (_export ? (isIn ? 'graphInport' : 'graphOutport') : 'edge'),
-      x: x,
-      y: y,
+      x,
+      y,
       graph,
       itemKey: (_export ? exportKey : null),
       item: (_export ? _export : edge)
     })
   }
 
-  getContext (menu, options, hide) {
+  getContext(menu, options, hide) {
     const menuOptions = {
-      menu: menu,
-      options: options,
+      menu,
+      options,
       triggerHideContext: hide,
       label: this.props.label,
       iconColor: this.props.route
@@ -146,7 +146,7 @@ export default class TheGraphEdge extends Component {
     return <Menu {...menuOptions} />
   }
 
-  shouldComponentUpdate (nextProps /* , nextState */) {
+  shouldComponentUpdate(nextProps /* , nextState */) {
     // Only re-render if changed
     return (
       nextProps.sX !== this.props.sX ||
@@ -159,16 +159,16 @@ export default class TheGraphEdge extends Component {
     )
   }
 
-  getTooltipTrigger () {
+  getTooltipTrigger() {
     return findDOMNode(this.refs.touch)
   }
 
-  shouldShowTooltip () {
+  shouldShowTooltip() {
     return true
   }
 
-  render () {
-    const {curve, sX: sourceX, sY: sourceY, tX: targetX, tY: targetY, route, selected, animated, label} = this.props
+  render() {
+    const { curve, sX: sourceX, sY: sourceY, tX: targetX, tY: targetY, route, selected, animated, label } = this.props
 
     // Organic / curved edge
     let c1X, c1Y, c2X, c2Y
@@ -226,8 +226,8 @@ export default class TheGraphEdge extends Component {
       title: label
     }
 
-    var epsilon = 0.01
-    var center = findPointOnCubicBezier(0.5, sourceX, sourceY, c1X, c1Y, c2X, c2Y, targetX, targetY)
+    const epsilon = 0.01
+    let center = findPointOnCubicBezier(0.5, sourceX, sourceY, c1X, c1Y, c2X, c2Y, targetX, targetY)
 
     // estimate slope and intercept of tangent line
     const getShiftedPoint = (epsilon) => {
@@ -251,7 +251,7 @@ export default class TheGraphEdge extends Component {
 
     center = findLinePoint(center[0], center[1], m, b, -1 * arrowLength / 2)
 
-    let pointsArray = perpendicular(center[0], center[1], m, arrowLength * 0.9)
+    const pointsArray = perpendicular(center[0], center[1], m, arrowLength * 0.9)
 
     // For m === 0, figure out if arrow should be straight up or down
     const flip = plus[1] > minus[1] ? -1 : 1
@@ -259,7 +259,7 @@ export default class TheGraphEdge extends Component {
 
     pointsArray.push(arrowTip)
 
-    const points = pointsArray.map((point) => point.join(',')).join(' ')
+    const points = pointsArray.map(point => point.join(',')).join(' ')
 
     const arrowBgOptions = {
       points,

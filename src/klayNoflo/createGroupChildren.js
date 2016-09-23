@@ -1,8 +1,8 @@
-import {cleanArray} from '../utils'
+import { cleanArray } from '../utils'
 
 // Encode groups
 
-export default function createGroupChildren (kGraph) {
+export default function createGroupChildren(kGraph) {
   return (graph, options, countIdx, idx, currentChildren) => {
     let countGroups = 0
     // Mark the nodes already in groups to avoid the same node in many groups
@@ -11,13 +11,13 @@ export default function createGroupChildren (kGraph) {
     return graph.groups.map((group) => {
       // Create a node to use as a subgraph
       const node = {
-        id: 'group' + countGroups++,
+        id: `group${countGroups}`,
         children: [],
         edges: []
       }
       // Build the node/subgraph
       group.nodes.map((n) => {
-        const nodeT = kGraph.children[ idx[ n ] ]
+        const nodeT = kGraph.children[idx[n]]
         if (nodeT === null) {
           return
         }
@@ -32,19 +32,21 @@ export default function createGroupChildren (kGraph) {
               return edge
             }
           }
-        })[ 0 ])
+        })[0])
         node.edges = cleanArray(node.edges)
 
         // Mark nodes inside the group to be removed from the graph
-        currentChildren[ idx[ n ] ] = null
+        currentChildren[idx[n]] = null
       })
 
       // Mark edges too
       node.edges.map((edge) => {
         if (edge) {
-          kGraph.edges[ parseInt(edge.id.substr(1), 10) ] = null
+          kGraph.edges[parseInt(edge.id.substr(1), 10)] = null
         }
       })
+
+      countGroups += 1
 
       // Add node/subgraph to the graph
       return node

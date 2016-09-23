@@ -1,8 +1,38 @@
 import Graph from '../graph/noflo'
 import clone from './cloneObject'
 
-export default function fromJSON (definition, metadata) {
-  let caseSensitive, conn, def, _definition, exported, graph, group, i, id, j, k, len, len1, len2, _metadata, portId, priv, processId, properties, property, pub, ref, ref1, ref2, ref3, ref4, ref5, ref6, split, value
+export default function fromJSON(definition, metadata) {
+  let caseSensitive
+  let conn
+  let def
+  let _definition
+  let exported
+  let graph
+  let group
+  let i
+  let id
+  let j
+  let k
+  let len
+  let len1
+  let len2
+  let _metadata
+  let portId
+  let priv
+  let processId
+  let properties
+  let property
+  let pub
+  let ref
+  let ref1
+  let ref2
+  let ref3
+  let ref4
+  let ref5
+  let ref6
+  let split
+  let value
+
   if (metadata == null) {
     _metadata = {}
   } else {
@@ -24,7 +54,7 @@ export default function fromJSON (definition, metadata) {
   }
   caseSensitive = _definition.caseSensitive || false
   graph = new Graph(_definition.properties.name, {
-    caseSensitive: caseSensitive
+    caseSensitive
   })
   graph.startTransaction('loadJSON', metadata)
   properties = {}
@@ -71,8 +101,8 @@ export default function fromJSON (definition, metadata) {
     ref3 = _definition.exports
     for (j = 0, len1 = ref3.length; j < len1; j++) {
       exported = ref3[j]
-      if (exported['private']) {
-        split = exported['private'].split('.')
+      if (exported.private) {
+        split = exported.private.split('.')
         if (split.length !== 2) {
           continue
         }
@@ -87,7 +117,7 @@ export default function fromJSON (definition, metadata) {
         processId = exported.process
         portId = graph.getPortName(exported.port)
       }
-      graph.addExport(exported['public'], processId, portId, exported.metadata)
+      graph.addExport(exported.public, processId, portId, exported.metadata)
     }
   }
 

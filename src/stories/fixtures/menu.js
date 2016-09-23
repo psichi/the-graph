@@ -1,4 +1,4 @@
-import {action} from '@kadira/storybook'
+import { action } from '@kadira/storybook'
 
 export default {
   n4: {

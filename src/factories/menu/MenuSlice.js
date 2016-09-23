@@ -1,6 +1,8 @@
-import React, {Component, PropTypes} from 'react'
+/* eslint-disable react/no-unused-prop-types */
+
+import React, { Component, PropTypes } from 'react'
 import Config from '../../Config'
-import {arcs} from '../../utils'
+import { arcs } from '../../utils'
 import {
   MenuSliceArcPath,
   MenuSliceIconText,
@@ -10,18 +12,12 @@ import {
 } from './'
 
 export default class MenuSlice extends Component {
-  constructor (props, context) {
-    super(props, context)
-
-    this.onTap = this.onTap.bind(this)
-  }
-
   static defaultProps = {
     tappable: false
   }
 
   static propTypes = {
-    menu: PropTypes.object.isRequired,
+    menu: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
     direction: PropTypes.string.isRequired,
     tappable: PropTypes.bool,
     onTap: PropTypes.func.isRequired,
@@ -38,17 +34,23 @@ export default class MenuSlice extends Component {
     }).isRequired
   }
 
-  onTap () {
-    const {direction, onTap} = this.props
+  constructor(props, context) {
+    super(props, context)
+
+    this.onTap = this.onTap.bind(this)
+  }
+
+  onTap() {
+    const { direction, onTap } = this.props
 
     onTap(direction)
   }
 
   // this should not use config.
   // Config can move to Menu/MenuGroup
-  renderIcon (icon) {
+  renderIcon(icon) {
     if (icon) {
-      const {positions} = this.props
+      const { positions } = this.props
 
       const sliceIconTextOptions = {
         ...Config.menu.sliceIconText,
@@ -66,9 +68,9 @@ export default class MenuSlice extends Component {
     return null
   }
 
-  renderLabel (label) {
+  renderLabel(label) {
     if (label) {
-      const {positions} = this.props
+      const { positions } = this.props
 
       const sliceLabelTextOptions = {
         ...Config.menu.sliceLabelText,
@@ -86,9 +88,9 @@ export default class MenuSlice extends Component {
     return null
   }
 
-  renderIconLabel (iconLabel) {
+  renderIconLabel(iconLabel) {
     if (iconLabel) {
-      const {positions} = this.props
+      const { positions } = this.props
 
       const sliceIconLabelTextOptions = {
         ...Config.menu.sliceIconLabelText,
@@ -106,8 +108,8 @@ export default class MenuSlice extends Component {
     return null
   }
 
-  render () {
-    const {direction, menu, tappable} = this.props
+  render() {
+    const { direction, menu, tappable } = this.props
 
     const arcPathOptions = {
       ...Config.menu.arcPath,
@@ -119,7 +121,7 @@ export default class MenuSlice extends Component {
     let menuIconLabel
 
     if (menu[direction]) {
-      const {icon, label, iconLabel} = menu[direction]
+      const { icon, label, iconLabel } = menu[direction]
 
       menuIcon = this.renderIcon(icon)
       menuLabel = this.renderLabel(label)

@@ -1,7 +1,7 @@
 import findLinePoint from './findLinePoint'
 
 // find points of perpendicular line length l centered at x,y
-export default function perpendicular (x, y, oldM, l) {
+export default function perpendicular(x, y, oldM, l) {
   const m = -1 / oldM
   const b = y - m * x
   const point1 = findLinePoint(x, y, m, b, l / 2)

@@ -1,41 +1,41 @@
 export default {
   inports: {
-    'in0': {
-      'label': 'IN0',
-      'type': 'all',
+    in0: {
+      label: 'IN0',
+      type: 'all',
       x: 10,
       y: 10
     },
-    'in1': {
-      'label': 'IN1',
-      'type': 'all',
+    in1: {
+      label: 'IN1',
+      type: 'all',
       x: 10,
       y: 15
     },
-    'in2': {
-      'label': 'IN2',
-      'type': 'all',
+    in2: {
+      label: 'IN2',
+      type: 'all',
       x: 10,
       y: 20,
       route: 1
     }
   },
   outports: {
-    'out0': {
-      'label': 'OUT0',
-      'type': 'all',
+    out0: {
+      label: 'OUT0',
+      type: 'all',
       x: 10,
       y: 15
     },
-    'out1': {
-      'label': 'OUT1',
-      'type': 'all',
+    out1: {
+      label: 'OUT1',
+      type: 'all',
       x: 10,
       y: 15
     },
-    'out2': {
-      'label': 'OUT2',
-      'type': 'all',
+    out2: {
+      label: 'OUT2',
+      type: 'all',
       x: 10,
       y: 15
     }

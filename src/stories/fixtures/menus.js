@@ -1,4 +1,4 @@
-import {action} from '@kadira/storybook'
+import { action } from '@kadira/storybook'
 
 const edgeActions = {
   delete: action('Delete Edge')
@@ -40,7 +40,7 @@ export default {
     w4: {
       icon: 'copy',
       iconLabel: 'copy',
-      action:  nodeActions.copy
+      action: nodeActions.copy
     }
   },
   nodeInport: {
