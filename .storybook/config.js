@@ -1,5 +1,4 @@
 import { configure } from '@kadira/storybook';
-import 'font-awesome-webpack';
 import '../themes/the-graph-dark.css';
 import '../themes/the-graph-light.css';
 import '../src/stories/index.css';
