@@ -1,5 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { findDOMNode } from 'react-dom'
+import Hammer from 'react-hammerjs'
+import Track from './Track'
 import {
   findLinePoint,
   perpendicular,
@@ -60,12 +62,7 @@ export default class TheGraphEdge extends Component {
     const domNode = findDOMNode(this)
 
     // Dragging
-    domNode.addEventListener('trackstart', this.dontPan)
-
-    if (this.props.onEdgeSelection) {
-      // Needs to be click (not tap) to get event.shiftKey
-      domNode.addEventListener('tap', this.onEdgeSelection)
-    }
+    // domNode.addEventListener('trackstart', this.dontPan)
 
     // Context menu
     if (this.props.showContext) {
@@ -77,11 +74,7 @@ export default class TheGraphEdge extends Component {
   componentWillUnmount() {
     const domNode = findDOMNode(this)
 
-    domNode.removeEventListener('trackstart', this.dontPan)
-
-    if (this.props.onEdgeSelection) {
-      domNode.removeEventListener('tap', this.onEdgeSelection)
-    }
+    // domNode.removeEventListener('trackstart', this.dontPan)
 
     if (this.props.showContext) {
       domNode.removeEventListener('contextmenu', this.showContext)
@@ -98,11 +91,13 @@ export default class TheGraphEdge extends Component {
 
   onEdgeSelection(event) {
     // Don't click app
-    event.stopPropagation()
+    // event.stopPropagation()
 
     const { edgeID, edge, onEdgeSelection } = this.props
 
-    const toggle = (TheGraph.metaKeyPressed || event.pointerType === 'touch')
+    // MetaKey must be tested per component also
+    // const toggle = (TheGraph.metaKeyPressed || event.pointerType === 'touch')
+    const toggle = (event.pointerType === 'touch')
 
     onEdgeSelection(edgeID, edge, toggle)
   }
@@ -168,7 +163,17 @@ export default class TheGraphEdge extends Component {
   }
 
   render() {
-    const { curve, sX: sourceX, sY: sourceY, tX: targetX, tY: targetY, route, selected, animated, label } = this.props
+    const {
+      curve,
+      sX: sourceX,
+      sY: sourceY,
+      tX: targetX,
+      tY: targetY,
+      route,
+      selected,
+      animated,
+      label
+    } = this.props
 
     // Organic / curved edge
     let c1X, c1Y, c2X, c2Y
@@ -272,13 +277,17 @@ export default class TheGraphEdge extends Component {
     }
 
     return (
-      <EdgeGroup {...containerOptions}>
-        <EdgeBackgroundPath {...backgroundPathOptions} />
-        <Arrow {...arrowBgOptions} />
-        <EdgeForegroundPath {...foregroundPathOptions} />
-        <EdgeTouchPath {...touchPathOptions} />
-        <Arrow {...arrowOptions} />
-      </EdgeGroup>
+      <Track onTrackStart={this.dontPan}>
+        <Hammer onTap={this.onEdgeSelection}>
+          <EdgeGroup {...containerOptions}>
+            <EdgeBackgroundPath {...backgroundPathOptions} />
+            <Arrow {...arrowBgOptions} />
+            <EdgeForegroundPath {...foregroundPathOptions} />
+            <EdgeTouchPath {...touchPathOptions} />
+            <Arrow {...arrowOptions} />
+          </EdgeGroup>
+        </Hammer>
+      </Track>
     )
   }
 }
