@@ -6,6 +6,7 @@ import { Tooltip } from './mixins'
 import Menu from './Menu'
 import NodeMenuPorts from './NodeMenuPorts'
 import NodeMenu from './NodeMenu'
+import Track from './Track'
 import {
   NodeBorderRect,
   NodeGroup,
@@ -70,7 +71,7 @@ export default class TheGraphNode extends Component {
     const domNode = findDOMNode(this)
 
     // Dragging
-    domNode.addEventListener('trackstart', this.onTrackStart)
+    // domNode.addEventListener('trackstart', this.onTrackStart)
 
     // Tap to select
     if (onNodeSelection) {
@@ -89,7 +90,7 @@ export default class TheGraphNode extends Component {
     const domNode = findDOMNode(this)
 
     // Dragging
-    domNode.removeEventListener('trackstart', this.onTrackStart)
+    // domNode.removeEventListener('trackstart', this.onTrackStart)
 
     // Tap to select
     if (onNodeSelection) {
@@ -119,43 +120,89 @@ export default class TheGraphNode extends Component {
     event.stopPropagation()
 
     // Don't change selection
-    event.preventTap()
+    // event.preventTap()
 
     const { app, graph } = this.props
 
     // Don't drag under menu
-    if (app.menuShown) { return }
+    if (app && app.menuShown) { return }
 
     // Don't drag while pinching
-    if (app.pinching) { return }
+    if (app && app.pinching) { return }
 
+    /*
     const domNode = findDOMNode(this)
     domNode.addEventListener('track', this.onTrack)
     domNode.addEventListener('trackend', this.onTrackEnd)
+    */
 
+    if (this.props.onTrackStart) {
+      // should probably not be the entire event
+      this.props.onTrackStart(event)
+    }
+
+    /* Should be done by whatever is going to handle us
     // Moving a node should only be a single transaction
     if (this.props.export) {
       graph.startTransaction('moveexport')
     } else {
       graph.startTransaction('movenode')
     }
+    */
   }
 
   onTrack(event) {
     // Don't fire on graph
     event.stopPropagation()
 
-    const { graph, exportKey, isIn, node: nodeMetadata, nodeID, scale } = this.props
-    const { metadata: exportMetadata } = this.props.export
+    // this should not need graph.
+    // we send out, and then the graph is updated.
+    const { graph, exportKey, isIn, node, nodeID, scale } = this.props
+    const _export = this.props.export
 
     const deltaX = Math.round(event.ddx / scale)
     const deltaY = Math.round(event.ddy / scale)
 
     // Fires a change event on noflo graph, which triggers redraw
+    let newPos
+
+    if (this.props.onTrack) {
+      if (_export && _export.metadata) {
+        newPos = {
+          x: _export.metadata.x + deltaX,
+          y: _export.metadata.y + deltaY
+        }
+
+        /*
+        if (isIn) {
+          graph.setInportMetadata(exportKey, newPos)
+        } else {
+          graph.setOutportMetadata(exportKey, newPos)
+        }
+        */
+      } else {
+        newPos = {
+          x: node.metadata.x + deltaX,
+          y: node.metadata.y + deltaY
+        }
+      }
+
+      this.props.onTrack({
+        exportKey,
+        isIn,
+        node,
+        nodeID,
+        x: newPos.x,
+        y: newPos.y,
+        'export': _export,
+        scale
+      })
+    }
+    /*
     if (exportMetadata) {
       const newPos = {
-        x: exportMetadata.x + deltaX,
-        y: exportMetadata.y + deltaY
+        x: _export.metadata.x + deltaX,
+        y: _export.metadata.y + deltaY
       }
 
       if (isIn) {
@@ -165,32 +212,47 @@ export default class TheGraphNode extends Component {
       }
     } else {
       graph.setNodeMetadata(nodeID, {
-        x: nodeMetadata.x + deltaX,
-        y: nodeMetadata.y + deltaY
+        x: node.metadata.x + deltaX,
+        y: node.metadata.y + deltaY
       })
     }
+    */
   }
 
   onTrackEnd(event) {
     // Don't fire on graph
     event.stopPropagation()
 
-    const { exportKey, graph, isIn, node: { metadata: nodeMetadata }, nodeID } = this.props
-    const { metadata: exportMetadata } = this.props.export
+    const { exportKey, graph, isIn, node, nodeID } = this.props
+    const _export = this.props.export
 
+    /*
     const domNode = findDOMNode(this)
     domNode.removeEventListener('track', this.onTrack)
     domNode.removeEventListener('trackend', this.onTrackEnd)
+    */
 
     // Snap to grid
     const snapToGrid = true
     const snap = Config.node.snap / 2
 
+    if (this.props.onTrackEnd) {
+      this.props.onTrackEnd({
+        exportKey,
+        isIn,
+        node,
+        nodeID,
+        'export': _export
+      })
+    }
+
+    /* Re-Implement
+
     if (snapToGrid) {
-      if (exportMetadata) {
+      if (_export && _export.metadata) {
         const newPos = {
-          x: Math.round(exportMetadata.x / snap) * snap,
-          y: Math.round(exportMetadata.y / snap) * snap
+          x: Math.round(export.metadata.x / snap) * snap,
+          y: Math.round(export.metadata.y / snap) * snap
         }
 
         if (isIn) {
@@ -200,18 +262,21 @@ export default class TheGraphNode extends Component {
         }
       } else {
         graph.setNodeMetadata(nodeID, {
-          x: Math.round(nodeMetadata.x / snap) * snap,
-          y: Math.round(nodeMetadata.y / snap) * snap
+          x: Math.round(node.metadata.x / snap) * snap,
+          y: Math.round(node.metadata.y / snap) * snap
         })
       }
     }
+    */
 
+    /* Should be done by whatever handles us
     // Moving a node should only be a single transaction
-    if (exportMetadata) {
+    if (_export && _export.metadata) {
       graph.endTransaction('moveexport')
     } else {
       graph.endTransaction('movenode')
     }
+    */
   }
 
   showContext(event) {
@@ -556,31 +621,39 @@ export default class TheGraphNode extends Component {
       ...nodeOptions
     }
 
+    const trackOptions = {
+       onTrackStart: this.onTrackStart,
+       onTrack: this.onTrack,
+       onTrackEnd: this.onTrackEnd
+    }
+
     return (
-      <NodeGroup {...nodeOptions}>
-        <NodeBackgroundRect {...backgroundRectOptions} />
-        <NodeBorderRect {...borderRectOptions} />
-        <NodeInnerRect {...innerRectOptions} />
-        {NodeIconContent}
-        <NodeInportsGroup {...inportsOptions}>
-          {NodeInportViews}
-        </NodeInportsGroup>
-        <NodeOutportsGroup {...outportsOptions}>
-          {NodeOutportViews}
-        </NodeOutportsGroup>
-        <NodeLabelGroup {...Config.node.labelBackground}>
-          <NodeLabelRect {...labelRectOptions} />
-          <NodeLabelText {...labelTextOptions}>
-            {label}
-          </NodeLabelText>
-        </NodeLabelGroup>
-        <NodeSublabelGroup {...Config.node.sublabelBackground}>
-          <NodeSublabelRect {...sublabelRectOptions} />
-          <NodeSublabelText {...sublabelTextOptions}>
-            {sublabel}
-          </NodeSublabelText>
-        </NodeSublabelGroup>
-      </NodeGroup>
+      <Track {...trackOptions}>
+        <NodeGroup {...nodeOptions}>
+          <NodeBackgroundRect {...backgroundRectOptions} />
+          <NodeBorderRect {...borderRectOptions} />
+          <NodeInnerRect {...innerRectOptions} />
+          {NodeIconContent}
+          <NodeInportsGroup {...inportsOptions}>
+            {NodeInportViews}
+          </NodeInportsGroup>
+          <NodeOutportsGroup {...outportsOptions}>
+            {NodeOutportViews}
+          </NodeOutportsGroup>
+          <NodeLabelGroup {...Config.node.labelBackground}>
+            <NodeLabelRect {...labelRectOptions} />
+            <NodeLabelText {...labelTextOptions}>
+              {label}
+            </NodeLabelText>
+          </NodeLabelGroup>
+          <NodeSublabelGroup {...Config.node.sublabelBackground}>
+            <NodeSublabelRect {...sublabelRectOptions} />
+            <NodeSublabelText {...sublabelTextOptions}>
+              {sublabel}
+            </NodeSublabelText>
+          </NodeSublabelGroup>
+        </NodeGroup>
+      </Track>
     )
   }
 }

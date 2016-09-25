@@ -133,6 +133,10 @@ storiesOf('Port', module)
       // see App#showContext
       graph: {},
 
+      onTrackStart: action('onTrackStart'),
+      onTrackEnd: action('onTrackEnd'),
+      onTrack: action('onTrack'),
+
       // is never used
       // node: node,
       // key: processKey + '.in.' + info.label, || '.out.'
@@ -482,25 +486,23 @@ storiesOf('Node', module)
       <svg className="the-graph-dark">
         <g className="graph">
           <g className="nodes">
-            <Node
-              app={app}
-              graph={graph}
-              graphView={graphView}
-              node={node}
-              icon="cog"
-              iconsvg=""
-              nodeID="console/log_1"
-              ports={ports}
-              label="Console Log"
-              sublabel="console/log"
-              width={200}
-              height={100}
-              x={0}
-              y={0}
-              error={false}
-              selected={false}
-              highlightPort={false}
+            <Node {...node}
+              icon="cab"
               onNodeSelection={action('onNodeSelection')}
+              onTrackStart={action('onTrackStart')}
+              onTrack={action('onTrack')}
+              onTrackEnd={action('onTrackEnd')}
+            />
+            <Node {...node}
+                  label="Tall (Error)"
+                  icon="bug"
+                  key="tall-errored"
+                  error={true}
+                  x={180}
+                  onNodeSelection={action('onNodeSelection')}
+                  onTrackStart={action('onTrackStart')}
+                  onTrack={action('onTrack')}
+                  onTrackEnd={action('onTrackEnd')}
             />
           </g>
         </g>
