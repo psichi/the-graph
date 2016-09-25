@@ -214,23 +214,18 @@ storiesOf('The Graph', module)
       app: {
         menuShown: true
       },
-      label: 'IN1',
+      label: text('Label', 'IN1'),
       graph,
       item: {},
-      color: 2,
-      description: 'Group Description',
-      minX: 100,
-      maxX: 400,
-      minY: 100,
-      maxY: 250,
-      isSelectionGroup: false,
+      color: select('Color', routes, 2),
+      description: text('Description', 'Group Description'),
+      minX: number('minX', 100),
+      maxX: number('maxX', 400),
+      minY: number('minY', 100),
+      maxY: number('maxY', 250),
+      isSelectionGroup: boolean('isSelectionGroup', false),
       showContext: action('Show Context'),
-      triggerMoveGroup: false
-    }
-
-    const groupOptions2 = {
-      label: 'IN2',
-      ...groupOptions
+      triggerMoveGroup: boolean('triggerMoveGroup', false)
     }
 
     return (
@@ -238,7 +233,6 @@ storiesOf('The Graph', module)
         <g className="graph big">
           <g className="groups">
             <Group {...groupOptions} />
-            <Group {...groupOptions2} />
           </g>
         </g>
       </svg>
@@ -249,10 +243,10 @@ storiesOf('The Graph', module)
 
     const menuOptions = {
       icon: 'sign-out',
-      iconColor: 5,
-      x: 75,
-      y: 75,
-      label: 'The Menu',
+      iconColor: select('iconColor', routes, 5),
+      x: number('x', 75),
+      y: number('y', 75),
+      label: text('Label', 'The Menu'),
       menu,
       options: {
         graph,
@@ -268,40 +262,24 @@ storiesOf('The Graph', module)
     )
   })
   .add('NodeMenuPorts', () => {
-    const inportOptions = {
-      translateX: 300,
-      translateY: 100,
-      highlightPort: true,
-      isIn: true,
-      scale: 1,
-      processKey: 'someKey',
+    const portOptions = {
+      translateX: number('translateX', 300),
+      translateY: number('translateY', 100),
+      highlightPort: boolean('highlightport', true),
+      isIn: boolean('isIn', true),
+      scale: number('scale', 1),
+      processKey: 'inportKey',
       ports: ports.inports,
-      route: 2,
-      deltaX: 10,
-      deltaY: 10,
-      nodeWidth: 100,
-      nodeHeight: 100
-    }
-
-    const outportOptions = {
-      translateX: 320,
-      translateY: 100,
-      highlightPort: true,
-      isIn: false,
-      scale: 1,
-      processKey: 'someKey',
-      ports: ports.outports,
-      route: 4,
-      deltaX: 10,
-      deltaY: 10,
-      nodeWidth: 100,
-      nodeHeight: 100
+      route: select('route', routes, 2),
+      deltaX: number('deltaX', 10),
+      deltaY: number('deltaY', 10),
+      nodeWidth: number('nodeWidth', 100),
+      nodeHeight: number('nodeHeight', 100)
     }
 
     return (
       <svg className="the-graph-dark">
-        <NodeMenuPorts {...inportOptions} />
-        <NodeMenuPorts {...outportOptions} />
+        <NodeMenuPorts {...portOptions} />
       </svg>
     )
   })
@@ -328,16 +306,16 @@ storiesOf('The Graph', module)
       processKey: 'somekey',
       menu,
       options,
-      triggerHideContext: true,
-      icon: 'cog',
-      label: 'The Label',
-      nodeWidth: 100,
-      nodeHeight: 100,
-      highlightPort: true,
-      deltaX: 10,
-      deltaY: 10,
-      x: 300,
-      y: 150
+      triggerHideContext: boolean('triggerHideContext', true),
+      icon: select('icon', icons, 'cog'),
+      label: text('Lable', 'The Label'),
+      nodeWidth: number('nodeWidth', 100),
+      nodeHeight: number('nodeHeight', 100),
+      highlightPort: boolean('highlightPort', true),
+      deltaX: number('deltaX', 10),
+      deltaY: number('deltaY', 10),
+      x: number('x', 300),
+      y: number('y', 150)
     }
 
     return (
