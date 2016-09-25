@@ -14,6 +14,7 @@ import Node from '../Node'
 import Menu from '../Menu'
 import MenuSlice from '../factories/menu/MenuSlice'
 import Graph from '../Graph'
+import Editor from '../Editor'
 import Group from '../Group'
 import Tooltip from '../Tooltip'
 import TextBG from '../common/TextBG'
@@ -31,11 +32,38 @@ require('../utils/shims/rAF')
 
 const icons = Object.keys(FONT_AWESOME)
 const routes = [0,1,2,3,4,5,6,7,8,9,10]
+const themes = [
+  'the-graph-dark',
+  'the-graph-light'
+]
 const app = {}
 const graphView = {}
 
 storiesOf('The Graph', module)
   .addDecorator(withKnobs)
+  .add('Editor', () => {
+    const graph = fromJSON(graphJson)
+
+    return (<Editor
+      graph={graph}
+      width={800}
+      minZoom={0.5}
+      maxZoom={5}
+      height={600}
+      library={library}
+      menus={menus}
+      theme={select('Theme', themes, 'the-graph-light')}
+      editable
+      onEdgeSelection={action('On Edge Selection')}
+      onNodeSelection={action('On Node Selection')}
+      onPanScale={action('On Pan Scale')}
+      getMenuDef={action('Get Menu Def')}
+      displaySelectionGroup
+      forceSelection={false}
+      offsetY={number('OffsetY', 10)}
+      offsetX={number('OffsetX', 10)}
+    />)
+  })
   .add('App', () => {
     const graph = fromJSON(graphJson)
 
@@ -47,7 +75,7 @@ storiesOf('The Graph', module)
       height={600}
       library={library}
       menus={menus}
-      theme="the-graph-light"
+      theme={select('Theme', themes, 'the-graph-light')}
       editable
       onEdgeSelection={action('On Edge Selection')}
       onNodeSelection={action('On Node Selection')}
@@ -70,7 +98,7 @@ storiesOf('The Graph', module)
     }
 
     return (
-      <svg className="the-graph-dark">
+      <svg className={select('Theme', themes, 'the-graph-dark')}>
         <Graph {...graphOptions} />
       </svg>
     )
@@ -80,7 +108,7 @@ storiesOf('The Graph', module)
     const graph = fromJSON(graphJson)
 
     return (
-      <svg className="the-graph-dark">
+      <svg className={select('Theme', themes, 'the-graph-dark')}>
         <g className="graph">
           <g className="nodes">
             <Node {...node}
@@ -127,7 +155,7 @@ storiesOf('The Graph', module)
     }
 
     return (
-      <svg className="the-graph-dark">
+      <svg className={select('Theme', themes, 'the-graph-dark')}>
         <g className="graph">
           <Edge {...edgeOptions} />
         </g>
@@ -199,7 +227,7 @@ storiesOf('The Graph', module)
     }
 
     return (
-      <svg className="the-graph-light">
+      <svg className={select('Theme', themes, 'the-graph-dark')}>
         <g className="graph big">
           <IIP {...iipOptions} />
           <IIP {...iipOptions2} />
@@ -229,7 +257,7 @@ storiesOf('The Graph', module)
     }
 
     return (
-      <svg className="the-graph-light">
+      <svg className={select('Theme', themes, 'the-graph-dark')}>
         <g className="graph big">
           <g className="groups">
             <Group {...groupOptions} />
@@ -256,7 +284,7 @@ storiesOf('The Graph', module)
     }
 
     return (
-      <svg className="the-graph-dark">
+      <svg className={select('Theme', themes, 'the-graph-dark')}>
         <Menu {...menuOptions} />
       </svg>
     )
@@ -278,7 +306,7 @@ storiesOf('The Graph', module)
     }
 
     return (
-      <svg className="the-graph-dark">
+      <svg className={select('Theme', themes, 'the-graph-dark')}>
         <NodeMenuPorts {...portOptions} />
       </svg>
     )
@@ -319,7 +347,7 @@ storiesOf('The Graph', module)
     }
 
     return (
-      <svg className="the-graph-dark">
+      <svg className={select('Theme', themes, 'the-graph-dark')}>
         <NodeMenu {...nodeMenuOptions} />
       </svg>)
   })
@@ -361,7 +389,7 @@ storiesOf('The Graph', module)
     }
 
     return (
-      <svg className="the-graph-dark">
+      <svg className={select('Theme', themes, 'the-graph-dark')}>
         <g transform="translate(120,85)">
           <MenuSlice {...menuSliceOptions1} />
           <MenuSlice {...menuSliceOptions2} />
@@ -421,7 +449,7 @@ storiesOf('The Graph', module)
     }
 
     return (
-      <svg className="the-graph-dark">
+      <svg className={select('Theme', themes, 'the-graph-dark')}>
         <NodeMenuPort {...inportOptions} />
         <NodeMenuPort {...outportOptions} />
         <NodeMenuPort {...highlightPortInOptions} />
@@ -440,7 +468,7 @@ storiesOf('The Graph', module)
     }
 
     return (
-      <svg className="the-graph-light">
+      <svg className={select('Theme', themes, 'the-graph-dark')}>
         <g className="graph big">
           <Tooltip {...tooltipOptions} />
         </g>
@@ -459,7 +487,7 @@ storiesOf('The Graph', module)
     }
 
     return (
-      <svg className="the-graph-dark">
+      <svg className={select('Theme', themes, 'the-graph-dark')}>
         <g className="graph">
           <TextBG {...options} />
         </g>
