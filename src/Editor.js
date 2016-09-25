@@ -10,6 +10,12 @@ export default class TheEditor extends Component {
   debounceLibraryRefeshTimer = null
   pan = [0, 0]
 
+  selectedNodes = []
+  selectedEdges = []
+  animatedEdges = []
+  scale = 1
+  errorNodes = {}
+
   static propTypes = {
     graph: PropTypes.object,
     menus: PropTypes.object,
@@ -19,15 +25,9 @@ export default class TheEditor extends Component {
     autolayout: PropTypes.bool,
     theme: PropTypes.string,
     editable: PropTypes.bool,
-    selectedNodes: PropTypes.array,
-    errorNodes: PropTypes.object,
-    selectedEdges: PropTypes.array,
-    animatedEdges: PropTypes.array,
     getMenuDef: PropTypes.func,
-    'pan scale maxZoom': PropTypes.object, // not sure
     minZoom: PropTypes.number,
     maxZoom: PropTypes.number,
-    scale: PropTypes.number,
     displaySelectionGroup: PropTypes.bool,
     forceSelection: PropTypes.bool,
     offsetY: PropTypes.number,
@@ -47,10 +47,6 @@ export default class TheEditor extends Component {
     snap: 36,
     displaySelectionGroup: true,
     forceSelection: false,
-    selectedNodes: [],
-    selectedEdges: [],
-    animatedEdges: [],
-    errorNodes: {},
     offsetY: null,
     offsetX: null,
     width: 800,
@@ -58,8 +54,6 @@ export default class TheEditor extends Component {
     editable: true,
     autolayout: false,
     library: {},
-    pan: [0, 0],
-    scale: 1,
     'touch-action': 'none'
   }
 
@@ -69,47 +63,42 @@ export default class TheEditor extends Component {
     this.invokeEdgeSelection = this.invokeEdgeSelection.bind(this)
     this.invokeNodeSelection = this.invokeNodeSelection.bind(this)
     this.invokePanScale = this.invokePanScale.bind(this)
+    this.triggerAutoLayout = this.triggerAutolayout.bind(this)
+    this.fireChanged = this.fireChanged.bind(this)
   }
 
   // note is now in graph where it probably belongs.
   componentDidMount() {
-    /*
-     // Initializes the autolayouter
-     this.autolayouter = klayNoflo.init({
-     onSuccess: this.applyAutolayout.bind(this),
-     workerScript: "../bower_components/klayjs/klay.js"
-     });
-     */
-
     // not necessary..
     // this.themeChanged();
   }
 
-  // can be done with on Props will changed
-  // however all this should not happen.
-  // if a graph changes the whole editor is removed and a new graph editor will be added.
-  // so only make sure these events are installed when mounted.
-  // and remove the events when unmounted, easy..
+  fire(type, event) {
+    console.log('TODO: FIRE %s', type, event)
+  }
+
+  // is not executed now.
+  //
   graphChanged(oldGraph, newGraph) {
     if (oldGraph && oldGraph.removeListener) {
       oldGraph.removeListener('endTransaction', this.fireChanged)
     }
     // Listen for graph changes
-    this.graph.on('endTransaction', this.fireChanged.bind(this))
+    this.graph.on('endTransaction', this.fireChanged)
 
     // Listen for autolayout changes
     if (this.autolayout) {
-      this.graph.on('addNode', this.triggerAutolayout.bind(this))
-      this.graph.on('removeNode', this.triggerAutolayout.bind(this))
-      this.graph.on('addInport', this.triggerAutolayout.bind(this))
-      this.graph.on('removeInport', this.triggerAutolayout.bind(this))
-      this.graph.on('addOutport', this.triggerAutolayout.bind(this))
-      this.graph.on('removeOutport', this.triggerAutolayout.bind(this))
-      this.graph.on('addEdge', this.triggerAutolayout.bind(this))
-      this.graph.on('removeEdge', this.triggerAutolayout.bind(this))
+      this.graph.on('addNode', this.triggerAutolayout)
+      this.graph.on('removeNode', this.triggerAutolayout)
+      this.graph.on('addInport', this.triggerAutolayout)
+      this.graph.on('removeInport', this.triggerAutolayout)
+      this.graph.on('addOutport', this.triggerAutolayout)
+      this.graph.on('removeOutport', this.triggerAutolayout)
+      this.graph.on('addEdge', this.triggerAutolayout)
+      this.graph.on('removeEdge', this.triggerAutolayout)
     }
 
-    if (this.appView) {
+    if (this.refs.appView) {
       // Remove previous instance
       ReactDOM.unmountComponentAtNode(this.$.svgcontainer)
     }
@@ -117,7 +106,7 @@ export default class TheEditor extends Component {
     // Setup app
     this.$.svgcontainer.innerHTML = ''
 
-    this.appView = ReactDOM.render(
+    this.refs.appView = ReactDOM.render(
       App({
         graph: this.graph,
         width: this.width,
@@ -127,9 +116,9 @@ export default class TheEditor extends Component {
         library: this.library,
         menus: this.menus,
         editable: this.editable,
-        onEdgeSelection: this.invokeEdgeSelection.bind(this),
-        onNodeSelection: this.invokeNodeSelection.bind(this),
-        onPanScale: this.invokePanScale.bind(this),
+        onEdgeSelection: this.invokeEdgeSelection,
+        onNodeSelection: this.invokeNodeSelection,
+        onPanScale: this.invokePanScale,
         getMenuDef: this.getMenuDef,
         displaySelectionGroup: this.displaySelectionGroup,
         forceSelection: this.forceSelection,
@@ -138,7 +127,8 @@ export default class TheEditor extends Component {
       }),
       this.$.svgcontainer
     )
-    this.graphView = this.appView.refs.graph
+
+    // this.graphView = this.refs.appView.refs.graph
   }
 
   // this should update and be within state
@@ -182,7 +172,8 @@ export default class TheEditor extends Component {
     if (onEdgeSelection) {
       onEdgeSelection(this.selectedEdges)
     }
-    // this.fire('edges', this.selectedEdges);
+
+    this.fire('edges', this.selectedEdges);
   }
 
   invokeNodeSelection(itemKey, item, toggle) {
@@ -207,7 +198,8 @@ export default class TheEditor extends Component {
     if (onNodeSelection) {
       onNodeSelection(this.selectedNodes)
     }
-    // this.fire('nodes', this.selectedNodes);
+
+    this.fire('nodes', this.selectedNodes);
   }
 
   selectedNodesChanged() {
@@ -218,28 +210,34 @@ export default class TheEditor extends Component {
     this.selectedNodesHash = selectedNodesHash
 
     this.selectedNodesHashChanged()
-    // this.fire('nodes', this.selectedNodes);
+
+    this.fire('nodes', this.selectedNodes);
   }
 
   selectedNodesHashChanged() {
-    if (!this.graphView) { return }
-    this.graphView.setSelectedNodes(this.selectedNodesHash)
+    if (!this.refs.appView.refs.graph) { return }
+
+    this.refs.appView.refs.graph.setSelectedNodes(this.selectedNodesHash)
   }
 
   errorNodesChanged() {
-    if (!this.graphView) { return }
-    this.graphView.setErrorNodes(this.errorNodes)
+    if (!this.refs.appView.refs.graph) { return }
+
+    this.refs.appView.refs.graph.setErrorNodes(this.errorNodes)
   }
 
   selectedEdgesChanged() {
-    if (!this.graphView) { return }
-    this.graphView.setSelectedEdges(this.selectedEdges)
+    if (!this.refs.appView.refs.graph) { return }
+
+    this.refs.appView.refs.graph.setSelectedEdges(this.selectedEdges)
+
     this.fire('edges', this.selectedEdges)
   }
 
   animatedEdgesChanged() {
-    if (!this.graphView) { return }
-    this.graphView.setAnimatedEdges(this.animatedEdges)
+    if (!this.refs.appView.refs.graph) { return }
+
+    this.refs.appView.refs.graph.setAnimatedEdges(this.animatedEdges)
   }
 
   fireChanged(event) {
@@ -250,14 +248,14 @@ export default class TheEditor extends Component {
     if (!this.graph) { return }
     // Only listen to changes that affect layout
     if (this.autolayout) {
-      this.graph.on('addNode', this.triggerAutolayout.bind(this))
-      this.graph.on('removeNode', this.triggerAutolayout.bind(this))
-      this.graph.on('addInport', this.triggerAutolayout.bind(this))
-      this.graph.on('removeInport', this.triggerAutolayout.bind(this))
-      this.graph.on('addOutport', this.triggerAutolayout.bind(this))
-      this.graph.on('removeOutport', this.triggerAutolayout.bind(this))
-      this.graph.on('addEdge', this.triggerAutolayout.bind(this))
-      this.graph.on('removeEdge', this.triggerAutolayout.bind(this))
+      this.graph.on('addNode', this.triggerAutolayou)
+      this.graph.on('removeNode', this.triggerAutolayout)
+      this.graph.on('addInport', this.triggerAutolayout)
+      this.graph.on('removeInport', this.triggerAutolayout)
+      this.graph.on('addOutport', this.triggerAutolayout)
+      this.graph.on('removeOutport', this.triggerAutolayout)
+      this.graph.on('addEdge', this.triggerAutolayout)
+      this.graph.on('removeEdge', this.triggerAutolayout)
     } else {
       this.graph.removeListener('addNode', this.triggerAutolayout)
       this.graph.removeListener('removeNode', this.triggerAutolayout)
@@ -272,7 +270,7 @@ export default class TheEditor extends Component {
 
   triggerAutolayout(event) {
     const graph = this.graph
-    const portInfo = this.graphView ? this.graphView.portInfo : null
+    const portInfo = this.refs.appView.refs.graph ? this.appview.refs.graph.portInfo : null
     // Calls the autolayouter
     this.autolayouter.layout({
       'graph': graph,
@@ -353,34 +351,34 @@ export default class TheEditor extends Component {
   }
 
   triggerFit() {
-    if (this.appView) {
-      this.appView.triggerFit()
+    if (this.refs.appView) {
+      this.refs.appView.triggerFit()
     }
   }
 
   widthChanged() {
-    if (!this.appView) { return }
-    this.appView.setState({
+    if (!this.refs.appView) { return }
+    this.refs.appView.setState({
       width: this.width
     })
   }
 
   heightChanged() {
-    if (!this.appView) { return }
-    this.appView.setState({
+    if (!this.refs.appView) { return }
+    this.refs.appView.setState({
       height: this.height
     })
   }
 
   updateIcon(nodeId, icon) {
-    if (!this.graphView) { return }
-    this.graphView.updateIcon(nodeId, icon)
+    if (!this.refs.appView.refs.graph) { return }
+    this.refs.appView.refs.graph.updateIcon(nodeId, icon)
   }
 
   rerender(options) {
     // This is throttled with rAF internally
-    if (!this.graphView) { return }
-    this.graphView.markDirty(options)
+    if (!this.refs.appView.refs.graph) { return }
+    this.refs.appView.refs.graph.markDirty(options)
   }
 
   addNode(id, component, metadata) {
@@ -389,51 +387,51 @@ export default class TheEditor extends Component {
   }
 
   getPan() {
-    if (!this.appView) {
+    if (!this.refs.appView) {
       return [0, 0]
     }
-    return [this.appView.state.x, this.appView.state.y]
+    return [this.refs.appView.state.x, this.refs.appView.state.y]
   }
 
   panChanged() {
     // Send pan back to React
-    if (!this.appView) { return }
-    this.appView.setState({
+    if (!this.refs.appView) { return }
+    this.refs.appView.setState({
       x: this.pan[0],
       y: this.pan[1]
     })
   }
 
   getScale() {
-    if (!this.appView) {
+    if (!this.refs.appView) {
       return 1
     }
-    return this.appView.state.scale
+    return this.refs.appView.state.scale
   }
 
   displaySelectionGroupChanged() {
-    if (!this.graphView) { return }
-    this.graphView.setState({
+    if (!this.refs.appView.refs.graph) { return }
+    this.refs.appView.refs.graph.setState({
       displaySelectionGroup: this.displaySelectionGroup
     })
   }
 
   forceSelectionChanged() {
-    if (!this.graphView) { return }
-    this.graphView.setState({
+    if (!this.refs.appView.refs.graph) { return }
+    this.refs.appView.refs.graph.setState({
       forceSelection: this.forceSelection
     })
   }
 
   focusNode(node) {
-    this.appView.focusNode(node)
+    this.refs.appView.focusNode(node)
   }
 
   menusChanged() {
     // Only if the object itself changes,
     // otherwise builds menu from reference every time menu shown
-    if (!this.appView) { return }
-    this.appView.setProps({ menus: this.menus })
+    if (!this.refs.appView) { return }
+    this.refs.appView.setProps({ menus: this.menus })
   }
 
   debounceLibraryRefesh() {
@@ -468,6 +466,7 @@ export default class TheEditor extends Component {
     } = this.props
 
     const appOptions = {
+      ref: 'appView',
       graph,
       width,
       minZoom,
@@ -486,9 +485,7 @@ export default class TheEditor extends Component {
       offsetX
     }
 
-    return (
-      <App {...appOptions} />
-    )
+    return <App {...appOptions} />
   }
 }
 
