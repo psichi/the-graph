@@ -4,3 +4,5 @@ node_modules/
 /build
 ATTIC
 npm-debug.log
+_gh-pages
+*.swp

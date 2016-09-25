@@ -33,6 +33,7 @@
     "eslint-plugin-import": "^1.15.0",
     "eslint-plugin-jsx-a11y": "^2.2.2",
     "font-awesome-webpack": "0.0.4",
+    "git-directory-deploy": "^1.5.1",
     "glob": "^7.1.0",
     "grunt": "~1.0.1",
     "grunt-bower-install-simple": "^1.2.3",
@@ -42,6 +43,7 @@
     "grunt-contrib-watch": "~1.0.0",
     "grunt-exec": "~1.0.1",
     "less": "^2.7.1",
+    "rimraf": "^2.5.4",
     "stylus": "~0.54.5",
     "worker-loader": "^0.7.1"
   },
@@ -51,7 +53,11 @@
     "postversion": "git push && git push --tags",
     "storybook": "start-storybook -p 9009 -s ./node_modules/",
     "build-storybook": "build-storybook",
-    "postinstall": "postinstall-build lib 'npm run build:babel'"
+    "postinstall": "postinstall-build lib 'npm run build:babel'",
+    "gh-pages:clean": "rimraf _gh-pages",
+    "gh-pages:build": "build-storybook -o _gh-pages",
+    "gh-pages:publish": "git-directory-deploy --directory _gh-pages",
+    "gh-pages": "npm run gh-pages:clean && npm run gh-pages:build && npm run gh-pages:publish"
   },
   "repository": {
     "type": "git",
