@@ -12,7 +12,7 @@ export default function getContext(menu, options, triggerHideContext) {
     nodeWidth,
     nodeHeight,
     triggerHideContext,
-    label: 'Hello',
+    label: '',
     node: this,
     ports: [],
     process: [],

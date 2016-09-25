@@ -3,8 +3,10 @@ export default function cancelPreviewEdge(event) {
   const { app } = this.props
   const appDomNode = findDOMNode(app)
 
-  appDomNode.removeEventListener('mousemove', this.renderPreviewEdge)
-  appDomNode.removeEventListener('track', this.renderPreviewEdge)
+  /*
+   appDomNode.removeEventListener('mousemove', this.renderPreviewEdge)
+   appDomNode.removeEventListener('track', this.renderPreviewEdge)
+   */
   appDomNode.removeEventListener('tap', this.cancelPreviewEdge)
 
   if (edgePreview) {

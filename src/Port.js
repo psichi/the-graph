@@ -1,9 +1,11 @@
 import React, { Component, PropTypes } from 'react'
 import { findDOMNode } from 'react-dom'
+import Hammer from 'react-hammerjs'
 import { arcs } from './utils'
 import Config from './Config'
 import { Tooltip } from './mixins'
 import Menu from './Menu'
+import Track from './Track'
 import {
   PortArc,
   PortBackgroundCircle,
@@ -11,6 +13,25 @@ import {
   PortInnerCircle,
   PortLabelText
 } from './factories/port'
+
+function componentDidMount() {
+  const { addEventListener } = findDOMNode(this)
+
+  // Preview edge start
+  // addEventListener('tap', this.edgeStart)
+  /*
+   addEventListener('trackstart', this.edgeStart)
+   // Make edge
+   addEventListener('trackend', this.triggerDropOnTarget)
+   */
+  addEventListener('the-graph-edge-drop', this.edgeStart)
+
+  // Show context menu
+  if (this.props.showContext) {
+    addEventListener('contextmenu', this.showContext)
+    addEventListener('hold', this.showContext)
+  }
+}
 
 // Port view
 export default class TheGraphPort extends Component {
@@ -37,35 +58,21 @@ export default class TheGraphPort extends Component {
 
     this.edgeStart = this.edgeStart.bind(this)
     this.triggerDropOnTarget = this.triggerDropOnTarget.bind(this)
-    this.edgeStart = this.edgeStart.bind(this)
     this.showContext = this.showContext.bind(this)
   }
 
-  componentDidMount() {
-    const { addEventListener } = findDOMNode(this)
-
-    // Preview edge start
-    addEventListener('tap', this.edgeStart)
-    addEventListener('trackstart', this.edgeStart)
-    // Make edge
-    addEventListener('trackend', this.triggerDropOnTarget)
-    addEventListener('the-graph-edge-drop', this.edgeStart)
-
-    // Show context menu
-    if (this.props.showContext) {
-      addEventListener('contextmenu', this.showContext)
-      addEventListener('hold', this.showContext)
-    }
-  }
+  componentDidMount
 
   componentWillUnmount() {
     const { addEventListener } = findDOMNode(this)
 
     // Preview edge start
-    removeEventListener('tap', this.edgeStart)
+    // removeEventListener('tap', this.edgeStart)
+    /*
     removeEventListener('trackstart', this.edgeStart)
     // Make edge
     removeEventListener('trackend', this.triggerDropOnTarget)
+    */
     removeEventListener('the-graph-edge-drop', this.edgeStart)
 
     // Show context menu
@@ -151,8 +158,13 @@ export default class TheGraphPort extends Component {
       return
     }
     // Don't tap graph
-    event.stopPropagation()
+    // event.stopPropagation()
 
+    if (this.props.onTrackStart) {
+      this.props.onTrackStart(event)
+    }
+
+    /*
     const edgeStartEvent = new CustomEvent('the-graph-edge-start', {
       detail: {
         isIn,
@@ -163,19 +175,36 @@ export default class TheGraphPort extends Component {
       bubbles: true
     })
 
+    console.log('START', event)
+
     dispatchEvent(edgeStartEvent)
+    */
   }
 
   triggerDropOnTarget(event) {
+    console.log('STOP', event)
     // If dropped on a child element will bubble up to port
-    if (!event.relatedTarget) { return }
+    // if (!event.relatedTarget) { return }
 
+    // should probably just call the handler
+    // but needs a total restructure then.
+    // this would then not buble up.
+    // but we'll have to listen to this dispatch.
+    // Let's just first make it so the story book hooks to these
+    // actions
+
+    if (this.props.onTrackEnd) {
+      this.props.onTrackEnd(event)
+    }
+
+    /*
     const dropEvent = new CustomEvent('the-graph-edge-drop', {
       detail: null,
       bubbles: true
     })
 
     event.relatedTarget.dispatchEvent(dropEvent)
+    */
   }
 
   render() {
@@ -234,14 +263,18 @@ export default class TheGraphPort extends Component {
     }
 
     return (
-      <PortGroup {...containerOptions}>
-        <PortBackgroundCircle {...backgroundCircleOptions} />
-        <PortArc {...arcOptions} />
-        <PortInnerCircle {...innerCircleOptions} />
-        <PortLabelText {...labelTextOptions}>
-          {label}
-        </PortLabelText>
-      </PortGroup>
+      <Track onTrackStart={this.edgeStart} onTrackEnd={this.triggerDropOnTarget}>
+        <Hammer onTap={this.edgeStart}>
+          <PortGroup {...containerOptions}>
+            <PortBackgroundCircle {...backgroundCircleOptions} />
+            <PortArc {...arcOptions} />
+            <PortInnerCircle {...innerCircleOptions} />
+            <PortLabelText {...labelTextOptions}>
+              {label}
+            </PortLabelText>
+          </PortGroup>
+        </Hammer>
+      </Track>
     )
   }
 }

@@ -7,8 +7,6 @@ export default function keyUp(event) {
     this.refs.graph.cancelPreviewEdge()
   }
 
-  console.error('FIX ME: global metakey')
-
   /*
    // HACK metaKey global for taps https://github.com/Polymer/PointerGestures/issues/29
    if (TheGraph.metaKeyPressed) {

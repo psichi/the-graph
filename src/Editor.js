@@ -2,29 +2,6 @@
 import React, { Component, PropTypes } from 'react'
 import App from './App'
 
-/*
-// not sure yet, the editor probably must be about 1 graph.
-// then you can integrate many editors within a UI
-// so the Editor component should not do more then is needed.
-
-must find out what is listening to the fires and how it is used.
-we cannot emit from a react comopnent so it will be a custom dispatch action.
-
-Updating the library etc, is also not part of the editor.
-The only task of this editor is to add more functionality to the Graph.
-the Graph is meant for displaying a graph.
-The editor adds the in-graph functionality.
-
-Basically we do not fire, we will just receive updates from outside.
-
-Not sure what this code is doing.
-Most is Polymer wrapping.
-
-I want to convert it to an easy entry point to just mount the editor @root
-It also dives into the Graph view to manually call methods.
-In able to bring the code to life, there needs to be a nav equivalent in react.
-Which is already out of the scope of this React Component.
-*/
 export default class TheEditor extends Component {
   appView = null
   graphView = null
@@ -176,13 +153,6 @@ export default class TheEditor extends Component {
     }
   }
 
-  // who is listening for this?
-  // a higher level component.
-  // so basically this should already use redux.
-  // however we do not want to make that choice here.
-  // we can make another onEdgeSelection going into editor.
-  // which will receive what fire receives.
-  // then the outcomponent can choose to send them as redux action. (solved)
   invokeEdgeSelection(itemKey, item, toggle) {
     const { onEdgeSelection } = this.props
 

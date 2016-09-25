@@ -1,3 +1,4 @@
+// not execute for the moment should be externalized.
 export default function renderPreviewEdge(event) {
   const { app: { state: { offsetX, offsetY, scale, x: appX, y: appY } } } = this.props
 

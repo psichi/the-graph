@@ -1,12 +1,13 @@
 import React, { Component, PropTypes } from 'react'
 import { findDOMNode } from 'react-dom'
-import { buildLabelRectOptions } from './utils'
+import { buildLabelRectOptions, keys } from './utils'
 import Config from './Config'
 import { Tooltip } from './mixins'
 import Menu from './Menu'
 import NodeMenuPorts from './NodeMenuPorts'
 import NodeMenu from './NodeMenu'
 import Track from './Track'
+import Hammer from 'react-hammerjs'
 import {
   NodeBorderRect,
   NodeGroup,
@@ -30,6 +31,12 @@ export default class TheGraphNode extends Component {
   mixins = [
     Tooltip
   ]
+
+  metaKeyPressed: false
+
+  static defaultProps = {
+    scale: 1
+  }
 
   static propTypes = {
     app: PropTypes.object.isRequired,
@@ -64,6 +71,8 @@ export default class TheGraphNode extends Component {
     this.showContext = this.showContext.bind(this)
     this.onTrack = this.onTrack.bind(this)
     this.onTrackEnd = this.onTrackEnd.bind(this)
+    this.keyDown = this.keyDown.bind(this)
+    this.keyUp = this.keyUp.bind(this)
   }
 
   componentDidMount() {
@@ -74,14 +83,35 @@ export default class TheGraphNode extends Component {
     // domNode.addEventListener('trackstart', this.onTrackStart)
 
     // Tap to select
+    /*
     if (onNodeSelection) {
       domNode.addEventListener('tap', this.onNodeSelection, true)
     }
+    */
+
+    keys.subscribe('keydown', this.keyDown)
+    keys.subscribe('keyup', this.keyUp)
 
     // Context menu
     if (showContext) {
       findDOMNode(this).addEventListener('contextmenu', this.showContext)
       findDOMNode(this).addEventListener('hold', this.showContext)
+    }
+  }
+
+  keyDown(event) {
+    const { metaKey, ctrlKey } = event
+
+    if (metaKey || ctrlKey) {
+      this.metaKeyPressed = true;
+    }
+  }
+
+  keyUp(event) {
+    const { metaKey, ctrlKey } = event
+
+    if (metaKey || ctrlKey) {
+      this.metaKeyPressed = false;
     }
   }
 
@@ -93,9 +123,13 @@ export default class TheGraphNode extends Component {
     // domNode.removeEventListener('trackstart', this.onTrackStart)
 
     // Tap to select
+    /*
     if (onNodeSelection) {
-      domNode.removeEventListener('tap', this.onNodeSelection, true)
+      domNode.removeEventListener('tap', this.onNodeSelection)
     }
+    */
+    keys.unsubscribe('keydown', this.keyDown)
+    keys.unsubscribe('keyup', this.keyUp)
 
     // Context menu
     if (showContext) {
@@ -106,18 +140,22 @@ export default class TheGraphNode extends Component {
 
   onNodeSelection(event) {
     // Don't tap app (unselect)
-    event.stopPropagation()
+    // Hammer 2.0 does not have it, fix later
+    // see: https://stackoverflow.com/questions/26027362/how-to-stoppropagation-w-hammer-js-2-0
+    // event.stopPropagation()
 
     const { nodeID, node } = this.props
 
-    const toggle = (TheGraph.metaKeyPressed || event.pointerType === 'touch')
+    const toggle = (this.metaKeyPressed || event.pointerType === 'touch')
 
-    this.props.onNodeSelection(nodeID, node, toggle)
+    if (this.props.onNodeSelection) {
+      this.props.onNodeSelection(nodeID, node, toggle)
+    }
   }
 
   onTrackStart(event) {
     // Don't drag graph
-    event.stopPropagation()
+    // event.stopPropagation()
 
     // Don't change selection
     // event.preventTap()
@@ -141,52 +179,61 @@ export default class TheGraphNode extends Component {
       this.props.onTrackStart(event)
     }
 
-    /* Should be done by whatever is going to handle us
+    // Should be done by whatever is going to handle us
     // Moving a node should only be a single transaction
-    if (this.props.export) {
-      graph.startTransaction('moveexport')
-    } else {
-      graph.startTransaction('movenode')
+    if (graph) {
+      if (this.props.export) {
+        graph.startTransaction('moveexport')
+      } else {
+        graph.startTransaction('movenode')
+      }
     }
-    */
   }
 
   onTrack(event) {
     // Don't fire on graph
-    event.stopPropagation()
+    // event.stopPropagation()
 
     // this should not need graph.
     // we send out, and then the graph is updated.
     const { graph, exportKey, isIn, node, nodeID, scale } = this.props
     const _export = this.props.export
 
+    /*
     const deltaX = Math.round(event.ddx / scale)
     const deltaY = Math.round(event.ddy / scale)
+    */
+
+    console.log('THE SCALE', scale)
+
+    const deltaX = Math.round(event.movementX / scale)
+    const deltaY = Math.round(event.movementY / scale)
 
     // Fires a change event on noflo graph, which triggers redraw
     let newPos
 
-    if (this.props.onTrack) {
-      if (_export && _export.metadata) {
-        newPos = {
-          x: _export.metadata.x + deltaX,
-          y: _export.metadata.y + deltaY
-        }
-
-        /*
-        if (isIn) {
-          graph.setInportMetadata(exportKey, newPos)
-        } else {
-          graph.setOutportMetadata(exportKey, newPos)
-        }
-        */
-      } else {
-        newPos = {
-          x: node.metadata.x + deltaX,
-          y: node.metadata.y + deltaY
-        }
+    if (_export && _export.metadata) {
+      newPos = {
+        x: _export.metadata.x + deltaX,
+        y: _export.metadata.y + deltaY
       }
 
+      /*
+       if (isIn) {
+       graph.setInportMetadata(exportKey, newPos)
+       } else {
+       graph.setOutportMetadata(exportKey, newPos)
+       }
+       */
+    } else {
+      newPos = {
+        x: node.metadata.x + deltaX,
+        y: node.metadata.y + deltaY
+      }
+    }
+
+    // new
+    if (this.props.onTrack) {
       this.props.onTrack({
         exportKey,
         isIn,
@@ -198,30 +245,32 @@ export default class TheGraphNode extends Component {
         scale
       })
     }
-    /*
-    if (exportMetadata) {
-      const newPos = {
-        x: _export.metadata.x + deltaX,
-        y: _export.metadata.y + deltaY
-      }
 
-      if (isIn) {
-        graph.setInportMetadata(exportKey, newPos)
+    // old
+    if (graph) {
+      if (_export && _export.metadata) {
+        const newPos = {
+          x: _export.metadata.x + deltaX,
+          y: _export.metadata.y + deltaY
+        }
+
+        if (isIn) {
+          graph.setInportMetadata(exportKey, newPos)
+        } else {
+          graph.setOutportMetadata(exportKey, newPos)
+        }
       } else {
-        graph.setOutportMetadata(exportKey, newPos)
+        graph.setNodeMetadata(nodeID, {
+          x: node.metadata.x + deltaX,
+          y: node.metadata.y + deltaY
+        })
       }
-    } else {
-      graph.setNodeMetadata(nodeID, {
-        x: node.metadata.x + deltaX,
-        y: node.metadata.y + deltaY
-      })
     }
-    */
   }
 
   onTrackEnd(event) {
     // Don't fire on graph
-    event.stopPropagation()
+    // event.stopPropagation()
 
     const { exportKey, graph, isIn, node, nodeID } = this.props
     const _export = this.props.export
@@ -246,37 +295,35 @@ export default class TheGraphNode extends Component {
       })
     }
 
-    /* Re-Implement
+    // move elsewhere
+    if (graph) {
+      if (snapToGrid) {
+        if (_export && _export.metadata) {
+          const newPos = {
+            x: Math.round(_export.metadata.x / snap) * snap,
+            y: Math.round(_export.metadata.y / snap) * snap
+          }
 
-    if (snapToGrid) {
-      if (_export && _export.metadata) {
-        const newPos = {
-          x: Math.round(export.metadata.x / snap) * snap,
-          y: Math.round(export.metadata.y / snap) * snap
-        }
-
-        if (isIn) {
-          graph.setInportMetadata(exportKey, newPos)
+          if (isIn) {
+            graph.setInportMetadata(exportKey, newPos)
+          } else {
+            graph.setOutportMetadata(exportKey, newPos)
+          }
         } else {
-          graph.setOutportMetadata(exportKey, newPos)
+          graph.setNodeMetadata(nodeID, {
+            x: Math.round(node.metadata.x / snap) * snap,
+            y: Math.round(node.metadata.y / snap) * snap
+          })
         }
+      }
+
+      // Moving a node should only be a single transaction
+      if (_export && _export.metadata) {
+        graph.endTransaction('moveexport')
       } else {
-        graph.setNodeMetadata(nodeID, {
-          x: Math.round(node.metadata.x / snap) * snap,
-          y: Math.round(node.metadata.y / snap) * snap
-        })
+        graph.endTransaction('movenode')
       }
     }
-    */
-
-    /* Should be done by whatever handles us
-    // Moving a node should only be a single transaction
-    if (_export && _export.metadata) {
-      graph.endTransaction('moveexport')
-    } else {
-      graph.endTransaction('movenode')
-    }
-    */
   }
 
   showContext(event) {
@@ -629,30 +676,32 @@ export default class TheGraphNode extends Component {
 
     return (
       <Track {...trackOptions}>
-        <NodeGroup {...nodeOptions}>
-          <NodeBackgroundRect {...backgroundRectOptions} />
-          <NodeBorderRect {...borderRectOptions} />
-          <NodeInnerRect {...innerRectOptions} />
-          {NodeIconContent}
-          <NodeInportsGroup {...inportsOptions}>
-            {NodeInportViews}
-          </NodeInportsGroup>
-          <NodeOutportsGroup {...outportsOptions}>
-            {NodeOutportViews}
-          </NodeOutportsGroup>
-          <NodeLabelGroup {...Config.node.labelBackground}>
-            <NodeLabelRect {...labelRectOptions} />
-            <NodeLabelText {...labelTextOptions}>
-              {label}
-            </NodeLabelText>
-          </NodeLabelGroup>
-          <NodeSublabelGroup {...Config.node.sublabelBackground}>
-            <NodeSublabelRect {...sublabelRectOptions} />
-            <NodeSublabelText {...sublabelTextOptions}>
-              {sublabel}
-            </NodeSublabelText>
-          </NodeSublabelGroup>
-        </NodeGroup>
+        <Hammer onTap={this.onNodeSelection}>
+          <NodeGroup {...nodeOptions}>
+            <NodeBackgroundRect {...backgroundRectOptions} />
+            <NodeBorderRect {...borderRectOptions} />
+            <NodeInnerRect {...innerRectOptions} />
+            {NodeIconContent}
+            <NodeInportsGroup {...inportsOptions}>
+              {NodeInportViews}
+            </NodeInportsGroup>
+            <NodeOutportsGroup {...outportsOptions}>
+              {NodeOutportViews}
+            </NodeOutportsGroup>
+            <NodeLabelGroup {...Config.node.labelBackground}>
+              <NodeLabelRect {...labelRectOptions} />
+              <NodeLabelText {...labelTextOptions}>
+                {label}
+              </NodeLabelText>
+            </NodeLabelGroup>
+            <NodeSublabelGroup {...Config.node.sublabelBackground}>
+              <NodeSublabelRect {...sublabelRectOptions} />
+              <NodeSublabelText {...sublabelTextOptions}>
+                {sublabel}
+              </NodeSublabelText>
+            </NodeSublabelGroup>
+          </NodeGroup>
+        </Hammer>
       </Track>
     )
   }

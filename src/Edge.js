@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { findDOMNode } from 'react-dom'
 import Hammer from 'react-hammerjs'
+import Track from './Track'
 import {
   findLinePoint,
   perpendicular,
@@ -61,7 +62,7 @@ export default class TheGraphEdge extends Component {
     const domNode = findDOMNode(this)
 
     // Dragging
-    domNode.addEventListener('trackstart', this.dontPan)
+    // domNode.addEventListener('trackstart', this.dontPan)
 
     // Context menu
     if (this.props.showContext) {
@@ -73,7 +74,7 @@ export default class TheGraphEdge extends Component {
   componentWillUnmount() {
     const domNode = findDOMNode(this)
 
-    domNode.removeEventListener('trackstart', this.dontPan)
+    // domNode.removeEventListener('trackstart', this.dontPan)
 
     if (this.props.showContext) {
       domNode.removeEventListener('contextmenu', this.showContext)
@@ -276,15 +277,17 @@ export default class TheGraphEdge extends Component {
     }
 
     return (
-      <Hammer onTap={this.onEdgeSelection}>
-        <EdgeGroup {...containerOptions}>
-          <EdgeBackgroundPath {...backgroundPathOptions} />
-          <Arrow {...arrowBgOptions} />
-          <EdgeForegroundPath {...foregroundPathOptions} />
-          <EdgeTouchPath {...touchPathOptions} />
-          <Arrow {...arrowOptions} />
-        </EdgeGroup>
-      </Hammer>
+      <Track onTrackStart={this.dontPan}>
+        <Hammer onTap={this.onEdgeSelection}>
+          <EdgeGroup {...containerOptions}>
+            <EdgeBackgroundPath {...backgroundPathOptions} />
+            <Arrow {...arrowBgOptions} />
+            <EdgeForegroundPath {...foregroundPathOptions} />
+            <EdgeTouchPath {...touchPathOptions} />
+            <Arrow {...arrowOptions} />
+          </EdgeGroup>
+        </Hammer>
+      </Track>
     )
   }
 }

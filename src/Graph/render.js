@@ -45,6 +45,9 @@ export default function render() {
     }
   }
 
+  // The fbp way would be to add all these nodes through input as children
+  // so all we receive are this.props.children
+
   // Nodes
   const nodes = this.createNodes(graph, selectedIds, highlightPort)
 

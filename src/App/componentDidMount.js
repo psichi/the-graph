@@ -1,7 +1,7 @@
 import Hammer from 'hammerjs'
 import Config from '../Config'
 import {findDOMNode} from 'react-dom'
-import { findFit } from '../utils'
+import { findFit, keys } from '../utils'
 
 export default function componentDidMount() {
   const { graph, width, height, onNodeSelection } = this.props
@@ -55,7 +55,9 @@ export default function componentDidMount() {
   domNode.addEventListener('the-graph-tooltip-hide', this.hideTooltip)
 
   // Edge preview
-  domNode.addEventListener('the-graph-edge-start', this.edgeStart)
+  // is a custom event emitted by Port and MenuPort
+  // however we will not fire it anymore.
+  // domNode.addEventListener('the-graph-edge-start', this.edgeStart)
 
   domNode.addEventListener('contextmenu', this.onShowContext)
 
@@ -64,8 +66,13 @@ export default function componentDidMount() {
   this.mouseY = Math.floor(height / 2)
 
   // HACK metaKey global for taps https://github.com/Polymer/PointerGestures/issues/29
+  /*
   document.addEventListener('keydown', this.keyDown)
   document.addEventListener('keyup', this.keyUp)
+  */
+
+  keys.subscribe('keydown', this.keyDown)
+  keys.subscribe('keyup', this.keyUp)
 
   // Canvas background
   this.bgCanvas = this.refs.canvas

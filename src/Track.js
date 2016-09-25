@@ -73,7 +73,7 @@ export default class Track extends Component {
   }
 
   onTrack(event) {
-    event.stopPropagation()
+    // event.stopPropagation()
     console.log('Track!', event)
 
     // event normalization
@@ -102,7 +102,7 @@ export default class Track extends Component {
   }
 
   onTrackEnd(event) {
-    event.stopPropagation()
+    // event.stopPropagation()
     console.log('Track end!', event)
 
     if (this.props.onTrack) {

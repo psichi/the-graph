@@ -2,8 +2,10 @@ export default function keyDown(event) {
   const { metaKey, ctrlKey, keyCode } = event
 
   // HACK metaKey global for taps https://github.com/Polymer/PointerGestures/issues/29
+
+  // Each Component should do this themselves
   if (metaKey || ctrlKey) {
-    console.error('Fix ME global meta key')
+    // console.error('Fix ME global meta key')
     // TheGraph.metaKeyPressed = true;
   }
 

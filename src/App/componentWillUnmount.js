@@ -1,4 +1,5 @@
-import {findDOMNode} from 'react-dom'
+import { findDOMNode } from 'react-dom'
+import { keys } from '../utils'
 
 export default function componentWillUnmount() {
   let hammertime
@@ -49,7 +50,11 @@ export default function componentWillUnmount() {
 
   domNode.removeEventListener('contextmenu', this.onShowContext)
 
-  // HACK metaKey global for taps https://github.com/Polymer/PointerGestures/issues/29
+  /*
   document.removeEventListener('keydown', this.keyDown)
   document.removeEventListener('keyup', this.keyUp)
+  */
+
+  keys.unsubscribe('keydown', this.keyDown)
+  keys.unsubscribe('keyup', this.keyUp)
 }

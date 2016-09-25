@@ -38,11 +38,20 @@ export default function edgeStart(event) {
 
   const appDomNode = findDOMNode(app)
 
-  appDomNode.addEventListener('mousemove', this.renderPreviewEdge)
-  appDomNode.addEventListener('track', this.renderPreviewEdge)
-  // TODO tap to add new node here
-  appDomNode.addEventListener('tap', this.cancelPreviewEdge)
+  /* Render preview edge should be rendered by whatever is listening.
+    appDomNode.addEventListener('mousemove', this.renderPreviewEdge)
+    appDomNode.addEventListener('track', this.renderPreviewEdge)
+  */
+  if (this.props.onEdgeStart) {
+    this.props.onEdgeStart({
+      edge
+    })
+  }
+  /* Should be done external by whatever is listening.
+     // TODO tap to add new node here
+     appDomNode.addEventListener('tap', this.cancelPreviewEdge)
 
-  this.setState({ edgePreview: edge })
+     this.setState({ edgePreview: edge })
+  */
 }
 
