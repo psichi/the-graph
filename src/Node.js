@@ -41,7 +41,7 @@ export default class TheGraphNode extends Component {
   static propTypes = {
     app: PropTypes.object.isRequired,
     graph: PropTypes.object.isRequired,
-    'export': PropTypes.object,
+    export: PropTypes.object,
     exportKey: PropTypes.string,
     highlightPort: PropTypes.bool,
     isIn: PropTypes.bool,
@@ -241,7 +241,7 @@ export default class TheGraphNode extends Component {
         nodeID,
         x: newPos.x,
         y: newPos.y,
-        'export': _export,
+        export: _export,
         scale
       })
     }
@@ -291,7 +291,7 @@ export default class TheGraphNode extends Component {
         isIn,
         node,
         nodeID,
-        'export': _export
+        export: _export
       })
     }
 
@@ -669,9 +669,9 @@ export default class TheGraphNode extends Component {
     }
 
     const trackOptions = {
-       onTrackStart: this.onTrackStart,
-       onTrack: this.onTrack,
-       onTrackEnd: this.onTrackEnd
+      onTrackStart: this.onTrackStart,
+      onTrack: this.onTrack,
+      onTrackEnd: this.onTrackEnd
     }
 
     return (

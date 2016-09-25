@@ -73,7 +73,7 @@ export default function render() {
     }
   }
 
-  containerOptions.className += ' ' + scaleClass
+  containerOptions.className += ` ${scaleClass}`
 
   const themeWrapperOptions = {
     id: 'svgcontainer',

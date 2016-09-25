@@ -144,7 +144,7 @@ export default function render() {
   const selectedClass = (forceSelection || selectedIds.length > 0) ? ' selection' : ''
   const containerOptions = {
     ...Config.graph.container,
-    className: 'graph' + selectedClass
+    className: `graph${selectedClass}`
   }
 
   return (

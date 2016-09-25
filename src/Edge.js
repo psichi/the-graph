@@ -35,7 +35,7 @@ export default class TheGraphEdge extends Component {
     app: PropTypes.object,
     edgeID: PropTypes.string,
     edge: PropTypes.object,
-    'export': PropTypes.bool,
+    export: PropTypes.bool,
     isIn: PropTypes.bool,
     graph: PropTypes.object,
     exportKey: PropTypes.string,
@@ -225,9 +225,9 @@ export default class TheGraphEdge extends Component {
 
     const containerOptions = {
       ...Config.edge.container,
-      className: 'edge' +
-      (selected ? ' selected' : '') +
-      (animated ? ' animated' : ''),
+      className: `edge${
+      selected ? ' selected' : ''
+      }${animated ? ' animated' : ''}`,
       title: label
     }
 
@@ -273,7 +273,7 @@ export default class TheGraphEdge extends Component {
 
     const arrowOptions = {
       points,
-      className: 'arrow fill route' + route
+      className: `arrow fill route${route}`
     }
 
     return (

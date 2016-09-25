@@ -1,4 +1,4 @@
-import {findDOMNode} from 'react-dom'
+import { findDOMNode } from 'react-dom'
 
 export default function onTrackEnd(event) {
   // Don't click app (unselect)

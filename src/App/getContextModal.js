@@ -21,7 +21,7 @@ export default function getContextModal() {
 
       return [
         (
-          <AppModalBackground {...modalBGOptions}>
+        <AppModalBackground {...modalBGOptions}>
             {contextMenu}
           </AppModalBackground>
         )

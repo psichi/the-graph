@@ -12,18 +12,18 @@ import {
 // import KlayWorker from 'worker?!klayjs/klay.js'
 
 const defaultOptions = {
-  'intCoordinates': true,
-  'algorithm': 'de.cau.cs.kieler.klay.layered',
-  'layoutHierarchy': true,
-  'spacing': 20,
-  'borderSpacing': 20,
-  'edgeSpacingFactor': 0.2,
-  'inLayerSpacingFactor': 2.0,
-  'nodePlace': 'BRANDES_KOEPF',
-  'nodeLayering': 'NETWORK_SIMPLEX',
-  'edgeRouting': 'POLYLINE',
-  'crossMin': 'LAYER_SWEEP',
-  'direction': 'RIGHT'
+  intCoordinates: true,
+  algorithm: 'de.cau.cs.kieler.klay.layered',
+  layoutHierarchy: true,
+  spacing: 20,
+  borderSpacing: 20,
+  edgeSpacingFactor: 0.2,
+  inLayerSpacingFactor: 2.0,
+  nodePlace: 'BRANDES_KOEPF',
+  nodeLayering: 'NETWORK_SIMPLEX',
+  edgeRouting: 'POLYLINE',
+  crossMin: 'LAYER_SWEEP',
+  direction: 'RIGHT'
 }
 
 export default class KlayNoflo {

@@ -15,9 +15,9 @@ export default function createNodeEdges(graph, currentEdge) {
     const nodeEdge = {
       id: `e${edgeIndex}`,
       source,
-      sourcePort: source + '_' + sourcePort,
+      sourcePort: `${source}_${sourcePort}`,
       target,
-      targetPort: target + '_' + targetPort
+      targetPort: `${target}_${targetPort}`
     }
 
     return nodeEdge

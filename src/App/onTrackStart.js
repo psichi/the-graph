@@ -1,4 +1,4 @@
-import {findDOMNode} from 'react-dom'
+import { findDOMNode } from 'react-dom'
 
 export default function onTrackStart(event) {
   event.preventTap()

@@ -4,7 +4,7 @@ import React, {
   Component,
   PropTypes
 } from 'react'
-import {findDOMNode} from 'react-dom'
+import { findDOMNode } from 'react-dom'
 
 // probably better do something with react-tap-event plugin
 
@@ -21,7 +21,7 @@ function calcPositionDelta(inA, inB) {
     y = inB.pageY - inA.pageY
   }
 
-  return {x, y}
+  return { x, y }
 }
 
 export default class Track extends Component {
@@ -33,7 +33,7 @@ export default class Track extends Component {
 
   events = {
     trackStart: ['pointerdown', 'mousedown', 'touchdown'],
-    track: ['pointermove','mousemove', 'touchmove'],
+    track: ['pointermove', 'mousemove', 'touchmove'],
     trackEnd: ['pointerup', 'mouseup', 'touchend'],
     cancel: ['pointercancel'] // TODO
   }
@@ -44,7 +44,7 @@ export default class Track extends Component {
     onTrackEnd: PropTypes.func
   }
 
-  constructor (props, context) {
+  constructor(props, context) {
     super(props, context)
 
     this.onTrack = this.onTrack.bind(this)
@@ -92,11 +92,11 @@ export default class Track extends Component {
 
         // incorrect still, but whatever first test mouse
       if (this.props.onTrack) {
-        document.addEventListener(`mousemove`, this.onTrack)
+        document.addEventListener('mousemove', this.onTrack)
       }
 
       if (this.props.onTrackEnd) {
-        document.addEventListener(`mouseup`, this.onTrackEnd)
+        document.addEventListener('mouseup', this.onTrackEnd)
       }
     }
   }
@@ -106,19 +106,19 @@ export default class Track extends Component {
     console.log('Track end!', event)
 
     if (this.props.onTrack) {
-      document.removeEventListener(`mousemove`, this.onTrack)
+      document.removeEventListener('mousemove', this.onTrack)
     }
 
     if (this.props.onTrackEnd) {
-      document.removeEventListener(`mouseup`, this.onTrackEnd)
+      document.removeEventListener('mouseup', this.onTrackEnd)
       this.props.onTrackEnd(event)
     }
   }
 
   render() {
     // const {children, onTrack, onTrackEnd, onTrackStart} = this.props
-    const {children} = this.props
-    const {onTrack, onTrackEnd, onTrackStart} = this
+    const { children } = this.props
+    const { onTrack, onTrackEnd, onTrackStart } = this
 
     return cloneElement(Children.only(children), {
       onMouseDown: onTrackStart('mouse'),

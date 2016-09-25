@@ -202,7 +202,7 @@ export default class TheGraphGroup extends Component {
       y,
       width: maxX - x + Config.base.config.nodeWidth * 0.5,
       height: maxY - y + Config.base.config.nodeHeight * 0.75,
-      className: 'group-box color' + color + selection
+      className: `group-box color${color}${selection}`
     }
 
     const labelTextOptions = {

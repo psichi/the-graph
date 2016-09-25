@@ -22,19 +22,19 @@ export default function createEdges(graph) {
     const sourcePort = this.getNodeOutport(graph, edge.from.node, edge.from.port, route, source.component)
     const targetPort = this.getNodeInport(graph, edge.to.node, edge.to.port, route, target.component)
 
-    const label = source.metadata.label + '() ' +
-      edge.from.port.toUpperCase() +
-      (edge.from.hasOwnProperty('index') ? '[' + edge.from.index + ']' : '') + ' -> ' +
-      edge.to.port.toUpperCase() +
-      (edge.to.hasOwnProperty('index') ? '[' + edge.to.index + ']' : '') + ' ' +
-      target.metadata.label + '()'
+    const label = `${source.metadata.label}() ${
+      edge.from.port.toUpperCase()
+      }${edge.from.hasOwnProperty('index') ? `[${edge.from.index}]` : ''} -> ${
+      edge.to.port.toUpperCase()
+      }${edge.to.hasOwnProperty('index') ? `[${edge.to.index}]` : ''} ${
+      target.metadata.label}()`
 
-    const key = edge.from.node + '() ' +
-      edge.from.port.toUpperCase() +
-      (edge.from.hasOwnProperty('index') ? '[' + edge.from.index + ']' : '') + ' -> ' +
-      edge.to.port.toUpperCase() +
-      (edge.to.hasOwnProperty('index') ? '[' + edge.to.index + ']' : '') + ' ' +
-      edge.to.node + '()'
+    const key = `${edge.from.node}() ${
+      edge.from.port.toUpperCase()
+      }${edge.from.hasOwnProperty('index') ? `[${edge.from.index}]` : ''} -> ${
+      edge.to.port.toUpperCase()
+      }${edge.to.hasOwnProperty('index') ? `[${edge.to.index}]` : ''} ${
+      edge.to.node}()`
 
     const edgeOptions = {
       ...Config.graph.edge,

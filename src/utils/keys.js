@@ -1,7 +1,7 @@
-const api =  {
+const api = {
   keyup: {
     listeners: [],
-    handler: function keyUp (event) {
+    handler: function keyUp(event) {
       api.keyup.listeners.forEach((listener) => {
         listener(event)
       })
@@ -9,7 +9,7 @@ const api =  {
   },
   keydown: {
     listeners: [],
-    handler: function keyDown (event) {
+    handler: function keyDown(event) {
       api.keydown.listeners.forEach((listener) => {
         listener(event)
       })
@@ -32,14 +32,14 @@ const api =  {
  * @returns {function()}
  */
 export default {
-  subscribe: function (type, callback) {
+  subscribe(type, callback) {
     if (api[type].listeners.length === 0) {
       document.addEventListener(type, api[type].handler)
     }
 
     api[type].listeners.push(callback)
   },
-  unsubscribe: function (type, callback) {
+  unsubscribe(type, callback) {
     const index = api[type].listeners.indexOf(callback)
 
     api[type].listeners.splice(index, 1)

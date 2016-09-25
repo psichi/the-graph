@@ -1,6 +1,6 @@
 import Hammer from 'hammerjs'
 import Config from '../Config'
-import {findDOMNode} from 'react-dom'
+import { findDOMNode } from 'react-dom'
 import { findFit, keys } from '../utils'
 
 export default function componentDidMount() {

@@ -31,7 +31,7 @@ import {
 require('../utils/shims/rAF')
 
 const icons = Object.keys(FONT_AWESOME)
-const routes = [0,1,2,3,4,5,6,7,8,9,10]
+const routes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 const themes = [
   'the-graph-dark',
   'the-graph-light'
@@ -112,17 +112,17 @@ storiesOf('The Graph', module)
         <g className="graph">
           <g className="nodes">
             <Node {...node}
-                  label={text('Text', node.label)}
-                  icon={select('Icon', icons, node.icon)}
-                  error={boolean('Error', node.error)}
-                  x={number('X', node.x)}
-                  y={number('Y', node.y)}
-                  width={number('Width', node.width)}
-                  height={number('Height', node.height)}
-                  onNodeSelection={action('onNodeSelection')}
-                  onTrackStart={action('onTrackStart')}
-                  onTrack={action('onTrack')}
-                  onTrackEnd={action('onTrackEnd')}
+              label={text('Text', node.label)}
+              icon={select('Icon', icons, node.icon)}
+              error={boolean('Error', node.error)}
+              x={number('X', node.x)}
+              y={number('Y', node.y)}
+              width={number('Width', node.width)}
+              height={number('Height', node.height)}
+              onNodeSelection={action('onNodeSelection')}
+              onTrackStart={action('onTrackStart')}
+              onTrack={action('onTrack')}
+              onTrackEnd={action('onTrackEnd')}
             />
           </g>
         </g>

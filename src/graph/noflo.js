@@ -116,7 +116,7 @@ export default class Graph extends EventEmitter {
     }
     this.checkTransactionStart()
     exported = {
-      'public': this.getPortName(publicPort),
+      public: this.getPortName(publicPort),
       process: nodeKey,
       port: this.getPortName(portKey),
       metadata
@@ -949,7 +949,7 @@ export default class Graph extends EventEmitter {
     ref = this.nodes
     for (i = 0, len = ref.length; i < len; i++) {
       node = ref[i]
-      dot += '    ' + (cleanID(node.id)) + ' [label=' + node.id + ' shape=box]\n'
+      dot += `    ${cleanID(node.id)} [label=${node.id} shape=box]\n`
     }
     ref1 = this.initializers
     for (id = j = 0, len1 = ref1.length; j < len1; id = ++j) {
@@ -959,13 +959,13 @@ export default class Graph extends EventEmitter {
       } else {
         data = initializer.from.data
       }
-      dot += '    data' + id + " [label=\"'" + data + "'\" shape=plaintext]\n"
-      dot += '    data' + id + ' -> ' + (cleanID(initializer.to.node)) + '[headlabel=' + (cleanPort(initializer.to.port)) + ' labelfontcolor=blue labelfontsize=8.0]\n'
+      dot += `    data${id} [label=\"'${data}'\" shape=plaintext]\n`
+      dot += `    data${id} -> ${cleanID(initializer.to.node)}[headlabel=${cleanPort(initializer.to.port)} labelfontcolor=blue labelfontsize=8.0]\n`
     }
     ref2 = this.edges
     for (k = 0, len2 = ref2.length; k < len2; k++) {
       edge = ref2[k]
-      dot += '    ' + (cleanID(edge.from.node)) + ' -> ' + (cleanID(edge.to.node)) + '[taillabel=' + (cleanPort(edge.from.port)) + ' headlabel=' + (cleanPort(edge.to.port)) + ' labelfontcolor=blue labelfontsize=8.0]\n'
+      dot += `    ${cleanID(edge.from.node)} -> ${cleanID(edge.to.node)}[taillabel=${cleanPort(edge.from.port)} headlabel=${cleanPort(edge.to.port)} labelfontcolor=blue labelfontsize=8.0]\n`
     }
     dot += '}'
     return dot
@@ -986,12 +986,12 @@ export default class Graph extends EventEmitter {
     ref = this.initializers
     for (i = 0, len = ref.length; i < len; i++) {
       initializer = ref[i]
-      yuml.push('(start)[' + initializer.to.port + ']->(' + initializer.to.node + ')')
+      yuml.push(`(start)[${initializer.to.port}]->(${initializer.to.node})`)
     }
     ref1 = this.edges
     for (j = 0, len1 = ref1.length; j < len1; j++) {
       edge = ref1[j]
-      yuml.push('(' + edge.from.node + ')[' + edge.from.port + ']->(' + edge.to.node + ')')
+      yuml.push(`(${edge.from.node})[${edge.from.port}]->(${edge.to.node})`)
     }
     return yuml.join(',')
   }

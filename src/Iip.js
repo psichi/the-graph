@@ -37,9 +37,9 @@ export default class TheGraphIIP extends Component {
     let text
 
     // TODO make this smarter with ZUI
-    text = title + ' '
+    text = `${title} `
     if (text.length > 12) {
-      text = text.slice(0, 9) + '...'
+      text = `${text.slice(0, 9)}...`
     }
 
     const pathOptions = {
