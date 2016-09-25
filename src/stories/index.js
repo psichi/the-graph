@@ -1,5 +1,7 @@
 import React from 'react'
+import { FONT_AWESOME } from '../config/'
 import { storiesOf, action, linkTo } from '@kadira/storybook'
+import { withKnobs, text, boolean, number, select } from '@kadira/storybook-addon-knobs'
 import Welcome from './Welcome'
 import NodeMenu from '../NodeMenu'
 import NodeMenuPort from '../NodeMenuPort'
@@ -27,15 +29,12 @@ import {
 
 require('../utils/shims/rAF')
 
+const icons = Object.keys(FONT_AWESOME)
 const app = {}
 const graphView = {}
 
-storiesOf('Welcome', module)
-  .add('to Storybook', () => (
-    <Welcome showApp={linkTo('Button')} />
-  ))
-
-storiesOf('App', module)
+storiesOf('The Graph', module)
+  .addDecorator(withKnobs)
   .add('App', () => {
     const graph = fromJSON(graphJson)
 
@@ -55,62 +54,18 @@ storiesOf('App', module)
       getMenuDef={action('Get Menu Def')}
       displaySelectionGroup
       forceSelection={false}
-      offsetY={10}
-      offsetX={10}
+      offsetY={number('OffsetY', 10)}
+      offsetX={number('OffsetX', 10)}
     />)
   })
-
-storiesOf('NodeMenu', module)
-  .add('NodeMenu', () => {
-    const graph = fromJSON(graphJson)
-
-    const options = {
-      graph,
-      itemKey: {},
-      item: {}
-    }
-
-    const nodeMenuOptions = {
-      node: {
-        props: {
-          app: {
-            state: {
-              scale: 1
-            }
-          }
-        }
-      },
-      ports,
-      processKey: 'somekey',
-      menu,
-      options,
-      triggerHideContext: true,
-      icon: 'cog',
-      label: 'The Label',
-      nodeWidth: 100,
-      nodeHeight: 100,
-      highlightPort: true,
-      deltaX: 10,
-      deltaY: 10,
-      x: 300,
-      y: 150
-    }
-
-    return (
-      <svg className="the-graph-dark">
-        <NodeMenu {...nodeMenuOptions} />
-      </svg>)
-  })
-
-storiesOf('Graph', module)
-  .add('The Graph', () => {
+  .add('Graph', () => {
     const graph = fromJSON(graphJson)
 
     const graphOptions = {
       graph,
       library,
       app: {},
-      scale: 1
+      scale: number('Scale', 1)
     }
 
     return (
@@ -119,9 +74,77 @@ storiesOf('Graph', module)
       </svg>
     )
   })
+  .add('Node', () => {
+    // metadata for ports required.
+    const graph = fromJSON(graphJson)
 
-storiesOf('Port', module)
-  .add('IN', () => {
+    return (
+      <svg className="the-graph-dark">
+        <g className="graph">
+          <g className="nodes">
+            <Node {...node}
+                  label={text('Text', node.label)}
+                  icon={select('Icon', icons, node.icon)}
+                  error={boolean('Error', node.error)}
+                  x={number('X', node.x)}
+                  y={number('Y', node.y)}
+                  width={number('Width', node.width)}
+                  height={number('Height', node.height)}
+                  onNodeSelection={action('onNodeSelection')}
+                  onTrackStart={action('onTrackStart')}
+                  onTrack={action('onTrack')}
+                  onTrackEnd={action('onTrackEnd')}
+            />
+          </g>
+        </g>
+      </svg>
+    )
+  })
+  .add('Edge', () => {
+    const graph = fromJSON(graphJson)
+
+    const edgeOptions = {
+      onEdgeSelection: action('Edge Selection'),
+      showContext: action('Show Context'),
+      app: {},
+      edgeID: 'edge-id',
+      edge: {
+
+      },
+      export: false,
+      isIn: true,
+      graph,
+      exportKey: '',
+      label: 'The Edge',
+      route: 2,
+      sX: 100,
+      sY: 30,
+      tX: 300,
+      tY: 50,
+      selected: false,
+      animated: false
+    }
+
+    const edgeOptions2 = {
+      ...edgeOptions,
+      isIn: false,
+      sY: 50,
+      tY: 100,
+      route: 7,
+      selected: false,
+      animated: true
+    }
+
+    return (
+      <svg className="the-graph-dark">
+        <g className="graph">
+          <Edge {...edgeOptions} />
+          <Edge {...edgeOptions2} />
+        </g>
+      </svg>
+    )
+  })
+  .add('Port', () => {
     const portProps = {
       app: {
         state: {
@@ -170,9 +193,169 @@ storiesOf('Port', module)
       </svg>
     )
   })
+  .add('IIP', () => {
+    const graph = fromJSON(graphJson)
 
-storiesOf('MenuSlice', module)
-  .add('The Slice', () => {
+    const iipOptions = {
+      label: 'IN1',
+      x: 150,
+      y: 100
+    }
+
+    const iipOptions2 = {
+      label: 'IN2',
+      x: 150,
+      y: 200
+    }
+
+    return (
+      <svg className="the-graph-light">
+        <g className="graph big">
+          <IIP {...iipOptions} />
+          <IIP {...iipOptions2} />
+        </g>
+      </svg>
+    )
+  })
+  .add('Group', () => {
+    const graph = fromJSON(graphJson)
+
+    const groupOptions = {
+      app: {
+        menuShown: true
+      },
+      label: 'IN1',
+      graph,
+      item: {},
+      color: 2,
+      description: 'Group Description',
+      minX: 100,
+      maxX: 400,
+      minY: 100,
+      maxY: 250,
+      isSelectionGroup: false,
+      showContext: action('Show Context'),
+      triggerMoveGroup: false
+    }
+
+    const groupOptions2 = {
+      label: 'IN2',
+      ...groupOptions
+    }
+
+    return (
+      <svg className="the-graph-light">
+        <g className="graph big">
+          <g className="groups">
+            <Group {...groupOptions} />
+            <Group {...groupOptions2} />
+          </g>
+        </g>
+      </svg>
+    )
+  })
+  .add('Menu', () => {
+    const graph = fromJSON(graphJson)
+
+    const menuOptions = {
+      icon: 'sign-out',
+      iconColor: 5,
+      x: 75,
+      y: 75,
+      label: 'The Menu',
+      menu,
+      options: {
+        graph,
+        itemKey: {},
+        item: {}
+      }
+    }
+
+    return (
+      <svg className="the-graph-dark">
+        <Menu {...menuOptions} />
+      </svg>
+    )
+  })
+  .add('NodeMenuPorts', () => {
+    const inportOptions = {
+      translateX: 300,
+      translateY: 100,
+      highlightPort: true,
+      isIn: true,
+      scale: 1,
+      processKey: 'someKey',
+      ports: ports.inports,
+      route: 2,
+      deltaX: 10,
+      deltaY: 10,
+      nodeWidth: 100,
+      nodeHeight: 100
+    }
+
+    const outportOptions = {
+      translateX: 320,
+      translateY: 100,
+      highlightPort: true,
+      isIn: false,
+      scale: 1,
+      processKey: 'someKey',
+      ports: ports.outports,
+      route: 4,
+      deltaX: 10,
+      deltaY: 10,
+      nodeWidth: 100,
+      nodeHeight: 100
+    }
+
+    return (
+      <svg className="the-graph-dark">
+        <NodeMenuPorts {...inportOptions} />
+        <NodeMenuPorts {...outportOptions} />
+      </svg>
+    )
+  })
+  .add('NodeMenu', () => {
+    const graph = fromJSON(graphJson)
+
+    const options = {
+      graph,
+      itemKey: {},
+      item: {}
+    }
+
+    const nodeMenuOptions = {
+      node: {
+        props: {
+          app: {
+            state: {
+              scale: 1
+            }
+          }
+        }
+      },
+      ports,
+      processKey: 'somekey',
+      menu,
+      options,
+      triggerHideContext: true,
+      icon: 'cog',
+      label: 'The Label',
+      nodeWidth: 100,
+      nodeHeight: 100,
+      highlightPort: true,
+      deltaX: 10,
+      deltaY: 10,
+      x: 300,
+      y: 150
+    }
+
+    return (
+      <svg className="the-graph-dark">
+        <NodeMenu {...nodeMenuOptions} />
+      </svg>)
+  })
+  .add('MenuSlice', () => {
     const menu = {
       n4: {
         label: 'outport'
@@ -218,49 +401,7 @@ storiesOf('MenuSlice', module)
       </svg>
     )
   })
-
-storiesOf('NodeMenuPorts', module)
-  .add('Normal', () => {
-    const inportOptions = {
-      translateX: 300,
-      translateY: 100,
-      highlightPort: true,
-      isIn: true,
-      scale: 1,
-      processKey: 'someKey',
-      ports: ports.inports,
-      route: 2,
-      deltaX: 10,
-      deltaY: 10,
-      nodeWidth: 100,
-      nodeHeight: 100
-    }
-
-    const outportOptions = {
-      translateX: 320,
-      translateY: 100,
-      highlightPort: true,
-      isIn: false,
-      scale: 1,
-      processKey: 'someKey',
-      ports: ports.outports,
-      route: 4,
-      deltaX: 10,
-      deltaY: 10,
-      nodeWidth: 100,
-      nodeHeight: 100
-    }
-
-    return (
-      <svg className="the-graph-dark">
-        <NodeMenuPorts {...inportOptions} />
-        <NodeMenuPorts {...outportOptions} />
-      </svg>
-    )
-  })
-
-storiesOf('NodeMenuPort', module)
-  .add('Normal', () => {
+  .add('NodeMenuPort', () => {
     const inportOptions = {
       label: 'IN1',
       isIn: true,
@@ -320,33 +461,6 @@ storiesOf('NodeMenuPort', module)
       </svg>
     )
   })
-
-storiesOf('Menu', module)
-  .add('Normal', () => {
-    const graph = fromJSON(graphJson)
-
-    const menuOptions = {
-      icon: 'sign-out',
-      iconColor: 5,
-      x: 75,
-      y: 75,
-      label: 'The Menu',
-      menu,
-      options: {
-        graph,
-        itemKey: {},
-        item: {}
-      }
-    }
-
-    return (
-      <svg className="the-graph-dark">
-        <Menu {...menuOptions} />
-      </svg>
-    )
-  })
-
-storiesOf('Tooltip', module)
   .add('Tooltip', () => {
     const graph = fromJSON(graphJson)
 
@@ -365,152 +479,6 @@ storiesOf('Tooltip', module)
       </svg>
     )
   })
-
-storiesOf('IIP', module)
-  .add('IIP', () => {
-    const graph = fromJSON(graphJson)
-
-    const iipOptions = {
-      label: 'IN1',
-      x: 150,
-      y: 100
-    }
-
-    const iipOptions2 = {
-      label: 'IN2',
-      x: 150,
-      y: 200
-    }
-
-    return (
-      <svg className="the-graph-light">
-        <g className="graph big">
-          <IIP {...iipOptions} />
-          <IIP {...iipOptions2} />
-        </g>
-      </svg>
-    )
-  })
-
-storiesOf('Group', module)
-  .add('Group', () => {
-    const graph = fromJSON(graphJson)
-
-    const groupOptions = {
-      app: {
-        menuShown: true
-      },
-      label: 'IN1',
-      graph,
-      item: {},
-      color: 2,
-      description: 'Group Description',
-      minX: 100,
-      maxX: 400,
-      minY: 100,
-      maxY: 250,
-      isSelectionGroup: false,
-      showContext: action('Show Context'),
-      triggerMoveGroup: false
-    }
-
-    const groupOptions2 = {
-      label: 'IN2',
-      ...groupOptions
-    }
-
-    return (
-      <svg className="the-graph-light">
-        <g className="graph big">
-          <g className="groups">
-            <Group {...groupOptions} />
-            <Group {...groupOptions2} />
-          </g>
-        </g>
-      </svg>
-    )
-  })
-
-storiesOf('Edge', module)
-  .add('Edge', () => {
-    const graph = fromJSON(graphJson)
-
-    const edgeOptions = {
-      onEdgeSelection: action('Edge Selection'),
-      showContext: action('Show Context'),
-      app: {},
-      edgeID: 'edge-id',
-      edge: {
-
-      },
-      export: false,
-      isIn: true,
-      graph,
-      exportKey: '',
-      label: 'The Edge',
-      route: 2,
-      sX: 100,
-      sY: 30,
-      tX: 300,
-      tY: 50,
-      selected: false,
-      animated: false
-    }
-
-    const edgeOptions2 = {
-      ...edgeOptions,
-      isIn: false,
-      sY: 50,
-      tY: 100,
-      route: 7,
-      selected: false,
-      animated: true
-    }
-
-    return (
-      <svg className="the-graph-dark">
-        <g className="graph">
-          <Edge {...edgeOptions} />
-          <Edge {...edgeOptions2} />
-        </g>
-      </svg>
-    )
-  })
-
-storiesOf('Node', module)
-  .add('Node', () => {
-    // metadata for ports required.
-    const graph = fromJSON(graphJson)
-
-    return (
-      <svg className="the-graph-dark">
-        <g className="graph">
-          <g className="nodes">
-            <Node {...node}
-              icon="cab"
-              onNodeSelection={action('onNodeSelection')}
-              onTrackStart={action('onTrackStart')}
-              onTrack={action('onTrack')}
-              onTrackEnd={action('onTrackEnd')}
-            />
-            <Node {...node}
-                  label="Tall (Error)"
-                  icon="bug"
-                  key="tall-errored"
-                  error={true}
-                  x={180}
-                  onNodeSelection={action('onNodeSelection')}
-                  onTrackStart={action('onTrackStart')}
-                  onTrack={action('onTrack')}
-                  onTrackEnd={action('onTrackEnd')}
-            />
-          </g>
-        </g>
-      </svg>
-    )
-  })
-
-storiesOf('TextBG', module)
   .add('TextBG', () => {
     const options = {
       text: 'Text',
