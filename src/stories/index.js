@@ -111,35 +111,24 @@ storiesOf('The Graph', module)
       edge: {
 
       },
-      export: false,
-      isIn: true,
+      export: boolean('Export', false),
+      isIn: boolean('isIn', true),
       graph,
       exportKey: '',
-      label: 'The Edge',
-      route: 2,
-      sX: 100,
-      sY: 30,
-      tX: 300,
-      tY: 50,
-      selected: false,
-      animated: false
-    }
-
-    const edgeOptions2 = {
-      ...edgeOptions,
-      isIn: false,
-      sY: 50,
-      tY: 100,
-      route: 7,
-      selected: false,
-      animated: true
+      label: text('Label', 'The Edge'),
+      route: select('Route No.', [0,1,2,3,4,5,6,7,8,9,10], 2),
+      sX: number('sX', 100),
+      sY: number('sY', 30),
+      tX: number('tX', 300),
+      tY: number('tY', 50),
+      selected: boolean('Selected', false),
+      animated: boolean('Animated', false)
     }
 
     return (
       <svg className="the-graph-dark">
         <g className="graph">
           <Edge {...edgeOptions} />
-          <Edge {...edgeOptions2} />
         </g>
       </svg>
     )
