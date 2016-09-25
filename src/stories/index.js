@@ -30,6 +30,7 @@ import {
 require('../utils/shims/rAF')
 
 const icons = Object.keys(FONT_AWESOME)
+const routes = [0,1,2,3,4,5,6,7,8,9,10]
 const app = {}
 const graphView = {}
 
@@ -116,7 +117,7 @@ storiesOf('The Graph', module)
       graph,
       exportKey: '',
       label: text('Label', 'The Edge'),
-      route: select('Route No.', [0,1,2,3,4,5,6,7,8,9,10], 2),
+      route: select('Route No.', routes, 2),
       sX: number('sX', 100),
       sY: number('sY', 30),
       tX: number('tX', 300),
@@ -152,21 +153,21 @@ storiesOf('The Graph', module)
       // is never used
       // node: node,
       // key: processKey + '.in.' + info.label, || '.out.'
-      label: 'INPUT',
-      isIn: true,
+      label: text('Label', 'INPUT'),
+      isIn: boolean('isIn', true),
       port: {
         process: 'someProcess',
         port: 'IN',
         type: 'any'
       },
       processKey: 'someProcess',
-      route: 5,
-      x: 30,
-      y: 30,
+      route: select('Route', routes, 5),
+      x: number('x', 30),
+      y: number('y', 30),
       // normally is a function which sets the state for the App
       showContext: action('Show Context'),
-      isExport: false,
-      highlightPort: false
+      isExport: boolean('isExport', false),
+      highlightPort: boolean('highlightPort', false)
     }
     const svgProps = {
       className: 'the-graph-dark big'
