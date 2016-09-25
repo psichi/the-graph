@@ -8,6 +8,7 @@ export default class TheEditor extends Component {
   selectedNodesHash = {}
   autolayouter = null
   debounceLibraryRefeshTimer = null
+  pan = [0, 0]
 
   static propTypes = {
     graph: PropTypes.object,
@@ -31,7 +32,7 @@ export default class TheEditor extends Component {
     forceSelection: PropTypes.bool,
     offsetY: PropTypes.number,
     offsetX: PropTypes.number,
-    'touch-action': Proptype.string,
+    'touch-action': PropTypes.string,
     grid: PropTypes.number,
     snap: PropTypes.number
   }
@@ -485,11 +486,8 @@ export default class TheEditor extends Component {
       offsetX
     }
 
-    // do not create svg, svg belongs to graph, yet it will need our theme.
     return (
-      <svg {...svgOptions}>
-        <App {...appOptions} />
-      </svg>
+      <App {...appOptions} />
     )
   }
 }
