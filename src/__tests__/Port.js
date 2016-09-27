@@ -1,7 +1,5 @@
 import React from 'react'
-import { findDOMNode } from 'react-dom'
 import { mount } from 'enzyme'
-import TestUtils from 'react-addons-test-utils'
 import Port from '../Port'
 
 it('Port', () => {
