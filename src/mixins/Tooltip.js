@@ -8,7 +8,7 @@ const Tooltip = {
   showTooltip(event) {
     if (!this.shouldShowTooltip()) { return }
 
-    const { dispatchEvent } = findDOMNode(this)
+    const domNode = findDOMNode(this)
     const { label: tooltip } = this.props
     const { clientX: x, clientY: y } = event
 
@@ -17,17 +17,19 @@ const Tooltip = {
       bubbles: true
     })
 
-    dispatchEvent(tooltipEvent)
+    domNode.dispatchEvent(tooltipEvent)
   },
   hideTooltip(/* event */) {
     if (!this.shouldShowTooltip()) { return }
+
+    const domNode = findDOMNode(this)
 
     const tooltipEvent = new CustomEvent('the-graph-tooltip-hide', {
       bubbles: true
     })
 
     if (this.isMounted()) {
-      findDOMNode(this).dispatchEvent(tooltipEvent)
+      domNode.dispatchEvent(tooltipEvent)
     }
   },
   componentDidMount() {

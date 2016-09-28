@@ -6,7 +6,19 @@ import React, {
 } from 'react'
 import { findDOMNode } from 'react-dom'
 
-// probably better do something with react-tap-event plugin
+function getPointerId() {
+  return 1
+}
+
+/*
+p.tracking
+p.downEvent.pageX
+p.downEvent.pageY
+*/
+
+function log (type, inEvent) {
+  // console.log('EVENT %s', type, Object.keys(inEvent))
+}
 
 function clampDir(inDelta) {
   return inDelta > 0 ? 1 : -1
@@ -32,87 +44,37 @@ export default class Track extends Component {
   // just add the equivalent as props
 
   events = {
+    /*
     trackStart: ['pointerdown', 'mousedown', 'touchdown'],
     track: ['pointermove', 'mousemove', 'touchmove'],
     trackEnd: ['pointerup', 'mouseup', 'touchend'],
+    */
+    pointerdown: ['pointerdown', 'mousedown', 'touchdown'],
+    pointermove: ['pointermove', 'mousemove', 'touchmove'],
+    pointerup: ['pointerup', 'mouseup', 'touchend'],
     cancel: ['pointercancel'] // TODO
+  }
+
+  static defaultProps = {
+    onTrack: function () {},
+    onTrackStart: function () {},
+    onTrackEnd: function () {},
+    container: document
   }
 
   static propTypes = {
     onTrack: PropTypes.func,
     onTrackStart: PropTypes.func,
-    onTrackEnd: PropTypes.func
+    onTrackEnd: PropTypes.func,
+    container: PropTypes.object
   }
 
   constructor(props, context) {
     super(props, context)
 
-    this.onTrack = this.onTrack.bind(this)
-    this.onTrackStart = this.onTrackStart.bind(this)
-    this.onTrackEnd = this.onTrackEnd.bind(this)
-  }
-
-  componentDidMount() {
-    const domNode = findDOMNode(this)
-
-    Object.keys(this.events).forEach((handler) => {
-      this.events[handler].forEach((eventName) => {
-        domNode.addEventListener(eventName, this[handler])
-      })
-    })
-  }
-
-  componentWillUnmount() {
-    const domNode = findDOMNode(this)
-
-    Object.keys(this.events).forEach((handler) => {
-      this.events[handler].forEach((eventName) => {
-        domNode.addEventListener(eventName, this[handler])
-      })
-    })
-  }
-
-  onTrack(event) {
-    // event.stopPropagation()
-    console.log('Track!', event)
-
-    // event normalization
-    if (this.props.onTrack) {
-      this.props.onTrack(event)
-    }
-  }
-
-  onTrackStart(type) {
-    return (event) => {
-      console.log('Track start! %s', type, event)
-
-      if (this.props.onTrackStart) {
-        this.props.onTrackStart(event)
-      }
-
-        // incorrect still, but whatever first test mouse
-      if (this.props.onTrack) {
-        document.addEventListener('mousemove', this.onTrack)
-      }
-
-      if (this.props.onTrackEnd) {
-        document.addEventListener('mouseup', this.onTrackEnd)
-      }
-    }
-  }
-
-  onTrackEnd(event) {
-    // event.stopPropagation()
-    console.log('Track end!', event)
-
-    if (this.props.onTrack) {
-      document.removeEventListener('mousemove', this.onTrack)
-    }
-
-    if (this.props.onTrackEnd) {
-      document.removeEventListener('mouseup', this.onTrackEnd)
-      this.props.onTrackEnd(event)
-    }
+    this.pointerdown = this.pointerdown.bind(this)
+    this.pointerup = this.pointerup.bind(this)
+    this.pointermove = this.pointermove.bind(this)
   }
 
   render() {
@@ -120,14 +82,18 @@ export default class Track extends Component {
     const { children } = this.props
     const { onTrack, onTrackEnd, onTrackStart } = this
 
-    return cloneElement(Children.only(children), {
-      onMouseDown: onTrackStart('mouse'),
-      onTouchStart: onTrackStart('touch')
-      // onMouseMove: onTrack,
-      // onTouchMove: onTrack,
-      // onTouchEnd: onTrackEnd,
-      // onMouseUp: onTrackEnd,
+    const clone = cloneElement(Children.only(children), {
+      onMouseDown: this.pointerdown,
+      onTouchStart: this.pointerdown
+      /*
+      onMouseMove: this.pointermove,
+      onTouchMove: this.pointermove,
+      onMouseUp: this.pointerup,
+      onTouchEnd: this.pointerup
+      */
     })
+
+    return clone
   }
 
   fireTrack(inType, inEvent, inTrackingData) {
@@ -159,7 +125,7 @@ export default class Track extends Component {
       trackInfo: t.trackInfo,
       relatedTarget: inEvent.target,
       pointerType: inEvent.pointerType,
-      pointerId: inEvent.pointerId
+      pointerId: getPointerId(inEvent.pointerId)
     }
 
     // const e = dispatcher.makeEvent(inType, trackData)
@@ -167,12 +133,14 @@ export default class Track extends Component {
     t.lastMoveEvent = inEvent
 
     // dispatcher.dispatchEvent(e, t.downTarget)
-    this.props[inType](e, t.downTarget)
+    this.props[inType](inEvent, trackData)
   }
 
   pointerdown(inEvent) {
-    console.log('pointerdown')
-    if (inEvent.isPrimary && (inEvent.pointerType === 'mouse' ? inEvent.buttons === 1 : true)) {
+    log('pointerdown', inEvent)
+    inEvent.persist()
+    inEvent.stopPropagation()
+    // if (inEvent.isPrimary && (inEvent.pointerType === 'mouse' ? inEvent.buttons === 1 : true)) {
       const p = {
         downEvent: inEvent,
         downTarget: inEvent.target,
@@ -183,13 +151,16 @@ export default class Track extends Component {
         tracking: false
       }
 
-      this.pointermap.set(inEvent.pointerId, p)
-    }
+      this.pointermap.set(getPointerId(inEvent), p)
+
+      document.addEventListener('mouseup', this.pointerup)
+      document.addEventListener('mousemove', this.pointermove)
+    // }
   }
 
   pointermove(inEvent) {
-    console.log('pointermove')
-    const p = this.pointermap.get(inEvent.pointerId)
+    log('pointermove', inEvent)
+    const p = this.pointermap.get(getPointerId(inEvent.pointerId))
 
     if (p) {
       if (!p.tracking) {
@@ -198,6 +169,7 @@ export default class Track extends Component {
 
         // start tracking only if finger moves more than WIGGLE_THRESHOLD
         if (move > this.WIGGLE_THRESHOLD) {
+
           p.tracking = true
           this.fireTrack('onTrackStart', p.downEvent, p)
           this.fireTrack('onTrack', inEvent, p)
@@ -209,19 +181,22 @@ export default class Track extends Component {
   }
 
   pointerup(inEvent) {
-    console.log('pointerup')
-    const p = this.pointermap.get(inEvent.pointerId)
+    log('pointerup', inEvent)
+    const p = this.pointermap.get(getPointerId(inEvent.pointerId))
 
     if (p) {
       if (p.tracking) {
         this.fireTrack('onTrackEnd', inEvent, p)
       }
-      this.pointermap.delete(inEvent.pointerId)
+      this.pointermap.delete(getPointerId(inEvent.pointerId))
     }
+
+    document.removeEventListener('mouseup', this.pointerup)
+    document.removeEventListener('mousemove', this.pointermove)
   }
 
   pointercancel(inEvent) {
-    console.log('pointercancel')
+    log('pointercancel', inEvent)
     this.pointerup(inEvent)
   }
 }

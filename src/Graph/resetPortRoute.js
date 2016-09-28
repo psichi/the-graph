@@ -1,3 +1,6 @@
+// this should not be triggered this way.
+// whatever caused this change should have dispatch the action.
+// even if it comes from an external change on the noflo graph.
 export default function resetPortRoute(event) {
   // Trigger nodes with changed ports to rerender
   if (event.from && event.from.node) {

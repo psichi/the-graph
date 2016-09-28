@@ -1,5 +1,5 @@
+// trigger should not be necessary.
 export default function triggerRender(time) {
-  console.log('TRIGGER', this)
   /*
    if (!this.isMounted()) {
    return;

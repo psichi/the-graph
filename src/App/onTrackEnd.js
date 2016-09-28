@@ -1,6 +1,7 @@
 import { findDOMNode } from 'react-dom'
 
 export default function onTrackEnd(event) {
+  /*
   // Don't click app (unselect)
   event.stopPropagation()
 
@@ -8,4 +9,5 @@ export default function onTrackEnd(event) {
 
   domNode.removeEventListener('track', this.onTrack)
   domNode.removeEventListener('trackend', this.onTrackEnd)
+  */
 }

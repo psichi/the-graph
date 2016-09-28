@@ -11,6 +11,7 @@
     "hammerjs": "^2.0.8",
     "klayjs": "^0.4.1",
     "lodash.clone": "^4.5.0",
+    "lodash.throttle": "^4.1.1",
     "postinstall-build": "^2.1.0",
     "react-hammerjs": "^0.5.0",
     "react-redux": "^4.4.5",
@@ -52,6 +53,7 @@
     "less": "^2.7.1",
     "react-test-renderer": "^15.3.2",
     "rimraf": "^2.5.4",
+    "sinon": "^1.17.6",
     "stylus": "~0.54.5",
     "worker-loader": "^0.7.1"
   },

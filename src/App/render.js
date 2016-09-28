@@ -1,5 +1,7 @@
 import React from 'react'
+import { findDOMNode } from 'react-dom'
 import Config from '../Config'
+import Track from '../Track'
 
 import {
   AppModalBackground,
@@ -81,19 +83,21 @@ export default function render() {
   }
 
   return (
-    <div {...themeWrapperOptions}>
-      <AppContainer {...containerOptions}>
-        <canvas {...canvasOptions} />
-        <AppSvg {...svgOptions}>
-          <AppSvgGroup {...svgGroupOptions}>
-            <AppGraph {...graphElementOptions} />
-          </AppSvgGroup>
-          <AppTooltip {...tooltipOptions} />
-          <AppModalGroup {...modalGroupOptions}>
-            {contextModal}
-          </AppModalGroup>
-        </AppSvg>
-      </AppContainer>
-    </div>
+    <Track onTrack={this.onTrack}>
+      <div {...themeWrapperOptions}>
+        <AppContainer {...containerOptions}>
+          <canvas {...canvasOptions} />
+          <AppSvg {...svgOptions}>
+            <AppSvgGroup {...svgGroupOptions}>
+              <AppGraph {...graphElementOptions} />
+            </AppSvgGroup>
+            <AppTooltip {...tooltipOptions} />
+            <AppModalGroup {...modalGroupOptions}>
+              {contextModal}
+            </AppModalGroup>
+          </AppSvg>
+        </AppContainer>
+      </div>
+    </Track>
   )
 }

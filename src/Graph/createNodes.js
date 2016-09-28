@@ -80,28 +80,6 @@ export default function createNodes(graph, selectedIds, highlightPort) {
       error: (this.state.errorNodes[key] === true)
     }
 
-    console.log('NODE %s', key, JSON.stringify({
-      key,
-      node,
-      icon,
-      // graph,
-      iconsvg,
-      selected,
-      showContext,
-      onNodeSelection,
-      highlightPort,
-      nodeID: key,
-      x: node.metadata.x,
-      y: node.metadata.y,
-      label: node.metadata.label,
-      sublabel: node.metadata.sublabel || node.component,
-      width: node.metadata.width,
-      height: node.metadata.height,
-      // graphView: this,
-      ports: this.getPorts(graph, key, node.component),
-      error: (this.state.errorNodes[key] === true)
-    }, null, 2))
-
     return GraphNode(nodeOptions)
   })
 }

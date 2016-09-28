@@ -32,13 +32,15 @@ export default class TheGraphNodeMenuPort extends Component {
   componentDidMount() {
     const domNode = findDOMNode(this)
 
-    domNode.addEventListener('up', this.edgeStart)
+    // domNode.addEventListener('up', this.edgeStart)
+    domNode.addEventListener('mouseup', this.edgeStart)
   }
 
   componentWillUnmount() {
     const domNode = findDOMNode(this)
 
-    domNode.removeEventListener('up', this.edgeStart)
+    // domNode.removeEventListener('up', this.edgeStart)
+    domNode.removeEventListener('mouseup', this.edgeStart)
   }
 
   edgeStart(event) {
@@ -53,6 +55,8 @@ export default class TheGraphNodeMenuPort extends Component {
       type
     }
 
+    const domNode = findDOMNode(this)
+
     const edgeStartEvent = new CustomEvent('the-graph-edge-start', {
       detail: {
         isIn,
@@ -62,7 +66,7 @@ export default class TheGraphNodeMenuPort extends Component {
       bubbles: true
     })
 
-    findDOMNode(this).dispatchEvent(edgeStartEvent)
+    domNode.dispatchEvent(edgeStartEvent)
   }
 
   render() {

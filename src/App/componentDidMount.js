@@ -31,7 +31,7 @@ export default function componentDidMount() {
   }
 
   // Pointer gesture event for pan
-  domNode.addEventListener('trackstart', this.onTrackStart)
+  // domNode.addEventListener('trackstart', this.onTrackStart)
 
   const isTouchDevice = 'ontouchstart' in document.documentElement
 
@@ -56,8 +56,7 @@ export default function componentDidMount() {
 
   // Edge preview
   // is a custom event emitted by Port and MenuPort
-  // however we will not fire it anymore.
-  // domNode.addEventListener('the-graph-edge-start', this.edgeStart)
+  domNode.addEventListener('the-graph-edge-start', this.edgeStart)
 
   domNode.addEventListener('contextmenu', this.onShowContext)
 

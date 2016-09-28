@@ -2,10 +2,12 @@ export default function onTrack(event) {
   if (this.pinching) { return }
 
   const { x, y } = this.state
-  const { ddx, ddy } = event
+  const { movementX, movementY } = event
 
-  this.setState({
-    x: x + ddx,
-    y: y + ddy
-  })
+  const newState = {
+    x: x + movementX,
+    y: y + movementY
+  }
+
+  this.setState(newState)
 }

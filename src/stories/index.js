@@ -174,9 +174,8 @@ storiesOf('The Graph', module)
       // see App#showContext
       graph: {},
 
-      onTrackStart: action('onTrackStart'),
-      onTrackEnd: action('onTrackEnd'),
-      onTrack: action('onTrack'),
+      onEdgeStart: action('onEdgeStart'),
+      onEdgeDrop: action('onEdgeDrop'),
 
       // is never used
       // node: node,

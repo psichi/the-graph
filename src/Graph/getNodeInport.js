@@ -1,6 +1,8 @@
 export default function getNodeInport(graph, processName, portName, route, componentName) {
   const ports = this.getPorts(graph, processName, componentName)
 
+  // this check should not be necessary.
+  // if this is required, it should already receive it this way
   if (!ports.inports[portName]) {
     ports.inports[portName] = {
       label: portName,

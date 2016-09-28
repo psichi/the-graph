@@ -1,3 +1,5 @@
+import { findDOMNode } from 'react-dom'
+
 export default function componentDidMount() {
   const { graph } = this.props
 
