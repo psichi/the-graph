@@ -6,7 +6,7 @@ import {
 // Ports
 export default function createPortViews(type, ports) {
   const {
-    app,
+    scale,
     graph,
     highlightPort,
     node,
@@ -22,7 +22,7 @@ export default function createPortViews(type, ports) {
     const info = ports[key]
 
     const props = {
-      scale: app.state.scale,
+      scale,
       graph,
       node,
       key: `${nodeID}.${type}.${info.label}`,
