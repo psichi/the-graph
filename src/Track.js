@@ -16,7 +16,7 @@ p.downEvent.pageX
 p.downEvent.pageY
 */
 
-function log (type, inEvent) {
+function log(type, inEvent) {
   // console.log('EVENT %s', type, Object.keys(inEvent))
 }
 
@@ -56,9 +56,9 @@ export default class Track extends Component {
   }
 
   static defaultProps = {
-    onTrack: function () {},
-    onTrackStart: function () {},
-    onTrackEnd: function () {},
+    onTrack() {},
+    onTrackStart() {},
+    onTrackEnd() {},
     container: document
   }
 
@@ -141,20 +141,20 @@ export default class Track extends Component {
     inEvent.persist()
     inEvent.stopPropagation()
     // if (inEvent.isPrimary && (inEvent.pointerType === 'mouse' ? inEvent.buttons === 1 : true)) {
-      const p = {
-        downEvent: inEvent,
-        downTarget: inEvent.target,
-        trackInfo: {},
-        lastMoveEvent: null,
-        xDirection: 0,
-        yDirection: 0,
-        tracking: false
-      }
+    const p = {
+      downEvent: inEvent,
+      downTarget: inEvent.target,
+      trackInfo: {},
+      lastMoveEvent: null,
+      xDirection: 0,
+      yDirection: 0,
+      tracking: false
+    }
 
-      this.pointermap.set(getPointerId(inEvent), p)
+    this.pointermap.set(getPointerId(inEvent), p)
 
-      document.addEventListener('mouseup', this.pointerup)
-      document.addEventListener('mousemove', this.pointermove)
+    document.addEventListener('mouseup', this.pointerup)
+    document.addEventListener('mousemove', this.pointermove)
     // }
   }
 
@@ -169,7 +169,6 @@ export default class Track extends Component {
 
         // start tracking only if finger moves more than WIGGLE_THRESHOLD
         if (move > this.WIGGLE_THRESHOLD) {
-
           p.tracking = true
           this.fireTrack('onTrackStart', p.downEvent, p)
           this.fireTrack('onTrack', inEvent, p)

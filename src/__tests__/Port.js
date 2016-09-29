@@ -5,8 +5,8 @@ import Port from '../Port'
 
 const port = {
   process: 'textProcess',
-    port: 'IN',
-    type: 'any'
+  port: 'IN',
+  type: 'any'
 }
 
 it('Label is set', () => {
@@ -14,7 +14,7 @@ it('Label is set', () => {
     <Port
       label="IN"
       port={port}
-      isIn={true}
+      isIn
       route={1}
       x={10}
       y={10}

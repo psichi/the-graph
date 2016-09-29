@@ -281,7 +281,8 @@ export default class TheGraphPort extends Component {
     return (
       <Track
         onTrackStart={this.edgeStart}
-        onTrackEnd={this.triggerDropOnTarget}>
+        onTrackEnd={this.triggerDropOnTarget}
+      >
         <PortGroup {...containerOptions}>
           <PortBackgroundCircle {...backgroundCircleOptions} />
           <PortArc {...arcOptions} />

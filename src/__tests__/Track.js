@@ -41,7 +41,7 @@ it('Move', () => {
   const track = wrapper.find('Track')
   track.simulate('mousedown')
 
-  ;[1,2].forEach(() => {
+  ;[1, 2].forEach(() => {
     // track.simulate('mousemove')
     const mouseEvent = new MouseEvent('mousemove', {
       bubbles: true,
@@ -63,5 +63,5 @@ it('Move', () => {
 
   expect(onTrackStart.callCount).toEqual(1)
   // expect(onTrack.callCount).toEqual(2)
-  //expect(onTrackEnd.callCount).toEqual(1)
+  // expect(onTrackEnd.callCount).toEqual(1)
 })
