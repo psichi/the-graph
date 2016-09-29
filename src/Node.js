@@ -60,7 +60,8 @@ export default class TheGraphNode extends Component {
     label: PropTypes.string,
     sublabel: PropTypes.string,
     selected: PropTypes.bool,
-    error: PropTypes.bool
+    error: PropTypes.bool,
+    scale: PropTypes.number
   }
 
   constructor(props, context) {
