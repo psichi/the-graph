@@ -80,11 +80,9 @@ export default class TheGraphApp extends Component {
     const { width, height, minZoom, maxZoom, offsetY, offsetX } = this.props
 
     this.state = {
-      /*
-       x: fit.x,
-       y: fit.y,
-       scale: fit.scale,
-       */
+      x: 0,
+      y: 0,
+      scale: 1,
       width,
       height,
       minZoom,
