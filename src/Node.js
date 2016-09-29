@@ -61,7 +61,10 @@ export default class TheGraphNode extends Component {
     sublabel: PropTypes.string,
     selected: PropTypes.bool,
     error: PropTypes.bool,
-    scale: PropTypes.number
+    scale: PropTypes.number,
+
+    menuShown: PropTypes.bool,
+    pinching: PropTypes.bool
   }
 
   constructor(props, context) {
@@ -359,10 +362,10 @@ export default class TheGraphNode extends Component {
       app: {
         state: {
           x: appX,
-          y: appY,
-          scale
+          y: appY
         }
       },
+      scale,
       exportKey: label,
       graph,
       icon,
