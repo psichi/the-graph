@@ -513,7 +513,7 @@ export default class TheGraphNode extends Component {
       const info = ports[key]
 
       const props = {
-        app,
+        scale: app.state.scale,
         graph,
         node,
         key: `${nodeID}.${type}.${info.label}`,

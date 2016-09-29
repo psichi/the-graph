@@ -164,11 +164,7 @@ storiesOf('The Graph', module)
   })
   .add('Port', () => {
     const portProps = {
-      app: {
-        state: {
-          scale: 5
-        }
-      },
+      scale: 5,
       // needed for embedded showContext
       // showContext is a function which sets the state on the entire app
       // see App#showContext

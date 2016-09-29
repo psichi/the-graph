@@ -22,12 +22,13 @@ export default class TheGraphPort extends Component {
 
   static defaultProps = {
     label: '',
+    scale: 1,
     x: 0,
     y: 0
   }
 
   static propTypes = {
-    app: PropTypes.object,
+    scale: PropTypes.number,
     label: PropTypes.string.isRequired,
     isIn: PropTypes.bool,
     port: PropTypes.object.isRequired,
@@ -99,7 +100,7 @@ export default class TheGraphPort extends Component {
   }
 
   shouldShowTooltip() {
-    const { label, app: { state: { scale } } } = this.props
+    const { label, scale } = this.props
 
     return (
       scale < Config.base.zbpBig || label.length > 8
