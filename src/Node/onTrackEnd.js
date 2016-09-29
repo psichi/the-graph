@@ -1,3 +1,5 @@
+import Config from '../Config'
+
 export default function onTrackEnd(event) {
   // Don't fire on graph
   // event.stopPropagation()
