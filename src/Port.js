@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { Tooltip } from './mixins'
+import { provision } from './provision'
 
 import {
   componentDidMount,
@@ -14,7 +15,7 @@ import {
 } from './Port/index'
 
 // Port view
-export default class TheGraphPort extends Component {
+class TheGraphPort extends Component {
   mixins = [
     Tooltip
   ]
@@ -60,3 +61,5 @@ export default class TheGraphPort extends Component {
   triggerDropOnTarget = this::triggerDropOnTarget
   render = this::render
 }
+
+export default provision(TheGraphPort)

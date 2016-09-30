@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react'
+import { provision } from './provision'
 
 import {
   componentDidMount,
@@ -13,7 +14,7 @@ import {
 } from './Group/index'
 
 // Group view
-export default class TheGraphGroup extends Component {
+class TheGraphGroup extends Component {
   static propTypes = {
     app: PropTypes.shape({
       menuShown: PropTypes.bool
@@ -52,3 +53,5 @@ export default class TheGraphGroup extends Component {
   onTrackEnd = this::onTrackEnd
   render = this::render
 }
+
+export default provision(TheGraphGroup)

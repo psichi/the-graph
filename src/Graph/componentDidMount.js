@@ -3,6 +3,8 @@ import { findDOMNode } from 'react-dom'
 export default function componentDidMount() {
   const { graph } = this.props
 
+  console.log('STORE?', this.props.store)
+
   // To change port colors
   graph.on('addEdge', this.resetPortRoute)
   graph.on('changeEdge', this.resetPortRoute)

@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { findDOMNode } from 'react-dom'
 import { FakeMouse } from './mixins'
+import { provision } from './provision'
 
 import {
   addEdge,
@@ -35,7 +36,7 @@ import {
 } from './Graph/'
 
 // Graph view
-export default class TheGraphGraph extends Component {
+class TheGraphGraph extends Component {
   mixins = [FakeMouse]
   edgePreview = null
   portInfo = {}
@@ -116,3 +117,5 @@ export default class TheGraphGraph extends Component {
   createGroups = this::createGroups
   render = this::render
 }
+
+export default provision(TheGraphGraph)

@@ -3,6 +3,7 @@ import { findDOMNode } from 'react-dom'
 import { buildLabelRectOptions, keys } from './utils'
 import Config from './Config'
 import { Tooltip } from './mixins'
+import { provision } from './provision'
 
 import {
   componentDidMount,
@@ -26,7 +27,7 @@ import {
 } from './Node/index'
 
 // Node view
-export default class TheGraphNode extends Component {
+class TheGraphNode extends Component {
   mixins = [
     Tooltip
   ]
@@ -97,3 +98,5 @@ export default class TheGraphNode extends Component {
   createIconContent = this::createIconContent
   render = this::render
 }
+
+export default provision(TheGraphNode)

@@ -51,15 +51,15 @@ export default class TheGraphMenu extends Component {
 
   componentDidMount() {
     // Prevent context menu
-    const { addEventListener } = findDOMNode(this)
+    const domNode = findDOMNode(this)
 
-    addEventListener('contextmenu', this.onContextMenu, false)
+    domNode.addEventListener('contextmenu', this.onContextMenu, false)
   }
 
   componentWillUnmount() {
-    const { removeEventListener } = findDOMNode(this)
+    const domNode = findDOMNode(this)
 
-    removeEventListener('contextmenu', this.onContextMenu)
+    domNode.removeEventListener('contextmenu', this.onContextMenu)
   }
 
   onContextMenu(event) {

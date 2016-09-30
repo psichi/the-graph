@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { Tooltip } from './mixins'
 import Config from './Config'
+import { provision } from './provision'
 
 import {
   componentDidMount,
@@ -16,7 +17,7 @@ import {
 } from './Edge/index'
 
 // Edge view
-export default class TheGraphEdge extends Component {
+class TheGraphEdge extends Component {
   mixins = [
     Tooltip
   ]
@@ -65,3 +66,5 @@ export default class TheGraphEdge extends Component {
   shouldShowTooltip = this::shouldShowTooltip
   render = this::render
 }
+
+export default provision(TheGraphEdge)

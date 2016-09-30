@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
 import Config from './Config'
 import {
   TooltipGroup,
@@ -7,6 +7,20 @@ import {
 } from './factories/tooltip'
 
 export default class TheGraphTooltip extends Component {
+  static defaultProps = {
+    label: '',
+    x: 0,
+    y: 0,
+    visible: false
+  }
+
+  static propTypes = {
+    label: PropTypes.string,
+    visible: PropTypes.bool,
+    x: PropTypes.number,
+    y: PropTypes.number
+  }
+
   render() {
     const { label, visible, x, y } = this.props
 

@@ -1,5 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 
+import { provision } from './provision'
+
 import {
   addGraphListeners,
   applyAutolayout,
@@ -37,7 +39,7 @@ import {
   unselectAll
 } from './App/'
 
-export default class TheGraphApp extends Component {
+class TheGraphApp extends Component {
   mixins = [React.Animate]
   zoomFactor = 0
   zoomX = 0
@@ -148,3 +150,5 @@ export default class TheGraphApp extends Component {
   getContextModal = this::getContextModal
   render = this::render
 }
+
+export default provision(TheGraphApp)
