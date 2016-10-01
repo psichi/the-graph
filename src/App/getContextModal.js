@@ -1,3 +1,5 @@
+import { AppModalBackground } from '../factories/app'
+
 // can be moved to app modal gropu
 export default function getContextModal() {
   const { contextMenu: currentContextMenu } = this.props

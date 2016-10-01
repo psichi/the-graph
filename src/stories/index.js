@@ -248,7 +248,7 @@ storiesOf('The Graph', module)
       maxY: number('maxY', 250),
       isSelectionGroup: boolean('isSelectionGroup', false),
       showContext: action('Show Context'),
-      triggerMoveGroup: boolean('triggerMoveGroup', false)
+      triggerMoveGroup: action('triggerMoveGroup')
     }
 
     return (

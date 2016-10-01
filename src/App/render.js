@@ -4,7 +4,6 @@ import Config from '../Config'
 import Track from '../Track'
 
 import {
-  AppModalBackground,
   AppGraph,
   AppSvgGroup,
   AppModalGroup,

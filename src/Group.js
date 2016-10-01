@@ -30,7 +30,7 @@ class TheGraphGroup extends Component {
     maxY: PropTypes.number,
     isSelectionGroup: PropTypes.bool,
     showContext: PropTypes.func,
-    triggerMoveGroup: PropTypes.bool
+    triggerMoveGroup: PropTypes.func
   }
 
   constructor(props, context) {
