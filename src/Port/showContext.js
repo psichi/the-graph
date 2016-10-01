@@ -2,7 +2,8 @@ import { findDOMNode } from 'react-dom'
 
 export default function showContext(event) {
   const { isExport, isIn, graph, label: itemKey, port: item, showContext } = this.props
-  const { label: labelRef } = this.refs
+
+  // const { label: labelRef } = this.refs
 
   // Don't show port menu on export node port
   if (isExport) {
@@ -10,9 +11,11 @@ export default function showContext(event) {
   }
 
   // Click on label, pass context menu to node
+  /* TODO: restore whatever this is trying to prevent but without refs.
   if (event && (event.target === findDOMNode(labelRef))) {
     return
   }
+  */
 
   // Don't show native context menu
   event.preventDefault()

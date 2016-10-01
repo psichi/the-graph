@@ -9,6 +9,7 @@ const initialState = {
 
 const store = configureStore(initialState)
 
+// this should work :(
 export default function ConnectWithStore(...args) {
   const Connect = connect(...args)
 
