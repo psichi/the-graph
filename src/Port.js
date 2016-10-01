@@ -31,7 +31,11 @@ class TheGraphPort extends Component {
     scale: PropTypes.number,
     label: PropTypes.string.isRequired,
     isIn: PropTypes.bool,
-    port: PropTypes.object.isRequired,
+    port: PropTypes.shape({
+      process: PropTypes.string,
+      port: PropTypes.string,
+      type: PropTypes.string
+    }).isRequired,
     graph: PropTypes.object,
     route: PropTypes.number,
     x: PropTypes.number.isRequired,
