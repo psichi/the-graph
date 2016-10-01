@@ -69,9 +69,9 @@ export type Graph = {
   properties: {
     name: string
   },
-  inports: port[],
-  outports: port[],
-  connections: connection[]
+  inports: Port[],
+  outports: Port[],
+  connections: Connection[]
   groups: array,
   nodes: array,
   processes: {
@@ -92,7 +92,7 @@ export type Library = {
     name: string,
     description: string,
     icon: string,
-    inports: port[],
-    outports: port[]
+    inports: Port[],
+    outports: Port[]
   }
 }
