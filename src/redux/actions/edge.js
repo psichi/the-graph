@@ -11,3 +11,10 @@ export function onEdgeSelection(event) {
     payload: event
   }
 }
+
+export function showContext(event) {
+  return {
+    type: 'Edge/SHOW_CONTEXT',
+    payload: event
+  }
+}

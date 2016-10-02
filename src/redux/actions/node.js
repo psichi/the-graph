@@ -9,14 +9,14 @@ export const NODE_TRACK_END = 'Node/TRACK_END'
 
 export function showContext(event) {
   return {
-    type: 'App/SHOW_CONTEXT',
+    type: 'Node/SHOW_CONTEXT',
     payload: event
   }
 }
 
 export function onTrack(event) {
   return {
-    type: 'NODE/TRACK',
+    type: 'Node/TRACK',
     payload: event
   }
 }
@@ -30,14 +30,14 @@ export function onTrackStart(event) {
 
 export function onTrackEnd(event) {
   return {
-    type: 'NODE/TRACK_END',
+    type: 'Node/TRACK_END',
     payload: event
   }
 }
 
 export function onNodeSelection(event) {
   return {
-    type: 'NODE/SELECTION',
+    type: 'Node/SELECTION',
     payload: event
   }
 }
