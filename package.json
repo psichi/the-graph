@@ -34,6 +34,7 @@
     "babel-preset-es2015": "^6.16.0",
     "babel-preset-react": "^6.16.0",
     "babel-preset-stage-0": "^6.16.0",
+    "chai": "^3.5.0",
     "create-index": "^0.1.3",
     "enzyme": "^2.4.1",
     "eslint": "^3.6.1",
@@ -51,8 +52,11 @@
     "grunt-contrib-jshint": "~1.0.0",
     "grunt-contrib-watch": "~1.0.0",
     "grunt-exec": "~1.0.1",
-    "jest": "^15.1.1",
+    "jsdom": "^9.6.0",
+    "jsx-test": "^2.0.1",
     "less": "^2.7.1",
+    "mocha": "^3.1.0",
+    "react-addons-test-utils": "^15.3.2",
     "react-test-renderer": "^15.3.2",
     "rimraf": "^2.5.4",
     "sinon": "^1.17.6",
@@ -63,8 +67,8 @@
   "scripts": {
     "build:babel": "babel ./src --out-dir ./build",
     "lint": "eslint 'src/**/*.js'",
-    "test": "jest",
-    "test:watch": "jest --watch",
+    "test": "NODE_ENV=test mocha --compilers js:babel-core/register --require ./test/setup.js",
+    "test:watch": "npm run test -- --watch",
     "postversion": "git push && git push --tags",
     "storybook": "start-storybook -p 9009 -s ./node_modules/",
     "build-storybook": "build-storybook",
@@ -73,9 +77,6 @@
     "gh-pages:build": "build-storybook -o _gh-pages",
     "gh-pages:publish": "git-directory-deploy --directory _gh-pages",
     "gh-pages": "npm run gh-pages:clean && npm run gh-pages:build && npm run gh-pages:publish"
-  },
-  "jest": {
-    "rootDir": "src/"
   },
   "repository": {
     "type": "git",
