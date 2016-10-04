@@ -20,4 +20,6 @@ export loadFBP from './loadFBP.js'
 export loadJSON from './loadJSON.js'
 export makeArcPath from './makeArcPath.js'
 export perpendicular from './perpendicular.js'
+export positionPort from './positionPort.js'
+export positionPorts from './positionPorts.js'
 

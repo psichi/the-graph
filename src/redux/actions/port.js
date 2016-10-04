@@ -8,6 +8,13 @@ export function onEdgeStart(event) {
   }
 }
 
+export function onEdgeDraw(event) {
+  return {
+    type: 'Edge/DRAW',
+    payload: event
+  }
+}
+
 export function onEdgeDrop(event) {
   return {
     type: 'Edge/DROP',

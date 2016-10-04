@@ -19,15 +19,18 @@ import Track from '../Track'
 export default function render() {
   const {
     curve,
-    sX: sourceX,
-    sY: sourceY,
-    tX: targetX,
-    tY: targetY,
     route,
     selected,
     animated,
     label
   } = this.props
+
+  const {
+    sX: sourceX,
+    sY: sourceY,
+    tX: targetX,
+    tY: targetY
+  } = this.positions
 
   // Organic / curved edge
   let c1X, c1Y, c2X, c2Y

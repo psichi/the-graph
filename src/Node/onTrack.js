@@ -12,8 +12,6 @@ export default function onTrack(event) {
    const deltaY = Math.round(event.ddy / scale)
    */
 
-  console.log('THE SCALE', scale)
-
   const deltaX = Math.round(event.movementX / scale)
   const deltaY = Math.round(event.movementY / scale)
 

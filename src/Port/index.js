@@ -2,6 +2,7 @@
 
 export componentDidMount from './componentDidMount.js';
 export componentWillUnmount from './componentWillUnmount.js';
+export edgeDraw from './edgeDraw.js';
 export edgeStart from './edgeStart.js';
 export getContext from './getContext.js';
 export getTooltipTrigger from './getTooltipTrigger.js';

@@ -33,6 +33,7 @@ export default function componentWillUnmount() {
   domNode.removeEventListener('trackstart', this.onTrackStart)
 
   // Wheel to zoom
+  /*
   if (domNode.onwheel !== undefined) {
     // Chrome and Firefox
     domNode.removeEventListener('wheel', this.onWheel)
@@ -40,6 +41,7 @@ export default function componentWillUnmount() {
     // Safari
     domNode.removeEventListener('mousewheel', this.onWheel)
   }
+  */
 
   // Tooltip listener
   domNode.removeEventListener('the-graph-tooltip', this.changeTooltip)

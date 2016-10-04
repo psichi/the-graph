@@ -11,4 +11,6 @@ export default function triggerFit(event) {
     y,
     scale
   })
+
+  this.forceUpdate()
 }

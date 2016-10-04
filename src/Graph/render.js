@@ -45,9 +45,6 @@ export default function render() {
     }
   }
 
-  // The fbp way would be to add all these nodes through input as children
-  // so all we receive are this.props.children
-
   // Nodes
   const nodes = this.createNodes(graph, selectedIds, highlightPort)
 
@@ -149,23 +146,23 @@ export default function render() {
 
   return (
     <GraphContainerGroup {...containerOptions}>
-      <GraphGroupsGroup {...groupsOptions}>
-        {groups}
-      </GraphGroupsGroup>
-      <GraphEdgesGroup {...edgesOptions}>
-        {edges}
-      </GraphEdgesGroup>
-      <GraphIIPGroup {...iipsOptions}>
-        {iips}
-      </GraphIIPGroup>
       <GraphNodesGroup {...nodesOptions}>
         {nodes}
       </GraphNodesGroup>
       <GraphInportsGroup {...inportsOptions}>
         {inports}
       </GraphInportsGroup>
+      <GraphIIPGroup {...iipsOptions}>
+        {iips}
+      </GraphIIPGroup>
+      <GraphEdgesGroup {...edgesOptions}>
+        {edges}
+      </GraphEdgesGroup>
       <GraphGroupsGroup {...outportsOptions}>
         {outports}
+      </GraphGroupsGroup>
+      <GraphGroupsGroup {...groupsOptions}>
+        {groups}
       </GraphGroupsGroup>
     </GraphContainerGroup>
   )

@@ -71,7 +71,7 @@ export type Graph = {
   },
   inports: Port[],
   outports: Port[],
-  connections: Connection[]
+  connections: Connection[],
   groups: array,
   nodes: array,
   processes: {

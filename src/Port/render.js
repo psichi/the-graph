@@ -72,6 +72,7 @@ export default function render() {
   return (
     <Track
       onTrackStart={this.edgeStart}
+      onTrack={this.edgeDraw}
       onTrackEnd={this.triggerDropOnTarget}
     >
       <PortGroup {...containerOptions}>

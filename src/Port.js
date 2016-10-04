@@ -6,6 +6,7 @@ import {
   componentDidMount,
   componentWillUnmount,
   edgeStart,
+  edgeDraw,
   getContext,
   getTooltipTrigger,
   render,
@@ -51,6 +52,7 @@ class TheGraphPort extends Component {
     super(props, context)
 
     this.edgeStart = this.edgeStart.bind(this)
+    this.edgeDraw = this.edgeDraw.bind(this)
     this.triggerDropOnTarget = this.triggerDropOnTarget.bind(this)
     this.showContext = this.showContext.bind(this)
   }
@@ -62,6 +64,7 @@ class TheGraphPort extends Component {
   showContext = this::showContext
   getContext = this::getContext
   edgeStart = this::edgeStart
+  edgeDraw = this::edgeDraw
   triggerDropOnTarget = this::triggerDropOnTarget
   render = this::render
 }

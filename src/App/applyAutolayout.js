@@ -61,6 +61,8 @@ export default function applyAutolayout(layoutedKGraph) {
 
   graph.endTransaction('autolayout')
 
+  this.layoutReady = true
+
   // Fit to window
   this.triggerFit()
 }

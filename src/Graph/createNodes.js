@@ -68,6 +68,7 @@ export default function createNodes(graph, selectedIds, highlightPort) {
       showContext,
       onNodeSelection,
       highlightPort,
+      onPortsCreated: this.onPortsCreated(key),
       nodeID: key,
       x: node.metadata.x,
       y: node.metadata.y,

@@ -7,6 +7,7 @@ export default function componentDidMount() {
   const { graph, width, height, onNodeSelection } = this.props
 
   // Autofit (not sure whether this is the correct location to do it
+  /*
   let { x, y, scale } = findFit(graph, Config.base.nodeSize, width, height)
 
   this.setState({
@@ -14,6 +15,7 @@ export default function componentDidMount() {
     y,
     scale
   })
+  */
 
   const domNode = findDOMNode(this)
 
@@ -40,7 +42,7 @@ export default function componentDidMount() {
     hammertime.on('pinch', this.onTransform)
     hammertime.on('pinchend', this.onTransformEnd)
   }
-
+  /*
   // Wheel to zoom
   if (domNode.onwheel !== undefined) {
     // Chrome and Firefox
@@ -49,6 +51,7 @@ export default function componentDidMount() {
     // Safari
     domNode.addEventListener('mousewheel', this.onWheel)
   }
+  */
 
   // Tooltip listener
   domNode.addEventListener('the-graph-tooltip', this.changeTooltip)
@@ -74,13 +77,16 @@ export default function componentDidMount() {
   keys.subscribe('keyup', this.keyUp)
 
   // Canvas background
-  this.bgCanvas = this.refs.canvas
-  this.bgContext = this.bgCanvas.getContext('2d')
+  /* is only for the grid background, fix later
+  // can be a seperate component GridCanvas
+  if (this.refs.canvas) {
+    this.bgCanvas = this.refs.canvas
+    this.bgContext = this.bgCanvas.getContext('2d')
 
-  this.componentDidUpdate()
+    this.componentDidUpdate()
+  }
+  */
 
-  // Rerender graph once to fix edges
-  setTimeout(() => {
-    this.renderGraph()
-  }, 500)
+  // Ready to render graph
+  this.triggerAutolayout()
 }

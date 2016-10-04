@@ -31,9 +31,9 @@ export default function render() {
     sublabel = ''
   }
 
-  // Make views
-  const NodeInportViews = this.createInportViews()
   const NodeOutportViews = this.createOutportViews()
+
+  const NodeInportViews = this.createInportViews()
 
   const NodeIconContent = this.createIconContent()
 

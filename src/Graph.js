@@ -116,6 +116,12 @@ class TheGraphGraph extends Component {
   createOutportExports = this::createOutportExports
   createGroups = this::createGroups
   render = this::render
+
+  onPortsCreated (nodeId) {
+    return (portInfo) => {
+      this.portInfo[nodeId] = portInfo
+    }
+  }
 }
 
 export default provision(TheGraphGraph)

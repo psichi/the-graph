@@ -16,9 +16,15 @@ import {
 export default function render() {
   // console.timeEnd('App.render');
   // console.time('App.render');
-
   const { graph, library, getMenuDef, onNodeSelection, onEdgeSelection, theme } = this.props
   const { scale, x, y, tooltip, tooltipX, tooltipY, tooltipVisible, width, height } = this.state
+
+  if (!this.layoutReady) {
+    // first render is still empty, would prefer if first render
+    // occurs when autolayout is done.
+    // which would be possible if layout was not triggered from within the app.
+    return <div />
+  }
 
   const transform = `matrix(${scale},0,0,${scale},${x},${y})`
 
@@ -81,11 +87,13 @@ export default function render() {
     className: theme
   }
 
+  delete canvasOptions.ref
+
   return (
     <Track onTrack={this.onTrack}>
-      <div {...themeWrapperOptions}>
+      <div {...themeWrapperOptions} onWheel={this.onWheel}>
         <AppContainer {...containerOptions}>
-          <canvas {...canvasOptions} />
+          <canvas {...canvasOptions} ref={this.setBgContext} />
           <AppSvg {...svgOptions}>
             <AppSvgGroup {...svgGroupOptions}>
               <AppGraph {...graphElementOptions} />

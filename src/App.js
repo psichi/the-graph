@@ -33,7 +33,9 @@ import {
   renderCanvas,
   renderGraph,
   scheduleWheelZoom,
+  setBgContext,
   showContext,
+  shouldComponentUpdate,
   triggerAutolayout,
   triggerFit,
   unselectAll
@@ -48,6 +50,7 @@ class TheGraphApp extends Component {
   lastX = 0
   lastY = 0
   pinching = false
+  layoutReady = false
 
   static defaultProps = {
     snap: 36,
@@ -108,6 +111,7 @@ class TheGraphApp extends Component {
     this.edgeStart = this.edgeStart.bind(this)
     this.onShowContext = this.onShowContext.bind(this)
     this.unselectAll = this.unselectAll.bind(this)
+    this.setBgContext = this.setBgContext.bind(this)
     this.showContext = this.showContext.bind(this)
     this.scheduleWheelZoom = this.scheduleWheelZoom.bind(this)
     this.triggerAutolayout = this.triggerAutolayout.bind(this)
@@ -148,7 +152,10 @@ class TheGraphApp extends Component {
   renderCanvas = this::renderCanvas
   getContext = this::getContext
   getContextModal = this::getContextModal
+  setBgContext = this::setBgContext
+  shouldComponentUpdate = this::shouldComponentUpdate
   render = this::render
 }
 
-export default provision(TheGraphApp)
+// export default provision(TheGraphApp)
+export default TheGraphApp

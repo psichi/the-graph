@@ -1,5 +1,6 @@
 'create index';
 
+export calcPositions from './calcPositions.js';
 export componentDidMount from './componentDidMount.js';
 export componentWillUnmount from './componentWillUnmount.js';
 export createIconContent from './createIconContent.js';

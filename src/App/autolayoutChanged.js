@@ -12,4 +12,6 @@ export default function autolayoutChanged() {
   } else {
     this.removeGraphListeners(graph)
   }
+
+  this.layoutReady = true
 }

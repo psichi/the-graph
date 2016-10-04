@@ -30,6 +30,8 @@ export render from './render.js';
 export renderCanvas from './renderCanvas.js';
 export renderGraph from './renderGraph.js';
 export scheduleWheelZoom from './scheduleWheelZoom.js';
+export setBgContext from './setBgContext.js';
+export shouldComponentUpdate from './shouldComponentUpdate.js';
 export showContext from './showContext.js';
 export triggerAutolayout from './triggerAutolayout.js';
 export triggerFit from './triggerFit.js';

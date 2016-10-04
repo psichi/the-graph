@@ -6,6 +6,7 @@ import { Tooltip } from './mixins'
 import { provision } from './provision'
 
 import {
+  calcPositions,
   componentDidMount,
   componentWillUnmount,
   createIconContent,
@@ -77,8 +78,15 @@ class TheGraphNode extends Component {
     this.onTrackEnd = this.onTrackEnd.bind(this)
     this.keyDown = this.keyDown.bind(this)
     this.keyUp = this.keyUp.bind(this)
+
+    if (this.props.onPortsCreated) {
+      this.props.onPortsCreated(
+       this.calcPositions(props)
+      )
+    }
   }
 
+  calcPositions = this::calcPositions
   componentDidMount = this::componentDidMount
   componentWillUnmount = this::componentWillUnmount
   keyDown = this::keyDown

@@ -38,10 +38,16 @@ class TheGraphEdge extends Component {
     exportKey: PropTypes.string,
     label: PropTypes.string,
     route: PropTypes.number,
+
+    // function to retrieve positions
+    getPositions: PropTypes.func,
+
+    // or set them directly
     sX: PropTypes.number,
     sY: PropTypes.number,
     tX: PropTypes.number,
     tY: PropTypes.number,
+
     selected: PropTypes.bool,
     animated: PropTypes.bool,
     curve: PropTypes.number
@@ -53,6 +59,17 @@ class TheGraphEdge extends Component {
     this.dontPan = this.dontPan.bind(this)
     this.onEdgeSelection = this.onEdgeSelection.bind(this)
     this.showContext = this.showContext.bind(this)
+
+    if (props.getPositions) {
+      this.positions = props.getPositions()
+    } else {
+      this.positions = {
+        sX: props.sX,
+        sY: props.sY,
+        tX: props.tX,
+        tY: props.tY
+      }
+    }
   }
 
   componentDidMount = this::componentDidMount

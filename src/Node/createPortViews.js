@@ -2,6 +2,9 @@ import React from 'react'
 import {
   NodePort
 } from '../factories/node'
+import {
+  positionPort
+} from '../utils/'
 
 // Ports
 export default function createPortViews(type, ports) {
@@ -11,15 +14,20 @@ export default function createPortViews(type, ports) {
     highlightPort,
     node,
     nodeID,
-    showContext
+    showContext,
+    height,
+    width
   } = this.props
 
   const isExport = (this.props.export !== undefined)
 
   const keys = Object.keys(ports)
 
-  return keys.map((key) => {
-    const info = ports[key]
+  return keys.map((key, index) => {
+    const info = positionPort(ports[key], keys.length, index, {
+      x: type === 'in' ? 0 : width,
+      height
+    })
 
     const props = {
       scale,
