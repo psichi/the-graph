@@ -18,12 +18,6 @@ export default function createEdges(graph) {
       route = edge.metadata.route
     }
 
-    // Initial ports from edges, and give port top/last edge color
-    /*
-    const sourcePort = this.getNodeOutport(graph, edge.from.node, edge.from.port, route, source.component)
-    const targetPort = this.getNodeInport(graph, edge.to.node, edge.to.port, route, target.component)
-    */
-
     const label = `${source.metadata.label}() ${
       edge.from.port.toUpperCase()
       }${edge.from.hasOwnProperty('index') ? `[${edge.from.index}]` : ''} -> ${
@@ -62,12 +56,6 @@ export default function createEdges(graph) {
 
         return result
       },
-      /*
-      sX: source.metadata.x + source.metadata.width,
-      sY: source.metadata.y + sourcePort.y, // <<< problem if I move positioning to Node instead of graph.
-      tX: target.metadata.x,
-      tY: target.metadata.y + targetPort.y,
-      */
       selected: (this.state.selectedEdges.indexOf(edge) !== -1),
       animated: (this.state.animatedEdges.indexOf(edge) !== -1)
     }

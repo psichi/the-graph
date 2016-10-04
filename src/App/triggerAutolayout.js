@@ -1,8 +1,7 @@
 import LibraryHelper from '../helpers/LibraryHelper'
 
-export default function triggerAutolayout(event) {
+export default function triggerAutolayout() {
   const { graph, library } = this.props
-  const { graph: graphView } = this.refs
 
   const libraryHelper = LibraryHelper.getInstance(library)
   const portInfo = libraryHelper.buildPortInfo(graph)
@@ -10,7 +9,6 @@ export default function triggerAutolayout(event) {
   // Calls the autolayouter
   this.autolayouter.layout({
     graph,
-    // portInfo: graphView.portInfo,
     portInfo,
     direction: 'RIGHT',
     options: {

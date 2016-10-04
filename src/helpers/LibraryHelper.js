@@ -1,23 +1,3 @@
-/**
- *
- * const currentLib = Library::getInstance(library)
- *
- * Goal is to call this from each component which receives the library.
- *
- * And only re-process if the library is actually different.
- * Biggest constraint I give myself is not wanting to rely on redux.
- *
- * The hash is wrong it's processName = info
- * Where the processName actually does not matter
- *
- * Current problem:
- *
- * Layout needs to have the portInfo but it's not loaded yet.
- *
- * Yet the way portInfo is build it's building several different
- * info's of which some is needed by Graph and some by klayjs.
- *
- */
 import Config from '../Config'
 import { positionPorts } from '../utils/'
 
@@ -41,9 +21,6 @@ export default class ComponentLibrary {
     return this.library[componentName]
   }
 
-  // take a graph and build it's info, not sure if correct.
-  // processNames are only unique per graph.
-  // what I want is a function which takes a graph and returns it's port info.
   buildPortInfo (graph, refresh = false) {
     // iterate all nodes
     graph.nodes.forEach((node) => {
@@ -61,14 +38,6 @@ export default class ComponentLibrary {
     return this.portInfo
   }
 
-  // getPorts(graph, processName, componentName) {
-  // node surely carries the processName,
-  // not sure what node looks like.
-  // node.id is the process name.
-  // the port positions are calculated here base on the node.
-  // also this does not need to be recalculated
-  // getPorts(node, processName, componentName) {
-
   /**
    * Note that portInfo is how kieler's klayjs expects it.
    * And it expects it from the entire graph.
@@ -82,9 +51,6 @@ export default class ComponentLibrary {
    */
   getPorts(processName, componentName, dimensions) {
     let ports
-    /*
-     const node = graph.getNode(processName)
-     */
 
     ports = this.portInfo[processName]
 
@@ -103,12 +69,6 @@ export default class ComponentLibrary {
 
         if (!component) {
           throw Error(`no such component ${componentName}`)
-          /*
-           return {
-           inports,
-           outports
-           }
-           */
         }
 
         inports = positionPorts(component.inports, {

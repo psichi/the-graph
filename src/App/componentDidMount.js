@@ -42,16 +42,6 @@ export default function componentDidMount() {
     hammertime.on('pinch', this.onTransform)
     hammertime.on('pinchend', this.onTransformEnd)
   }
-  /*
-  // Wheel to zoom
-  if (domNode.onwheel !== undefined) {
-    // Chrome and Firefox
-    domNode.addEventListener('wheel', this.onWheel)
-  } else if (domNode.onmousewheel !== undefined) {
-    // Safari
-    domNode.addEventListener('mousewheel', this.onWheel)
-  }
-  */
 
   // Tooltip listener
   domNode.addEventListener('the-graph-tooltip', this.changeTooltip)
@@ -66,12 +56,6 @@ export default function componentDidMount() {
   // Start zoom from middle if zoom before mouse move
   this.mouseX = Math.floor(width / 2)
   this.mouseY = Math.floor(height / 2)
-
-  // HACK metaKey global for taps https://github.com/Polymer/PointerGestures/issues/29
-  /*
-  document.addEventListener('keydown', this.keyDown)
-  document.addEventListener('keyup', this.keyUp)
-  */
 
   keys.subscribe('keydown', this.keyDown)
   keys.subscribe('keyup', this.keyUp)
