@@ -45,7 +45,8 @@ class TheGraphPort extends Component {
     isExport: PropTypes.bool,
     highlightPort: PropTypes.bool,
     onEdgeStart: PropTypes.func,
-    onEdgeDrop: PropTypes.func
+    onEdgeDrop: PropTypes.func,
+    onEdgeDraw: PropTypes.func
   }
 
   constructor(props, context) {
