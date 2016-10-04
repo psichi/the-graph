@@ -2,9 +2,11 @@
  * Provision your react components with anything
  */
 
-const modules = [
-  require('./redux')
-]
+const modules = []
+
+if (process.env.NODE_ENV !== 'test') {
+  modules.push(require('./redux'))
+}
 
 export function setup(config) {
   Object.keys(config).forEach((name) => {
