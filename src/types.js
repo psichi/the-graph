@@ -28,8 +28,8 @@ export type PortHash = {
   [name: string]: {
     label: string,
     type: string,
-    x: number,
-    y: number,
+    x: ?number,
+    y: ?number,
     route: ?number
   }
 }
