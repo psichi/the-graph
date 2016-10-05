@@ -16,7 +16,17 @@ import {
 export default function render() {
   // console.timeEnd('App.render');
   // console.time('App.render');
-  const { graph, library, getMenuDef, onNodeSelection, onEdgeSelection, theme } = this.props
+  const {
+    graph,
+    library,
+    getMenuDef,
+    onNodeSelection,
+    onEdgeSelection,
+    theme,
+    onEdgeStart,
+    onEdgeDraw,
+    onEdgeDrop
+  } = this.props
   const { scale, x, y, tooltip, tooltipX, tooltipY, tooltipVisible, width, height } = this.state
 
   if (!this.layoutReady) {
@@ -40,6 +50,9 @@ export default function render() {
     library,
     onNodeSelection,
     onEdgeSelection,
+    onEdgeStart,
+    onEdgeDraw,
+    onEdgeDrop,
     showContext: this.showContext
   }
 

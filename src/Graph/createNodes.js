@@ -7,7 +7,14 @@ export default function createNodes(
   selectedIds: string[],
   highlightPort
 ) {
-  const { app, onNodeSelection, showContext } = this.props
+  const {
+    app,
+    onNodeSelection,
+    showContext,
+    onEdgeStart,
+    onEdgeDraw,
+    onEdgeDrop
+  } = this.props
 
   return graph.nodes.map((node) => {
     const componentInfo = this.getComponentInfo(node.component)
@@ -83,7 +90,10 @@ export default function createNodes(
       height: node.metadata.height,
       graphView: this,
       ports: this.getPorts(graph, key, node.component),
-      error: (this.state.errorNodes[key] === true)
+      error: (this.state.errorNodes[key] === true),
+      onEdgeStart,
+      onEdgeDraw,
+      onEdgeDrop
     }
 
     return GraphNode(nodeOptions)

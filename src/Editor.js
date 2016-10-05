@@ -67,7 +67,10 @@ export default class TheEditor extends Component {
     offsetX: PropTypes.number,
     'touch-action': PropTypes.string,
     grid: PropTypes.number,
-    snap: PropTypes.number
+    snap: PropTypes.number,
+    onEdgeStart: PropTypes.func,
+    onEdgeDraw: PropTypes.func,
+    onEdgeDrop: PropTypes.func
   }
 
   static defaultProps = {

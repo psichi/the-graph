@@ -53,7 +53,11 @@ class TheGraphGraph extends Component {
     library: PropTypes.object,
     onNodeSelection: PropTypes.func,
     onEdgeSelection: PropTypes.func,
-    showContext: PropTypes.func
+    showContext: PropTypes.func,
+
+    onEdgeStart: PropTypes.func,
+    onEdgeDraw: PropTypes.func,
+    onEdgeDrop: PropTypes.func
   }
 
   constructor(props, context) {

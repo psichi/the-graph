@@ -65,7 +65,15 @@ class TheGraphNode extends Component {
     scale: PropTypes.number,
 
     menuShown: PropTypes.bool,
-    pinching: PropTypes.bool
+    pinching: PropTypes.bool,
+
+    onTrackStart: PropTypes.func,
+    onTrack: PropTypes.func,
+    onTrackEnd: PropTypes.func,
+
+    onEdgeStart: PropTypes.func,
+    onEdgeDraw: PropTypes.func,
+    onEdgeDrop: PropTypes.func
   }
 
   constructor(props, context) {

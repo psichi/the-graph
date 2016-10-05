@@ -56,6 +56,9 @@ storiesOf('The Graph', module)
       editable
       onEdgeSelection={action('On Edge Selection')}
       onNodeSelection={action('On Node Selection')}
+      onEdgeStart={action('onEdgeStart')}
+      onEdgeDraw={action('onEdgeDraw')}
+      onEdgeDrop={action('onEdgeDrop')}
       onPanScale={action('On Pan Scale')}
       getMenuDef={action('Get Menu Def')}
       displaySelectionGroup
@@ -79,6 +82,9 @@ storiesOf('The Graph', module)
       editable
       onEdgeSelection={action('On Edge Selection')}
       onNodeSelection={action('On Node Selection')}
+      onEdgeStart={action('onEdgeStart')}
+      onEdgeDraw={action('onEdgeDraw')}
+      onEdgeDrop={action('onEdgeDrop')}
       onPanScale={action('On Pan Scale')}
       getMenuDef={action('Get Menu Def')}
       displaySelectionGroup
@@ -94,7 +100,10 @@ storiesOf('The Graph', module)
       graph,
       library,
       app: {},
-      scale: number('Scale', 1)
+      scale: number('Scale', 1),
+      onEdgeStart: action('onEdgeStart'),
+      onEdgeDraw: action('onEdgeDraw'),
+      onEdgeDrop: action('onEdgeDrop')
     }
 
     return (
@@ -123,6 +132,9 @@ storiesOf('The Graph', module)
               onTrackStart={action('onTrackStart')}
               onTrack={action('onTrack')}
               onTrackEnd={action('onTrackEnd')}
+              onEdgeStart={action('onEdgeStart')}
+              onEdgeDraw={action('onEdgeDraw')}
+              onEdgeDrop={action('onEdgeDrop')}
             />
           </g>
         </g>
@@ -171,6 +183,7 @@ storiesOf('The Graph', module)
       graph: {},
 
       onEdgeStart: action('onEdgeStart'),
+      onEdgeDraw: action('onEdgeDraw'),
       onEdgeDrop: action('onEdgeDrop'),
 
       // is never used

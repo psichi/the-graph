@@ -76,7 +76,11 @@ class TheGraphApp extends Component {
     onNodeSelection: PropTypes.func,
     onPanScale: PropTypes.func,
     getMenuDef: PropTypes.func,
-    displaySelectionGroup: PropTypes.bool
+    displaySelectionGroup: PropTypes.bool,
+
+    onEdgeStart: PropTypes.func,
+    onEdgeDraw: PropTypes.func,
+    onEdgeDrop: PropTypes.func
   }
 
   constructor(props, context) {

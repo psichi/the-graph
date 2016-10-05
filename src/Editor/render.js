@@ -15,7 +15,10 @@ export default function render() {
     getMenuDef,
     forceSelection,
     offsetY,
-    offsetX
+    offsetX,
+    onEdgeStart,
+    onEdgeDraw,
+    onEdgeDrop
   } = this.props
 
   const appOptions = {
@@ -30,6 +33,9 @@ export default function render() {
     editable,
     onEdgeSelection: this.invokeEdgeSelection,
     onNodeSelection: this.invokeNodeSelection,
+    onEdgeStart,
+    onEdgeDraw,
+    onEdgeDrop,
     onPanScale: this.invokePanScale,
     getMenuDef,
     displaySelectionGroup,

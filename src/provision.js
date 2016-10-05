@@ -4,7 +4,7 @@
 
 const modules = []
 
-if (process.env.NODE_ENV !== 'test') {
+if (false && process.env.NODE_ENV !== 'test') {
   modules.push(require('./redux'))
 }
 

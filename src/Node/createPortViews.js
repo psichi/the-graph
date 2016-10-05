@@ -17,7 +17,10 @@ export default function createPortViews(type: string, ports: PortHash) {
     nodeID,
     showContext,
     height,
-    width
+    width,
+    onEdgeStart,
+    onEdgeDraw,
+    onEdgeDrop
   } = this.props
 
   const isExport = (this.props.export !== undefined)
@@ -48,7 +51,10 @@ export default function createPortViews(type: string, ports: PortHash) {
       },
       highlightPort,
       route: info.route,
-      showContext
+      showContext,
+      onEdgeStart: onEdgeStart,
+      onEdgeDraw: onEdgeDraw,
+      onEdgeDrop: onEdgeDrop
     }
 
     return <NodePort {...props} />
