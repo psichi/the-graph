@@ -1,5 +1,5 @@
 // this should update and be within state
-export default function invokePanScale(x, y, scale) {
+export default function invokePanScale(x: number, y: number, scale: number) {
   const { onPanScale } = this.props
 
   this.pan[0] = x

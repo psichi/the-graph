@@ -8,11 +8,24 @@ test('positions ports', (t) => {
   ]
 
   const dimensions = {
-    x: 2,
-    height: 10
+    x: 3,
+    height: 9
   }
 
   const result = positionPorts(ports, dimensions)
 
-  t.deepEqual(result, {})
+  t.deepEqual(result, {
+    IN1: {
+      label: 'IN1',
+      type: 'all',
+      x: 3,
+      y: 3
+    },
+    IN2: {
+      label: 'IN2',
+      type:'all',
+      x: 3,
+      y: 6
+    }
+  })
 })

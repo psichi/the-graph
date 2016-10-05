@@ -1,3 +1,3 @@
-export default function shouldComponentUpdate (nextProps, nextState) {
+export default function shouldComponentUpdate (/* nextProps, nextState */) {
   return this.layoutReady
 }

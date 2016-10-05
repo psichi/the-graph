@@ -11,5 +11,10 @@ test('positions port', (t) => {
 
   const result = positionPort(port, 1, 0, dimensions)
 
-  t.deepEqual(result, {})
+  t.deepEqual(result, {
+    label: 'IN1',
+    type: 'all',
+    x: 2,
+    y: 5
+  })
 })

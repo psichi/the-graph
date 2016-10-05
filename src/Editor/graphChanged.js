@@ -1,5 +1,7 @@
+import type { NofloGraph } from '../types'
+
 // is not executed now.
-export default function graphChanged(oldGraph, newGraph) {
+export default function graphChanged(oldGraph: NofloGraph, newGraph: NofloGraph) {
   if (oldGraph && oldGraph.removeListener) {
     oldGraph.removeListener('endTransaction', this.fireChanged)
   }

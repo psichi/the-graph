@@ -1,4 +1,4 @@
-export default function invokeEdgeSelection(itemKey, item, toggle) {
+export default function invokeEdgeSelection(itemKey: string, item: Object, toggle: ?boolean) {
   const { onEdgeSelection } = this.props
 
   if (itemKey === undefined) {

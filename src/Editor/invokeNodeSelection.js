@@ -1,4 +1,4 @@
-export default function invokeNodeSelection(itemKey, item, toggle) {
+export default function invokeNodeSelection(itemKey: string, item: Object, toggle: boolean) {
   const { onNodeSelection } = this.props
 
   if (itemKey === undefined) {
