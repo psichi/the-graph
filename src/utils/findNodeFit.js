@@ -1,16 +1,15 @@
-import type { Node } from '../types'
-
 export default function findNodeFit(
-  node: Node,
+  origX: number,
+  origY: number,
   nodeSize: number,
   width: number,
   height: number
 ) {
   const limits = {
-    minX: node.metadata.x - nodeSize,
-    minY: node.metadata.y - nodeSize,
-    maxX: node.metadata.x + nodeSize * 2,
-    maxY: node.metadata.y + nodeSize * 2
+    minX: origX - nodeSize,
+    minY: origY - nodeSize,
+    maxX: origX + nodeSize * 2,
+    maxY: origY + nodeSize * 2
   }
 
   const gWidth = limits.maxX - limits.minX

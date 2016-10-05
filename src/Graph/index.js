@@ -1,5 +1,6 @@
 'create index';
 
+export EdgePreview from './EdgePreview.js';
 export addEdge from './addEdge.js';
 export cancelPreviewEdge from './cancelPreviewEdge.js';
 export componentDidMount from './componentDidMount.js';

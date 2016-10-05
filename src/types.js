@@ -1,3 +1,8 @@
+export type Point = {
+  x: number,
+  y: number
+}
+
 export type Connection = {
   src: {
     process: string,
@@ -180,14 +185,8 @@ export type KGraph = {
     sourcePort: string,
     target: string,
     targetPort: string,
-    sourcePoint: {
-      x: number,
-      y: number
-    },
-    targetPoint: {
-      x: number,
-      y: number
-    },
+    sourcePoint: Point,
+    targetPoint: Point,
     junctionPoints: Array,
   }[],
   $H: number,

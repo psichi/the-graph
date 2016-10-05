@@ -2,7 +2,7 @@ import fbp from 'fbp'
 import loadJSON from './loadJSON'
 
 export default function loadFBP(
-  fbpData: Object,
+  fbpData: string,
   callback: Function,
   metadata: Object = {},
   caseSensitive: boolean = false

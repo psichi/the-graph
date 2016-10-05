@@ -6,7 +6,13 @@ export default function focusNode(node) {
 
   const duration = Config.focusAnimationDuration
 
-  const fit = findNodeFit(node, Config.base.nodeSize, width, height)
+  const fit = findNodeFit(
+    node.metadata.x,
+    node.metadata.y,
+    Config.base.nodeSize,
+    width,
+    height
+  )
 
   const start_point = {
     x: -(currentX - width / 2) / scale,

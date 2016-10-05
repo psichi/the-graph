@@ -1,4 +1,15 @@
-export default function getElementOffset(element) {
+type ElementOffsets = ?{
+  offsetTop: ?number,
+  offsetLeft: ?number,
+  offsetParent: ?ElementOffsets
+}
+
+type Offset = {
+  left: number,
+  top: number
+}
+
+export default function getElementOffset(element: ElementOffsets): Offset {
   const offset = {
     top: 0,
     left: 0

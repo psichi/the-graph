@@ -1,7 +1,9 @@
+import type { Point } from '../types'
+
 export default function findAreaFit(
   nodeSize: number,
-  point1: number,
-  point2: number,
+  point1: Point,
+  point2: Point,
   width: number,
   height: number
 ) {
