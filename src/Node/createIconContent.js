@@ -5,11 +5,14 @@ import {
   NodeIconText
 } from '../factories/node'
 
-export default function createIconContent() {
-  const { iconsvg, width, height } = this.props
-
+export default function createIconContent(
+  iconName: string,
+  width: number,
+  height:number,
+  iconsvg: ?string
+) {
   // Node Icon
-  let icon = Config.FONT_AWESOME[this.props.icon]
+  let icon = Config.FONT_AWESOME[iconName]
 
   if (!icon) {
     icon = Config.FONT_AWESOME.cog

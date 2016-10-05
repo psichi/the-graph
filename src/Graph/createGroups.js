@@ -1,8 +1,9 @@
 import Config from '../Config'
 import { findMinMax } from '../utils'
 import { GraphGroup } from '../factories/graph'
+import type { NofloGraph } from '../types'
 
-export default function createGroups(graph) {
+export default function createGroups(graph: NofloGraph) {
   const { app, scale, showContext } = this.props
 
   return graph.groups.map((group) => {

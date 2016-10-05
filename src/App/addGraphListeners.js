@@ -1,4 +1,6 @@
-export default function addGraphListeners(graph) {
+import { NofloGraph } from '../types'
+
+export default function addGraphListeners(graph: NofloGraph) {
   graph.on('addNode', this.triggerAutolayout)
   graph.on('removeNode', this.triggerAutolayout)
   graph.on('addInport', this.triggerAutolayout)

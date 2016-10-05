@@ -1,17 +1,19 @@
-export default function applyAutolayout(layoutedKGraph) {
+import type { KGraph } from '../types'
+
+export default function applyAutolayout(kGraph: KGraph) {
   const { graph, snap } = this.props
 
   if (!snap) {
     return
   }
 
-  if (layoutedKGraph.stacktrace) {
-    throw Error(layoutedKGraph.text)
+  if (kGraph.stacktrace) {
+    throw Error(kGraph.text)
   }
 
   graph.startTransaction('autolayout')
   // Update original graph nodes with the new coordinates from KIELER graph
-  const children = layoutedKGraph.children.slice()
+  const children = kGraph.children.slice()
   let i
   let len
   for (i = 0, len = children.length; i < len; i++) {

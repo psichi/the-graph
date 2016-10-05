@@ -1,4 +1,12 @@
-export default function getNodeOutport(graph, processName, portName, route, componentName) {
+import type { NofloGraph } from '../types'
+
+export default function getNodeOutport(
+  graph: NofloGraph,
+  processName: string,
+  portName: string,
+  route: number,
+  componentName: string
+) {
   const ports = this.getPorts(graph, processName, componentName)
 
   // this check should not be necessary.

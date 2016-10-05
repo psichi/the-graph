@@ -1,4 +1,10 @@
-export default function findAreaFit(nodeSize, point1, point2, width, height) {
+export default function findAreaFit(
+  nodeSize: number,
+  point1: number,
+  point2: number,
+  width: number,
+  height: number
+) {
   const limits = {
     minX: point1.x < point2.x ? point1.x : point2.x,
     minY: point1.y < point2.y ? point1.y : point2.y,

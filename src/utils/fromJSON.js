@@ -1,7 +1,7 @@
 import Graph from '../graph/noflo'
 import clone from './cloneObject'
 
-export default function fromJSON(definition, metadata) {
+export default function fromJSON(definition: Object, metadata: ?Object) {
   let caseSensitive
   let conn
   let def

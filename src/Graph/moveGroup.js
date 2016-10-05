@@ -1,5 +1,8 @@
 import Config from '../Config'
-export default function moveGroup(nodes, dx, dy) {
+
+import type { Node } from '../types'
+
+export default function moveGroup(nodes: Node[], dx: number, dy: number) {
   const { graph } = this.state
 
   // Move each group member

@@ -79,9 +79,11 @@ class TheGraphNode extends Component {
     this.keyDown = this.keyDown.bind(this)
     this.keyUp = this.keyUp.bind(this)
 
+    const { ports, width, height } = props
+
     if (this.props.onPortsCreated) {
       this.props.onPortsCreated(
-       this.calcPositions(props)
+       this.calcPositions(ports, width, height)
       )
     }
   }

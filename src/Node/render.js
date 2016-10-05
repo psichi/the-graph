@@ -19,7 +19,20 @@ import {
 import { buildLabelRectOptions } from '../utils'
 
 export default function render() {
-  const { error, label, x, y, height, width, nodeID, selected } = this.props
+  const {
+    icon,
+    iconsvg,
+    error,
+    label,
+    x,
+    y,
+    height,
+    width,
+    nodeID,
+    ports,
+    selected
+  } = this.props
+
   let { sublabel } = this.props
 
   if (this.props.ports.dirty) {
@@ -31,11 +44,11 @@ export default function render() {
     sublabel = ''
   }
 
-  const NodeOutportViews = this.createOutportViews()
+  const NodeOutportViews = this.createOutportViews(ports.outports)
 
-  const NodeInportViews = this.createInportViews()
+  const NodeInportViews = this.createInportViews(ports.inports)
 
-  const NodeIconContent = this.createIconContent()
+  const NodeIconContent = this.createIconContent(icon, width, height, iconsvg)
 
   const backgroundRectOptions = {
     ...Config.node.background,

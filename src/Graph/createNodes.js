@@ -1,7 +1,12 @@
 import Config from '../Config'
 import { GraphNode } from '../factories/graph'
+import type { NofloGraph } from '../types'
 
-export default function createNodes(graph, selectedIds, highlightPort) {
+export default function createNodes(
+  graph: NofloGraph,
+  selectedIds: string[],
+  highlightPort
+) {
   const { app, onNodeSelection, showContext } = this.props
 
   return graph.nodes.map((node) => {

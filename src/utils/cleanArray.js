@@ -1,4 +1,4 @@
-export default function cleanArray(array) {
+export default function cleanArray(array: Array) {
   let i
   for (i = 0; i < array.length; i++) {
     if (array[i] === null || array[i] === undefined) {

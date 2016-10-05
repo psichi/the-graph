@@ -1,5 +1,5 @@
 import Config from '../Config'
-export default function getGraphOutport(key) {
+export default function getGraphOutport(key: string) {
   let exp
 
   exp = this.graphOutports[key]

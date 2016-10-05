@@ -1,8 +1,16 @@
 import { positionPort } from '../utils'
+import type { PortHash } from '../types'
 
-export default function calcPositions (props) {
-  const { height, ports, width } = props
+type PortsType = {
+  inports: PortHash,
+  outports: PortHash
+}
 
+export default function calcPositions (
+  ports: PortsType,
+  width: number,
+  height: number
+): PortsType {
   const portInfo = {
       inports: {},
       outports: {}

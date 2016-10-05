@@ -1,5 +1,12 @@
 // find point on line y = mx + b that is `offset` away from x,y
-export default function findLinePoint(x, y, m, b, offset, flip) {
+export default function findLinePoint(
+  x: number,
+  y: number,
+  m: number,
+  b: number,
+  offset: number,
+  flip: ?number
+) {
   const x1 = x + offset / Math.sqrt(1 + m * m)
 
   let y1

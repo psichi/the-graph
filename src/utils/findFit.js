@@ -1,6 +1,12 @@
 import findMinMax from './findMinMax'
+import type { NofloGraph } from '../types'
 
-export default function findFit(graph, nodeSize, width, height) {
+export default function findFit(
+  graph: NofloGraph,
+  nodeSize: number,
+  width: number,
+  height: number
+) {
   const limits = findMinMax(graph)
 
   if (!limits) {

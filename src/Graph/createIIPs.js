@@ -1,7 +1,8 @@
 import Config from '../Config'
 import { GraphIIP } from '../factories/graph'
+import type { NofloGraph } from '../types'
 
-export default function createIIPs(graph) {
+export default function createIIPs(graph: NofloGraph) {
   return graph.initializers.map((iip) => {
     const target = graph.getNode(iip.to.node)
 

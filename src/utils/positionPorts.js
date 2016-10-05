@@ -1,6 +1,10 @@
 import positionPort from './positionPort'
+import type { Port, PortDimensions } from '../types'
 
-export default function positionPorts(ports, dimensions) {
+export default function positionPorts (
+  ports: Port[],
+  dimensions: PortDimensions
+) {
   const positioned = {}
   let i
   let len

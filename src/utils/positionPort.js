@@ -1,4 +1,11 @@
-export default function (port, total, index, dimensions) {
+import type { PortDimensions, Port } from '../types'
+
+export default function positionPort (
+  port: Port,
+  total: number,
+  index: number,
+  dimensions: PortDimensions
+): Object {
   return {
     label: port.name || port.label, // normalize this
     type: port.type,

@@ -1,4 +1,9 @@
-export default function findMinMax(graph, nodes) {
+import type { NofloGraph } from '../types'
+
+export default function findMinMax(
+  graph: NofloGraph,
+  nodes: ?Array
+) {
   let inports
   let outports
 

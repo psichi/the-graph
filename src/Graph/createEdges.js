@@ -1,7 +1,8 @@
 import Config from '../Config'
 import { GraphEdge } from '../factories/graph'
+import type { NofloGraph } from '../types'
 
-export default function createEdges(graph) {
+export default function createEdges(graph: NofloGraph) {
   const { app, onEdgeSelection, showContext } = this.props
 
   return graph.edges.map((edge) => {

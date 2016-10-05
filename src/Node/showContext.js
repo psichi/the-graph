@@ -1,4 +1,4 @@
-export default function showContext(event) {
+export default function showContext(event: SyntheticMouseEvent) {
   // Don't show native context menu
   event.preventDefault()
 

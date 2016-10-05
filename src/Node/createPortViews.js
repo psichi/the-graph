@@ -5,9 +5,10 @@ import {
 import {
   positionPort
 } from '../utils/'
+import type { PortHash } from '../types'
 
 // Ports
-export default function createPortViews(type, ports) {
+export default function createPortViews(type: string, ports: PortHash) {
   const {
     scale,
     graph,

@@ -3,8 +3,8 @@ import { positionPorts } from '../../src/utils'
 
 test('positions ports', (t) => {
   const ports = [
-    {name: 'IN1'},
-    {name: 'IN2'}
+    {name: 'IN1', type: 'all'},
+    {name: 'IN2', type: 'all'}
   ]
 
   const dimensions = {

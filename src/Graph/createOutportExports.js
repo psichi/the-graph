@@ -1,7 +1,8 @@
 import Config from '../Config'
 import { GraphNode, GraphEdge } from '../factories/graph'
+import type { NofloGraph } from '../types'
 
-export default function createOutportExports(graph) {
+export default function createOutportExports(graph: NofloGraph) {
   const { app, showContext } = this.props
 
   const edges = Object.keys(graph.outports).map((key) => {

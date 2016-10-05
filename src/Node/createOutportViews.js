@@ -1,9 +1,5 @@
-export default function createOutportViews() {
-  const {
-    ports: {
-      outports
-    }
-  } = this.props
+import type { PortHash } from '../types'
 
+export default function createOutportViews(outports: PortHash) {
   return this.createPortViews('out', outports)
 }

@@ -32,14 +32,14 @@ const api = {
  * @returns {function()}
  */
 export default {
-  subscribe(type, callback) {
+  subscribe(type: string, callback: Function) {
     if (api[type].listeners.length === 0) {
       document.addEventListener(type, api[type].handler)
     }
 
     api[type].listeners.push(callback)
   },
-  unsubscribe(type, callback) {
+  unsubscribe(type: string, callback: Function) {
     const index = api[type].listeners.indexOf(callback)
 
     api[type].listeners.splice(index, 1)

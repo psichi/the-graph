@@ -1,4 +1,10 @@
-export default function getPorts(graph, processName, componentName) {
+import type { NofloGraph } from '../types'
+
+export default function getPorts(
+  graph: NofloGraph,
+  processName: string,
+  componentName: string
+) {
   let ports
   const { library } = this.props
   const node = graph.getNode(processName)

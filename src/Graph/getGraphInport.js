@@ -1,5 +1,5 @@
 import Config from '../Config'
-export default function getGraphInport(key) {
+export default function getGraphInport(key: string) {
   let exp = this.graphInports[key]
 
   if (!exp) {
