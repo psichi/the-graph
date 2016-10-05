@@ -27,6 +27,7 @@
   "devDependencies": {
     "@kadira/storybook": "^2.20.1",
     "@kadira/storybook-addon-knobs": "^1.2.3",
+    "ava": "^0.16.0",
     "babel-cli": "^6.16.0",
     "babel-eslint": "^7.0.0",
     "babel-jest": "^15.0.0",
@@ -55,20 +56,18 @@
     "jsdom": "^9.6.0",
     "jsx-test": "^2.0.1",
     "less": "^2.7.1",
-    "mocha": "^3.1.0",
     "react-addons-test-utils": "^15.3.2",
     "react-test-renderer": "^15.3.2",
     "rimraf": "^2.5.4",
     "sinon": "^1.17.6",
     "stylus": "~0.54.5",
-    "tcomb": "^3.2.15",
     "worker-loader": "^0.7.1"
   },
   "scripts": {
     "build:babel": "babel ./src --out-dir ./build",
     "lint": "eslint 'src/**/*.js'",
-    "test": "NODE_ENV=test mocha --compilers js:babel-core/register --require ./test/setup.js",
-    "test:watch": "npm run test -- --watch",
+    "test": "NODE_ENV=test ava --serial --verbose ./test",
+    "test:watch": "NODE_ENV=test ava --serial --verbose --watch ./test",
     "postversion": "git push && git push --tags",
     "storybook": "start-storybook -p 9009 -s ./node_modules/",
     "build-storybook": "build-storybook",
@@ -84,6 +83,15 @@
   },
   "standard": {
     "parser": "babel-eslint"
+  },
+  "ava": {
+    "require": [
+      "babel-register",
+      "./test/helpers/setup.js"
+    ],
+    "babel": {
+      "babelrc": true
+    }
   },
   "keywords": [
     "graph"

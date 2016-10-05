@@ -1,8 +1,9 @@
+import test from 'ava'
 import React from 'react'
 import sinon from 'sinon'
 import { mount } from 'enzyme'
 import Port from '../src/Port'
-import { DEvent } from './utils'
+import { DEvent } from './helpers'
 
 const port = {
   process: 'textProcess',
@@ -10,7 +11,7 @@ const port = {
   type: 'any'
 }
 
-it('Label is set', () => {
+test('Label is set', (t) => {
   const wrapper = mount(
     <Port
       label="IN"
@@ -22,10 +23,10 @@ it('Label is set', () => {
     />
   )
 
-  expect(wrapper.find('text').text()).to.equal('IN')
+  t.is(wrapper.find('text').text(), 'IN')
 })
 
-it('Mousedown starts tracking', () => {
+test('Mousedown starts tracking', (t) => {
   const onEdgeStart = sinon.spy()
   const wrapper = mount(
     <Port
@@ -44,10 +45,10 @@ it('Mousedown starts tracking', () => {
     pageY: 5
   })
 
-  expect(onEdgeStart.callCount).to.equal(1)
+  t.is(onEdgeStart.callCount, 1)
 })
 
-it('Mouseup ends tracking', () => {
+test('Mouseup ends tracking', (t) => {
   const onEdgeStart = sinon.spy()
   const onEdgeDrop = sinon.spy()
   const wrapper = mount(
@@ -71,7 +72,7 @@ it('Mouseup ends tracking', () => {
 
   DEvent('mouseup')
 
-  expect(onEdgeStart.callCount).to.equal(1)
-  expect(onEdgeDrop.callCount).to.equal(1)
+  t.is(onEdgeStart.callCount, 1)
+  t.is(onEdgeDrop.callCount, 1)
 })
 

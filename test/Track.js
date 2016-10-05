@@ -1,12 +1,13 @@
+import test from 'ava'
 import React from 'react'
 import { findDOMNode } from 'react-dom'
 import sinon from 'sinon'
 import { mount } from 'enzyme'
 import { Simulate } from 'react-addons-test-utils'
-import { DEvent } from './utils'
+import { DEvent } from './helpers'
 import Track from '../src/Track'
 
-it('Start tracking', () => {
+test('Start tracking', (t) => {
   const onTrackStart = sinon.spy()
   const wrapper = mount(
     <Track
@@ -26,10 +27,10 @@ it('Start tracking', () => {
     pageY: 5
   })
 
-  expect(onTrackStart.callCount).to.equal(1)
+  t.is(onTrackStart.callCount, 1)
 })
 
-it('Move', () => {
+test('Move', (t) => {
   const onTrackStart = sinon.spy()
   const onTrackEnd = sinon.spy()
   const onTrack = sinon.spy()
@@ -58,7 +59,7 @@ it('Move', () => {
 
   DEvent('mouseup')
 
-  expect(onTrackStart.callCount).to.equal(1)
-  expect(onTrack.callCount).to.equal(2)
-  expect(onTrackEnd.callCount).to.equal(1)
+  t.is(onTrackStart.callCount, 1)
+  t.is(onTrack.callCount, 2)
+  t.is(onTrackEnd.callCount, 1)
 })
