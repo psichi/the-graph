@@ -1,5 +1,6 @@
 'create index';
 
+export addEventListeners from './addEventListeners.js';
 export addGraphListeners from './addGraphListeners.js';
 export applyAutolayout from './applyAutolayout.js';
 export autolayoutChanged from './autolayoutChanged.js';
@@ -25,6 +26,7 @@ export onTransform from './onTransform.js';
 export onTransformEnd from './onTransformEnd.js';
 export onTransformStart from './onTransformStart.js';
 export onWheel from './onWheel.js';
+export removeEventListeners from './removeEventListeners.js';
 export removeGraphListeners from './removeGraphListeners.js';
 export render from './render.js';
 export renderCanvas from './renderCanvas.js';

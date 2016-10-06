@@ -33,7 +33,7 @@ export default function render() {
     // first render is still empty, would prefer if first render
     // occurs when autolayout is done.
     // which would be possible if layout was not triggered from within the app.
-    return <div />
+    return null
   }
 
   const transform = `matrix(${scale},0,0,${scale},${x},${y})`

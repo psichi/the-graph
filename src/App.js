@@ -4,6 +4,7 @@ import { provision } from './provision'
 
 import {
   addGraphListeners,
+  addEventListeners,
   applyAutolayout,
   autolayoutChanged,
   changeTooltip,
@@ -28,6 +29,7 @@ import {
   onTransformEnd,
   onTransformStart,
   onWheel,
+  removeEventListeners,
   removeGraphListeners,
   render,
   renderCanvas,
@@ -125,6 +127,8 @@ class TheGraphApp extends Component {
 
   componentWillMount = this::componentWillMount
   addGraphListeners = this::addGraphListeners
+  addEventListeners = this::addEventListeners
+  removeEventListeners = this::removeEventListeners
   removeGraphListeners = this::removeGraphListeners
   autolayoutChanged = this::autolayoutChanged
   triggerAutolayout = this::triggerAutolayout

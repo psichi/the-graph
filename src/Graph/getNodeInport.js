@@ -4,8 +4,8 @@ export default function getNodeInport(
   graph: NofloGraph,
   processName: string,
   portName: string,
-  route: number,
-  componentName: string
+  route: ?number,
+  componentName: ?string
 ) {
   const ports = this.getPorts(graph, processName, componentName)
 

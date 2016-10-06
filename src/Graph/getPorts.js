@@ -3,7 +3,7 @@ import type { NofloGraph } from '../types'
 export default function getPorts(
   graph: NofloGraph,
   processName: string,
-  componentName: string
+  componentName: ?string
 ) {
   let ports
   const { library } = this.props
