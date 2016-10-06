@@ -1,3 +1,4 @@
+import Config from '../Config'
 import type { NofloGraph } from '../types'
 
 export default function getNodeOutport(

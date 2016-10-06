@@ -4,9 +4,26 @@ import Config from '../Config'
 
 export default class EdgePreview extends Component {
   static propTypes = {
+    edge: PropTypes.shape({
+      from: PropTypes.shape({
+        process: PropTypes.string,
+        port: PropTypes.string
+      }),
+      to: PropTypes.shape({
+        process: PropTypes.string,
+        port: PropTypes.string
+      }),
+      metadata: PropTypes.shape({
+        route: PropTypes.number
+      })
+    }),
+    offsetX: PropTypes.number,
+    offsetY: PropTypes.number,
+    appX: PropTypes.number,
+    appY: PropTypes.number,
+    scale: PropTypes.number,
     isIn: PropTypes.bool,
-    to: PropTypes.string, // not sure could also be object
-    from: PropTypes.string
+    graph: PropTypes.object
   }
 
   edgeStart(event) {
@@ -29,7 +46,10 @@ export default class EdgePreview extends Component {
         halfEdge.from = port
       }
 
-      this.addEdge(halfEdge)
+      // not added to graph
+      // removes the realtime ability,
+      // however can be made similar if you listen to a dispatch of a new edge.
+      // this.addEdge(halfEdge)
       this.cancelPreviewEdge()
 
       return
@@ -47,11 +67,13 @@ export default class EdgePreview extends Component {
     edge.metadata = { route: eventDetail.route }
     edge.type = eventDetail.port.type
 
-    const appDomNode = findDOMNode(app)
-
     /* Render preview edge should be rendered by whatever is listening. */
+
+    /* Is already intiated by port
+     const appDomNode = findDOMNode(app)
     appDomNode.addEventListener('mousemove', this.renderPreviewEdge)
     appDomNode.addEventListener('track', this.renderPreviewEdge)
+    */
 
     if (this.props.onEdgeStart) {
       this.props.onEdgeStart({
@@ -59,13 +81,17 @@ export default class EdgePreview extends Component {
       })
     }
     /* Should be done external by whatever is listening. */
+    /*
     // TODO tap to add new node here
     appDomNode.addEventListener('tap', this.cancelPreviewEdge)
+    */
 
-    this.setState({ edgePreview: edge })
+    // state is kept in App, not here
+    // this.setState({ edgePreview: edge })
   }
 
   renderPreviewEdge(event) {
+    /*
     const {
       app: {
         state: {
@@ -76,6 +102,14 @@ export default class EdgePreview extends Component {
           y: appY
         }
       }
+    } = this.props
+    */
+    const {
+      offsetX,
+      offsetY,
+      scale,
+      appX,
+      appY
     } = this.props
 
     let x = event.x || event.clientX || 0
@@ -88,12 +122,12 @@ export default class EdgePreview extends Component {
       edgePreviewX: (x - appX) / scale,
       edgePreviewY: (y - appY) / scale
     })
-
-    this.markDirty()
   }
 
   cancelPreviewEdge(event) {
     const { edgePreview } = this.state
+
+    /* Tracked from port not overhere.
     const { app } = this.props
     const appDomNode = findDOMNode(app)
 
@@ -101,49 +135,54 @@ export default class EdgePreview extends Component {
     appDomNode.removeEventListener('track', this.renderPreviewEdge)
 
     appDomNode.removeEventListener('tap', this.cancelPreviewEdge)
+    */
 
+    /* Should be done from app
     if (edgePreview) {
       this.setState({ edgePreview: null })
-      this.markDirty()
     }
+    */
   }
 
   render () {
     // Edge preview
-    const edgePreview = this.state.edgePreview
+    let edgePreviewOptions
 
-    if (edgePreview) {
-      let edgePreviewOptions
+    const { edge } = this.props
+    const { edgePreviewX, edgePreviewY } = this.state
 
-      if (edgePreview.from) {
-        const source = graph.getNode(edgePreview.from.process)
-        const sourcePort = this.getNodeOutport(graph, edgePreview.from.process, edgePreview.from.port)
+    if (edge.from) {
 
-        edgePreviewOptions = {
-          ...Config.graph.edgePreview,
-          sX: source.metadata.x + source.metadata.width,
-          sY: source.metadata.y + sourcePort.y,
-          tX: edgePreviewX,
-          tY: edgePreviewY,
-          route: edgePreview.metadata.route
-        }
-      } else {
-        const target = graph.getNode(edgePreview.to.process)
-        const targetPort = this.getNodeInport(graph, edgePreview.to.process, edgePreview.to.port)
+      // should not be done from within, this component
+      // needs to be provided these values.
+      const source = graph.getNode(edge.from.process)
+      const sourcePort = this.getNodeOutport(graph, edge.from.process, edge.from.port)
 
-        edgePreviewOptions = {
-          ...Config.graph.edgePreview,
-          sX: edgePreviewX,
-          sY: edgePreviewY,
-          tX: target.metadata.x,
-          tY: target.metadata.y + targetPort.y,
-          route: edgePreview.metadata.route
-        }
+      edgePreviewOptions = {
+        ...Config.graph.edgePreview,
+        sX: source.metadata.x + source.metadata.width,
+        sY: source.metadata.y + sourcePort.y,
+        tX: edgePreviewX,
+        tY: edgePreviewY,
+        route: edge.metadata.route
       }
+    } else {
+      const target = graph.getNode(edge.to.process)
+      const targetPort = this.getNodeInport(graph, edge.to.process, edge.to.port)
 
-      const edgePreviewView = GraphEdgePreview(edgePreviewOptions)
-
-      edges.push(edgePreviewView)
+      edgePreviewOptions = {
+        ...Config.graph.edgePreview,
+        sX: edgePreviewX,
+        sY: edgePreviewY,
+        tX: target.metadata.x,
+        tY: target.metadata.y + targetPort.y,
+        route: edge.metadata.route
+      }
     }
+
+    // Graph Edge preview is just an Edge.
+    // that's why above options belong to this component PreviewEdge
+    // Preview Edge is an Edge except it keeps state.
+    return <GraphEdgePreview {...edgePreviewOptions} />
   }
 }
